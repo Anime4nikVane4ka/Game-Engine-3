@@ -1,6 +1,10 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <memory>
+#include <string>
+#include <unordered_map>
+
 #include "../Ecs/Systems/SystemsManager.h"
 #include "../Ecs/World/World.h"
 #include "Input/InputAction.h"

@@ -6,7 +6,7 @@ struct GravityComponent
     float Acceleration = 980.0f;
 
     GravityComponent() = default;
-    explicit GravityComponent(const float acceleration)
+    GravityComponent(const float acceleration)
         : Acceleration(acceleration)
     {
     }

@@ -5,29 +5,60 @@
 
 void GameEngine::Render()
 {
-    // ToDo: Р›РѕРіРёРєР° СЂРµРЅРґРµСЂР° РѕРєРЅР° Рё ui
+    // ToDo: Логика рендера окна и ui
+    ImGui::SFML::Render(_window);
+    _window.display();
 }
 
 GameEngine::GameEngine(const GameEngineConfiguration& config)
+    : _config(config),
+      _window(sf::VideoMode({GameEngineConfiguration::Width, GameEngineConfiguration::Height}), "Game"),
+      _inputManager(std::make_shared<InputManager>(_window, *this)),
+      _isRunning(false),
+      _currentScene(0)
 {
-    // ToDo: РЎРѕР·РґР°РЅРёРµ Рё РЅР°СЃС‚СЂРѕР№РєР° РѕРєРЅР°
+    // ToDo: Создание и настройка окна
 
-    // ToDo: РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ ImGui
+    // ToDo: Инициализация ImGui
 
-    // ToDo: РЎРѕР·РґР°РЅРёРµ РёРЅРїСѓС‚ Рё Р°СЃСЃРµС‚ РјРµРЅРµРґР¶РµСЂРѕРІ
+    // ToDo: Создание инпут и ассет менеджеров
+    ImGui::SFML::Init(_window);
 }
 
 void GameEngine::Initialize()
 {
-    // ToDo: Р›РѕРіРёРєР° РёРЅРёС†РёР°Р»РёР·Р°С†РёРё Рё Р·Р°РїСѓСЃРєР° РґРІРёР¶РєР°
+    // ToDo: Логика инициализации и запуска движка
+    _isRunning = true;
 }
 
 void GameEngine::Run()
 {
-    // ToDo: Р›РѕРіРёРєР° РїСЂРѕРєСЂСѓС‚РєРё РёРіСЂРѕРІРѕРіРѕ С†РёРєР»Р°
+    // ToDo: Логика прокрутки игрового цикла
+    Initialize();
+
+    while (_isRunning && _window.isOpen())
+    {
+        if (_inputManager != nullptr)
+            _isRunning = _inputManager->ProcessInput(_currentScene);
+
+        const sf::Time deltaTime = _deltaClock.restart();
+        ImGui::SFML::Update(_window, deltaTime);
+
+        _window.clear();
+
+        const auto currentSceneIterator = _scenes.find(_currentScene);
+        if (currentSceneIterator != _scenes.end() && currentSceneIterator->second != nullptr)
+            currentSceneIterator->second->Update(deltaTime.asSeconds());
+
+        Render();
+    }
+
+    ImGui::SFML::Shutdown();
 }
 
 void GameEngine::Quit()
 {
-    // ToDo: Р—Р°РєСЂС‹С‚РёРµ Рё РѕСЃС‚Р°РЅРѕРІРєР° РґРІРёР¶РєР°
+    // ToDo: Закрытие и остановка движка
+    _isRunning = false;
+    _window.close();
 }

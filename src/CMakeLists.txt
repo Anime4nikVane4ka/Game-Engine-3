@@ -2,6 +2,8 @@ set(TARGET_NAME main)
 set(SOURCES main.cpp
         Sample/Systems/MovementSystem.cpp
         Sample/Systems/MovementSystem.h
+        Sample/Systems/RenderSystem.cpp
+        Sample/Systems/RenderSystem.h
         Sample/Systems/InitSystem.cpp
         Sample/Systems/InitSystem.h
         Sample/Systems/AnimationStateSystem.cpp
@@ -10,6 +12,10 @@ set(SOURCES main.cpp
         Sample/Systems/AnimationSystem.h
         Sample/Systems/CollisionHandlerSystem.cpp
         Sample/Systems/CollisionHandlerSystem.h
+        Sample/Systems/DefaultCameraSystem.cpp
+        Sample/Systems/DefaultCameraSystem.h
+        Sample/Systems/FollowCameraSystem.cpp
+        Sample/Systems/FollowCameraSystem.h
         Sample/Systems/GravitySystem.cpp
         Sample/Systems/GravitySystem.h
         Sample/Systems/ShootSystem.cpp
@@ -19,6 +25,7 @@ set(SOURCES main.cpp
         Sample/Components/AnimationStateComponent.h
         Sample/Components/AnimatorComponent.h
         Sample/Components/BrickTileComponent.h
+        Sample/Components/CameraComponent.h
         Sample/Components/DecorComponent.h
         Sample/Components/DefaultCameraComponent.h
         Sample/Components/FinishComponent.h

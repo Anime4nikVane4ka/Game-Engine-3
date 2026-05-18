@@ -29,6 +29,9 @@ void AnimationSystem::OnUpdate()
             continue;
 
         sprite.Texture = &animation.GetTexture();
+        sprite.TextureRect = sf::IntRect(
+            {static_cast<int>(animator.CurrentFrame * animation.Size().x), 0},
+            animation.Size());
 
         animator.CurrentFrameTime++;
         if (animator.CurrentFrameTime < animation.FrameDuration())

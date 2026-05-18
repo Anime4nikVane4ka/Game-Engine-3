@@ -10,7 +10,7 @@ struct AnimationStateComponent
     bool NeedChange = false;
 
     AnimationStateComponent() = default;
-    explicit AnimationStateComponent(const std::string& initialState)
+    AnimationStateComponent(const std::string& initialState)
         : CurrentState(initialState), NewState(initialState)
     {}
 };

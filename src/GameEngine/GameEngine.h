@@ -1,11 +1,18 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
-#include "SFML/Graphics/RenderWindow.hpp"
 
-#include "GameEngineConfiguration.h"
-#include "Scene.h"
+#include <memory>
+#include <type_traits>
+#include <unordered_map>
+#include <utility>
+
+#include "SFML/Graphics/RenderWindow.hpp"
+#include "SFML/System/Clock.hpp"
+
 #include "Assets/AssetManager.h"
+#include "GameEngineConfiguration.h"
 #include "Input/InputManager.h"
+#include "Scene.h"
 
 class GameEngine {
     const GameEngineConfiguration _config;
@@ -93,13 +100,14 @@ public:
 
     template <typename T>
     typename std::enable_if<std::is_same<sf::Keyboard::Key, T>::value ||
-        std::is_same<sf::Keyboard::Key, T>::value ||
         std::is_same<sf::Mouse::Button, T>::value ||
         std::is_same<sf::Mouse::Wheel, T>::value ||
         std::is_same<MouseMove, T>::value, void>::type
     RegisterInput(const T type, std::shared_ptr<InputAction> action) const
     {
-        // ToDo: Ð›Ð¾Ð³Ð¸ÐºÐ° Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¸ Ð¸Ð½Ð¿ÑƒÑ‚Ð°
+        // ToDo: Ëîãèêà ðåãèñòðàöèè èíïóòà
+        if (_inputManager != nullptr)
+            _inputManager->RegisterInput(_currentScene, type, std::move(action));
     }
 };
 

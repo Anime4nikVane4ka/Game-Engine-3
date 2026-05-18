@@ -1,9 +1,12 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+#include <cstddef>
+
 #include "SFML/Graphics/Texture.hpp"
 
-class Animation {
+class Animation
+{
     const sf::Texture& _texture;
     size_t _frameCount;
     size_t _frameDuration;
@@ -12,7 +15,7 @@ class Animation {
 
 public:
     // ToDo:
-    Animation(const sf::Texture& texture, const size_t frameCount, const size_t frameDuration);
+    Animation(const sf::Texture& texture, size_t frameCount, size_t frameDuration);
 
     // ToDo:
     Animation(const Animation& other);

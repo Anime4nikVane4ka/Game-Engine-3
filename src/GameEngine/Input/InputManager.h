@@ -1,5 +1,9 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
+
+#include <memory>
+#include <unordered_map>
+
 #include <SFML/Graphics.hpp>
 
 #include "InputAction.h"
@@ -18,8 +22,10 @@ class InputManager
     std::unordered_map<size_t, std::unordered_map<sf::Mouse::Wheel, std::shared_ptr<InputAction>>> _actionMouseWheelMaps;
     std::unordered_map<size_t, std::unordered_map<MouseMove, std::shared_ptr<InputAction>>> _actionMouseMoveMaps;
 
+    void ResetEndedActions();
+    void ResetTransientActions(size_t scene);
+
 public:
-    // ToDo:
     InputManager(sf::RenderWindow& window, GameEngine& gameEngine);
 
     void RegisterInput(size_t scene,

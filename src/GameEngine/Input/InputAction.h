@@ -9,10 +9,10 @@ enum ActionType { None, Start, End };
 class InputAction
 {
     std::string _name;
-    ActionType _type;
+    ActionType _type = None;
 
-    short _value;
-    sf::Vector2i _value2;
+    short _value = 0;
+    sf::Vector2i _value2 = {0, 0};
 
 public:
     InputAction() = default;
