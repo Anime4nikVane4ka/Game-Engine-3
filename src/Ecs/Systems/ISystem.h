@@ -6,7 +6,7 @@
 class ISystem : public IInitializer
 {
 public:
-    ISystem(World &world);
+    ISystem(World &world) : IInitializer(world) {}
 
     ~ISystem() override = default;
     virtual void OnUpdate() = 0;

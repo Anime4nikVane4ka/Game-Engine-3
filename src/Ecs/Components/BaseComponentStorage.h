@@ -12,6 +12,7 @@ public:
     virtual std::span<const int> Entities() const = 0;
     virtual void Remove(int e) = 0;
     virtual int Id() const = 0;
+    virtual const char* TypeName() const = 0;
 };
 
 #endif //BASECOMPONENTSTORAGE_H

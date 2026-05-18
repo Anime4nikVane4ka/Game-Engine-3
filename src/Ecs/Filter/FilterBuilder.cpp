@@ -1,6 +1,12 @@
 #include "FilterBuilder.h"
 
+FilterBuilder::FilterBuilder(World& world)
+    : _world(world)
+{
+    _componentStorages.reserve(4);
+}
+
 Filter FilterBuilder::Build() const
 {
-    // ToDo: Создание фильтра с указанным миром и хранилищами компонентов
+    return Filter(_world, _componentStorages);
 }

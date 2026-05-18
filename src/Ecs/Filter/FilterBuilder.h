@@ -14,7 +14,13 @@ public:
     FilterBuilder(World& world);
 
     template <typename T>
-    FilterBuilder& With();
+    FilterBuilder& With()
+    {
+        auto storage = _world.GetRawStorage<T>();
+        _componentStorages.push_back(storage);
+
+        return *this;
+    }
 
     Filter Build() const;
 };
