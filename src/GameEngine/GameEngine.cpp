@@ -23,6 +23,7 @@ GameEngine::GameEngine(const GameEngineConfiguration& config)
 
     // ToDo: Создание инпут и ассет менеджеров
     ImGui::SFML::Init(_window);
+    _assetManager.LoadFromFile(GameEngineConfiguration::AssetsFile);
 }
 
 void GameEngine::Initialize()

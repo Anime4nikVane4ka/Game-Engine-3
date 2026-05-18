@@ -48,6 +48,7 @@ set(SOURCES main.cpp
         GameEngine/Scene.h
         GameEngine/Assets/AssetManager.cpp
         GameEngine/Assets/AssetManager.h
+        GameEngine/Assets/AssetNames.h
         GameEngine/Assets/Animation.cpp
         GameEngine/Assets/Animation.h
 )
