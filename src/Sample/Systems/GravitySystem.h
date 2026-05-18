@@ -1,26 +1,26 @@
-#ifndef MOVEMENTSYSTEM_H
-#define MOVEMENTSYSTEM_H
+#ifndef GRAVITYSYSTEM_H
+#define GRAVITYSYSTEM_H
 
 #include "../../Ecs/Filter/Filter.h"
 #include "../../Ecs/Filter/FilterBuilder.h"
 #include "../../Ecs/Systems/ISystem.h"
+#include "../Components/GravityComponent.h"
 #include "../Components/MovementComponent.h"
-#include "../Components/PositionComponent.h"
 
-class MovementSystem final : public ISystem
+class GravitySystem final : public ISystem
 {
-    ComponentStorage<PositionComponent>& _positionComponents;
+    ComponentStorage<GravityComponent>& _gravityComponents;
     ComponentStorage<MovementComponent>& _movementComponents;
 
-    Filter _moveables;
+    Filter _entities;
 
 public:
-    MovementSystem(World& world)
+    GravitySystem(World& world)
         : ISystem(world),
-          _positionComponents(world.GetStorage<PositionComponent>()),
+          _gravityComponents(world.GetStorage<GravityComponent>()),
           _movementComponents(world.GetStorage<MovementComponent>()),
-          _moveables(FilterBuilder(world)
-              .With<PositionComponent>()
+          _entities(FilterBuilder(world)
+              .With<GravityComponent>()
               .With<MovementComponent>()
               .Build())
     {
@@ -30,4 +30,4 @@ public:
     void OnUpdate() override;
 };
 
-#endif //MOVEMENTSYSTEM_H
+#endif //GRAVITYSYSTEM_H

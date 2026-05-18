@@ -1,0 +1,8 @@
+#ifndef DEFAULTCAMERACOMPONENT_H
+#define DEFAULTCAMERACOMPONENT_H
+
+struct DefaultCameraComponent
+{
+};
+
+#endif //DEFAULTCAMERACOMPONENT_H

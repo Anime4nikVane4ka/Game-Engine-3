@@ -4,8 +4,25 @@ set(SOURCES main.cpp
         Sample/Systems/MovementSystem.h
         Sample/Systems/InitSystem.cpp
         Sample/Systems/InitSystem.h
+        Sample/Systems/AnimationStateSystem.cpp
+        Sample/Systems/AnimationStateSystem.h
+        Sample/Systems/AnimationSystem.cpp
+        Sample/Systems/AnimationSystem.h
+        Sample/Systems/GravitySystem.cpp
+        Sample/Systems/GravitySystem.h
         Sample/Components/PositionComponent.h
         Sample/Components/MovementComponent.h
+        Sample/Components/AnimationStateComponent.h
+        Sample/Components/AnimatorComponent.h
+        Sample/Components/BrickTileComponent.h
+        Sample/Components/DecorComponent.h
+        Sample/Components/DefaultCameraComponent.h
+        Sample/Components/FinishComponent.h
+        Sample/Components/FollowXCameraComponent.h
+        Sample/Components/GravityComponent.h
+        Sample/Components/QuestionTileComponent.h
+        Sample/Components/SpriteComponent.h
+        Sample/Components/TileComponent.h
         Sample/Systems/InputSystem.cpp
         Sample/Systems/InputSystem.h
         Sample/Components/MoveInputEvent.h

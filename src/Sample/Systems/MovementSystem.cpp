@@ -1,32 +1,40 @@
 #include "MovementSystem.h"
 
-void MovementSystem::Print(int ent)
+namespace
 {
-    auto& position = _positionComponents.Get(ent);
+    float Clamp(const float value, const float min, const float max)
+    {
+        if (value < min)
+            return min;
 
-    std::cout << ent << " Pos: " << position.X << ", " << position.Y << std::endl;
+        if (value > max)
+            return max;
+
+        return value;
+    }
 }
 
 void MovementSystem::OnInit()
 {
-
 }
 
 void MovementSystem::OnUpdate()
 {
-    for (const auto event : _moveInputEvents)
+    for (const int entity : _moveables)
     {
-        for (const auto ent : _moveables)
-        {
-            auto& position = _positionComponents.Get(ent);
-            auto& movement = _movementComponents.Get(ent);
+        auto& position = _positionComponents.Get(entity);
+        const auto& movement = _movementComponents.Get(entity);
 
-            position.X += movement.Speed * movement.Direction.x;
-            position.Y += movement.Speed * movement.Direction.y;
+        const float velocityX = Clamp(
+            movement.Speed * movement.Direction.x,
+            -movement.MaxVelocity,
+            movement.MaxVelocity);
+        const float velocityY = Clamp(
+            movement.Speed * movement.Direction.y,
+            -movement.MaxVelocity,
+            movement.MaxVelocity);
 
-            Print(ent);
-        }
-
-        world.RemoveEntity(event);
+        position.Position.x += velocityX;
+        position.Position.y += velocityY;
     }
 }

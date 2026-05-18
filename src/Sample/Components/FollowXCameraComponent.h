@@ -1,0 +1,8 @@
+#ifndef FOLLOWXCAMERACOMPONENT_H
+#define FOLLOWXCAMERACOMPONENT_H
+
+struct FollowXCameraComponent
+{
+};
+
+#endif //FOLLOWXCAMERACOMPONENT_H

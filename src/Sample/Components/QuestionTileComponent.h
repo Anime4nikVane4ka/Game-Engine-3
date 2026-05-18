@@ -1,0 +1,8 @@
+#ifndef QUESTIONTILECOMPONENT_H
+#define QUESTIONTILECOMPONENT_H
+
+struct QuestionTileComponent
+{
+};
+
+#endif //QUESTIONTILECOMPONENT_H
