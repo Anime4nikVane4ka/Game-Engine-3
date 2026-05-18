@@ -1,51 +1,47 @@
 #include "ShootSystem.h"
 
-#include "../../Config/Config.h"
-
-#include <SFML/System/Time.hpp>
-
 void ShootSystem::OnInit()
 {
-    Config config("config.txt");
-    _bulletSpeed = config.getFloat("bullet_speed");
-
     _clock.restart();
+}
+
+bool ShootSystem::IsShootActive() const
+{
+    return _shootAction != nullptr && _shootAction->Type() == Start;
+}
+
+void ShootSystem::CreateBullet(const int shooterEntity, const ShooterComponent& shooter)
+{
+    const auto& shooterPosition = _positions.Get(shooterEntity);
+    const int bulletEntity = world.CreateEntity();
+
+    _positions.Add(bulletEntity, PositionComponent(
+        shooterPosition.Position.x,
+        shooterPosition.Position.y));
+    _movements.Add(bulletEntity, MovementComponent(_bulletSpeed, shooter.DirectionX, 0.0f));
+    _circleColliders.Add(bulletEntity, CircleColliderComponent(_bulletRadius));
+    _collisions.Add(bulletEntity, CollisionComponent());
+    _bullets.Add(bulletEntity, BulletComponent(shooterEntity));
 }
 
 void ShootSystem::OnUpdate()
 {
     const float deltaTimeMs = static_cast<float>(_clock.restart().asMilliseconds());
-    for (const int shooterEntity : _shooterComponents.Entities())
-        _shooterComponents.Get(shooterEntity).Update(deltaTimeMs);
+    const bool shootActive = IsShootActive();
 
-    for (const auto eventEntity : _shootEvents)
+    for (const int shooterEntity : _shooterEntities)
     {
-        auto& shootEvent = _shootInputEvents.Get(eventEntity);
-        const int shooterEntity = shootEvent.Entity;
+        auto& shooter = _shooters.Get(shooterEntity);
+        const auto& movement = _movements.Get(shooterEntity);
 
-        if (shootEvent.Shoot
-            && _shooterComponents.Has(shooterEntity)
-            && _positions.Has(shooterEntity))
-        {
-            auto& shooter = _shooterComponents.Get(shooterEntity); // ��������� ���������� ��������
-            if (shooter.CanShoot)
-            {
-                const auto& shooterPosition = _positions.Get(shooterEntity);
-                const int bulletEntity = world.CreateEntity();
+        if (movement.Direction.x != 0.0f)
+            shooter.DirectionX = movement.Direction.x;
 
-                _positions.Add(bulletEntity, PositionComponent(
-                    shooterPosition.Position.x,
-                    shooterPosition.Position.y));
-                _movements.Add(bulletEntity, MovementComponent(_bulletSpeed, 0.0f, -1.0f));
-                _boxColliders.Add(bulletEntity, BoxColliderComponent(6.0f, 16.0f));
-                _rectangleShapes.Add(bulletEntity, RectangleShapeComponent(6.0f, 16.0f, sf::Color::Yellow));
-                _collisions.Add(bulletEntity, CollisionComponent());
-                _bullets.Add(bulletEntity, BulletComponent(shooterEntity));
+        shooter.Update(deltaTimeMs);
+        if (!shootActive || !shooter.CanShoot)
+            continue;
 
-                shooter.Shot();
-            }
-        }
-
-        world.RemoveEntity(eventEntity);
+        CreateBullet(shooterEntity, shooter);
+        shooter.Shot();
     }
 }

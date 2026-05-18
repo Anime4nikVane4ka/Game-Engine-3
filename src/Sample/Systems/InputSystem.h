@@ -1,63 +1,49 @@
 #ifndef INPUTSYSTEM_H
 #define INPUTSYSTEM_H
 
-#include <SFML/Graphics.hpp>
+#include <memory>
+#include <utility>
 
 #include "../../Ecs/Filter/Filter.h"
 #include "../../Ecs/Filter/FilterBuilder.h"
 #include "../../Ecs/Systems/ISystem.h"
-
+#include "../../GameEngine/Input/InputAction.h"
 #include "../Components/MovementComponent.h"
-#include "../Components/PauseStateComponent.h"
-#include "../Components/PauseToggleEvent.h"
 #include "../Components/PlayerComponent.h"
-#include "../Components/GameStateComponent.h"
-#include "../Components/GuiToggleEvent.h"
-#include "../Components/RestartInputEvent.h"
-#include "../Components/ShootInputEvent.h"
 
-class InputSystem : public ISystem {
-
-    ComponentStorage<ShootInputEvent>& _shootInputEvents;
-    ComponentStorage<RestartInputEvent>& _restartInputEvents;
-    ComponentStorage<GuiToggleEvent>& _guiToggleEvents;
-    ComponentStorage<PauseToggleEvent>& _pauseToggleEvents;
-    ComponentStorage<PauseStateComponent>& _pauseStates;
+class InputSystem final : public ISystem
+{
     ComponentStorage<MovementComponent>& _movementComponents;
-    ComponentStorage<GameStateComponent>& _gameStates;
-    Filter _players;
-    Filter _gameStateEntities;
-    bool _restartInputWasPressed = false;
-    bool _guiToggleInputWasPressed = false;
-    bool _pauseInputWasPressed = false;
 
+    Filter _players;
+
+    std::shared_ptr<InputAction> _moveLeft;
+    std::shared_ptr<InputAction> _moveRight;
+    std::shared_ptr<InputAction> _jump;
+    bool _jumpWasActive = false;
+
+    bool IsActive(const std::shared_ptr<InputAction>& action) const;
 
 public:
-    InputSystem(World &world)
+    InputSystem(
+        World& world,
+        std::shared_ptr<InputAction> moveLeft,
+        std::shared_ptr<InputAction> moveRight,
+        std::shared_ptr<InputAction> jump)
         : ISystem(world),
-        _shootInputEvents(world.GetStorage<ShootInputEvent>()),
-        _restartInputEvents(world.GetStorage<RestartInputEvent>()),
-        _guiToggleEvents(world.GetStorage<GuiToggleEvent>()),
-        _pauseToggleEvents(world.GetStorage<PauseToggleEvent>()),
-        _pauseStates(world.GetStorage<PauseStateComponent>()),
-        _movementComponents(world.GetStorage<MovementComponent>()),
-        _gameStates(world.GetStorage<GameStateComponent>()),
-        _players(FilterBuilder(world)
-            .With<PlayerComponent>()
-            .With<MovementComponent>()
-            .Build()),
-        _gameStateEntities(FilterBuilder(world)
-            .With<GameStateComponent>()
-            .Build())
+          _movementComponents(world.GetStorage<MovementComponent>()),
+          _players(FilterBuilder(world)
+              .With<PlayerComponent>()
+              .With<MovementComponent>()
+              .Build()),
+          _moveLeft(std::move(moveLeft)),
+          _moveRight(std::move(moveRight)),
+          _jump(std::move(jump))
     {
-
     }
 
     void OnInit() override;
-
     void OnUpdate() override;
 };
-
-
 
 #endif //INPUTSYSTEM_H

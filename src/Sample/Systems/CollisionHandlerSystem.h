@@ -6,45 +6,44 @@
 #include "../../Ecs/Filter/Filter.h"
 #include "../../Ecs/Filter/FilterBuilder.h"
 #include "../../Ecs/Systems/ISystem.h"
-
-#include "../Components/AsteroidComponent.h"
+#include "../Components/BrickTileComponent.h"
 #include "../Components/BulletComponent.h"
 #include "../Components/CollisionComponent.h"
-#include "../Components/CooldownBoostEvent.h"
-#include "../Components/GameOverEvent.h"
+#include "../Components/FinishComponent.h"
+#include "../Components/MovementComponent.h"
 #include "../Components/PlayerComponent.h"
-#include "../Components/ScoreIncreaseEvent.h"
-#include "../Components/UfoComponent.h"
+#include "../Components/PositionComponent.h"
+#include "../Components/TileComponent.h"
 
 class CollisionHandlerSystem final : public ISystem
 {
     ComponentStorage<CollisionComponent>& _collisions;
-    ComponentStorage<AsteroidComponent>& _asteroids;
+    ComponentStorage<BrickTileComponent>& _bricks;
     ComponentStorage<BulletComponent>& _bullets;
+    ComponentStorage<FinishComponent>& _finishes;
+    ComponentStorage<MovementComponent>& _movements;
     ComponentStorage<PlayerComponent>& _players;
-    ComponentStorage<ScoreIncreaseEvent>& _scoreIncreaseEvents;
-    ComponentStorage<GameOverEvent>& _gameOverEvents;
-    ComponentStorage<UfoComponent>& _ufos;
-    ComponentStorage<CooldownBoostEvent>& _cooldownBoostEvents;
+    ComponentStorage<PositionComponent>& _positions;
+    ComponentStorage<TileComponent>& _tiles;
 
     Filter _collidableEntities;
-    int _scorePerAsteroid = 1;
-    float _ufoCooldownBoostDurationMs = 0.0f;
 
-    bool HandleAsteroidCollision(int asteroidEntity, std::vector<int>& entitiesToRemove);
-    bool HandleUfoCollision(int ufoEntity, std::vector<int>& entitiesToRemove);
+    bool IsSolid(int entity) const;
+    bool IsBelow(int firstEntity, int secondEntity) const;
+    void HandlePlayerCollision(int playerEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
+    void HandleBulletCollision(int bulletEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
 
 public:
     CollisionHandlerSystem(World& world)
         : ISystem(world),
           _collisions(world.GetStorage<CollisionComponent>()),
-          _asteroids(world.GetStorage<AsteroidComponent>()),
+          _bricks(world.GetStorage<BrickTileComponent>()),
           _bullets(world.GetStorage<BulletComponent>()),
+          _finishes(world.GetStorage<FinishComponent>()),
+          _movements(world.GetStorage<MovementComponent>()),
           _players(world.GetStorage<PlayerComponent>()),
-          _scoreIncreaseEvents(world.GetStorage<ScoreIncreaseEvent>()),
-          _gameOverEvents(world.GetStorage<GameOverEvent>()),
-          _ufos(world.GetStorage<UfoComponent>()),
-          _cooldownBoostEvents(world.GetStorage<CooldownBoostEvent>()),
+          _positions(world.GetStorage<PositionComponent>()),
+          _tiles(world.GetStorage<TileComponent>()),
           _collidableEntities(FilterBuilder(world)
               .With<CollisionComponent>()
               .Build())

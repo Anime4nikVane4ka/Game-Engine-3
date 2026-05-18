@@ -8,8 +8,12 @@ set(SOURCES main.cpp
         Sample/Systems/AnimationStateSystem.h
         Sample/Systems/AnimationSystem.cpp
         Sample/Systems/AnimationSystem.h
+        Sample/Systems/CollisionHandlerSystem.cpp
+        Sample/Systems/CollisionHandlerSystem.h
         Sample/Systems/GravitySystem.cpp
         Sample/Systems/GravitySystem.h
+        Sample/Systems/ShootSystem.cpp
+        Sample/Systems/ShootSystem.h
         Sample/Components/PositionComponent.h
         Sample/Components/MovementComponent.h
         Sample/Components/AnimationStateComponent.h
