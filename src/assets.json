@@ -1,8 +1,36 @@
 {
   "Textures": [
     {
+      "name": "TexIdle",
+      "path": "Assets/Animations/MegaIdle.png"
+    },
+    {
       "name": "TexRun",
       "path": "Assets/Animations/MegaRun.png"
+    },
+    {
+      "name": "TexJump",
+      "path": "Assets/Animations/MegaJump.png"
+    },
+    {
+      "name": "TexShootIdle",
+      "path": "Assets/Animations/MegaShootIdle.png"
+    },
+    {
+      "name": "TexShootRun",
+      "path": "Assets/Animations/MegaShootRun.png"
+    },
+    {
+      "name": "TexShootJump",
+      "path": "Assets/Animations/MegaShootJump.png"
+    },
+    {
+      "name": "TexExplosion",
+      "path": "Assets/Animations/explosion.png"
+    },
+    {
+      "name": "Bullet",
+      "path": "Assets/Textures/Bullet.png"
     },
     {
       "name": "Tile",
@@ -47,10 +75,46 @@
   ],
   "Animations": [
     {
+      "name": "IdleAnim",
+      "textureName": "TexIdle",
+      "frameCount": 3,
+      "frameDuration": 24
+    },
+    {
       "name": "RunAnim",
       "textureName": "TexRun",
       "frameCount": 3,
-      "frameDuration": 10
+      "frameDuration": 15
+    },
+    {
+      "name": "JumpAnim",
+      "textureName": "TexJump",
+      "frameCount": 1,
+      "frameDuration": 15
+    },
+    {
+      "name": "ShootIdleAnim",
+      "textureName": "TexShootIdle",
+      "frameCount": 1,
+      "frameDuration": 20
+    },
+    {
+      "name": "ShootRunAnim",
+      "textureName": "TexShootRun",
+      "frameCount": 3,
+      "frameDuration": 20
+    },
+    {
+      "name": "ShootJumpAnim",
+      "textureName": "TexShootJump",
+      "frameCount": 1,
+      "frameDuration": 20
+    },
+    {
+      "name": "ExplosionAnim",
+      "textureName": "TexExplosion",
+      "frameCount": 12,
+      "frameDuration": 4
     }
   ],
   "Fonts": [

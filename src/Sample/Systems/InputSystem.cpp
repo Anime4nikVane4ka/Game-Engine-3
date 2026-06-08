@@ -20,16 +20,22 @@ void InputSystem::OnUpdate()
         direction.x += 1.0f;
 
     const bool jumpActive = IsActive(_jump);
-    if (jumpActive && !_jumpWasActive)
-        direction.y -= 1.0f;
-    _jumpWasActive = jumpActive;
+    const bool shootActive = IsActive(_shoot);
 
     for (const int player : _players)
     {
         auto& movement = _movementComponents.Get(player);
         movement.Direction.x = direction.x;
 
-        if (direction.y != 0.0f)
-            movement.Direction.y = direction.y;
+        if (jumpActive && !_jumpWasActive && movement.IsGrounded)
+        {
+            movement.Direction.y = -movement.JumpForce;
+            movement.IsGrounded = false;
+        }
+
+        if (_shooterComponents.Has(player))
+            _shooterComponents.Get(player).Shoot = shootActive;
     }
+
+    _jumpWasActive = jumpActive;
 }

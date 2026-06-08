@@ -28,8 +28,8 @@ void AssetManager::LoadFromFile(const std::string &path)
         AddAnimation(
             animation.at("name").get<std::string>(),
             animation.at("textureName").get<std::string>(),
-            animation.at("frameCount").get<size_t>(),
-            animation.at("frameDuration").get<size_t>());
+            animation.at("frameCount").get<short>(),
+            animation.at("frameDuration").get<int>());
     }
 
     for (const auto& font : assets.at("Fonts"))
@@ -51,8 +51,8 @@ void AssetManager::AddTexture(const std::string &name, const std::string &path)
     _textures.emplace(name, std::move(texture));
 }
 
-void AssetManager::AddAnimation(const std::string &name, const std::string &textureName, const size_t frameCount,
-    const size_t frameDuration)
+void AssetManager::AddAnimation(const std::string &name, const std::string &textureName, const short frameCount,
+    const int frameDuration)
 {
     // ToDo: Логика загрузки анимации из файла
     _animations.erase(name);
@@ -99,4 +99,3 @@ const sf::Font& AssetManager::GetFont(const std::string &name) const
 
     return fontIterator->second;
 }
-

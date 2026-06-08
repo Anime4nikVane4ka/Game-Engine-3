@@ -17,7 +17,8 @@ void AnimationSystem::OnUpdate()
             state.CurrentState = state.NewState;
             state.NeedChange = false;
             animator.CurrentFrame = 0;
-            animator.CurrentFrameTime = 0;
+            animator.CurrentFrameDelay = 0;
+            animator.AnimationFinished = false;
         }
 
         const auto animationIterator = animator.Animations.find(state.CurrentState);
@@ -25,19 +26,24 @@ void AnimationSystem::OnUpdate()
             continue;
 
         const auto& animation = animationIterator->second.get();
-        if (animation.FrameCount() == 0 || animation.FrameDuration() == 0)
+        if (animation.FrameCount() <= 0 || animation.FrameDuration() <= 0)
             continue;
 
         sprite.Texture = &animation.GetTexture();
         sprite.TextureRect = sf::IntRect(
-            {static_cast<int>(animator.CurrentFrame * animation.Size().x), 0},
+            {animator.CurrentFrame * animation.Size().x, 0},
             animation.Size());
 
-        animator.CurrentFrameTime++;
-        if (animator.CurrentFrameTime < animation.FrameDuration())
-            continue;
-
-        animator.CurrentFrameTime = 0;
-        animator.CurrentFrame = (animator.CurrentFrame + 1) % animation.FrameCount();
+        ++animator.CurrentFrameDelay;
+        if (animator.CurrentFrameDelay >= animation.FrameDuration())
+        {
+            animator.CurrentFrameDelay = 0;
+            animator.CurrentFrame++;
+            if (animator.CurrentFrame >= animation.FrameCount())
+            {
+                animator.CurrentFrame = 0;
+                animator.AnimationFinished = true;
+            }
+        }
     }
 }

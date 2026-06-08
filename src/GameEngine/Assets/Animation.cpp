@@ -1,10 +1,10 @@
 #include "Animation.h"
 
-Animation::Animation(const sf::Texture& texture, const size_t frameCount, const size_t frameDuration)
+Animation::Animation(const sf::Texture& texture, const short frameCount, const int frameDuration)
     : _texture(texture), _frameCount(frameCount), _frameDuration(frameDuration)
 {
     const auto textureSize = texture.getSize();
-    const int frameWidth = frameCount == 0 ? 0 : static_cast<int>(textureSize.x / frameCount);
+    const int frameWidth = frameCount <= 0 ? 0 : static_cast<int>(textureSize.x / frameCount);
     _size = {frameWidth, static_cast<int>(textureSize.y)};
 }
 

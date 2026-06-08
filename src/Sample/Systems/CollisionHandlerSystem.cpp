@@ -1,5 +1,11 @@
 #include "CollisionHandlerSystem.h"
 
+#include <algorithm>
+
+#include <SFML/Graphics/Rect.hpp>
+
+constexpr const char* ExplosionState = "Explosion";
+
 void CollisionHandlerSystem::OnInit()
 {
 }
@@ -15,6 +21,32 @@ bool CollisionHandlerSystem::IsBelow(const int firstEntity, const int secondEnti
         return false;
 
     return _positions.Get(firstEntity).Position.y > _positions.Get(secondEntity).Position.y;
+}
+
+void CollisionHandlerSystem::CreateExplosion(const int brickEntity)
+{
+    const auto& brickPosition = _positions.Get(brickEntity);
+    const int explosionEntity = world.CreateEntity();
+
+    auto& explosionPosition = _positions.Add(explosionEntity, PositionComponent(
+        brickPosition.Position.x,
+        brickPosition.Position.y));
+    explosionPosition.Scale = {2.0f, 2.0f};
+    auto& sprite = _sprites.Add(explosionEntity, SpriteComponent(_explosionAnimation.GetTexture()));
+    sprite.TextureRect = sf::IntRect({0, 0}, _explosionAnimation.Size());
+    _animationStates.Add(explosionEntity, AnimationStateComponent(ExplosionState));
+    auto& animator = _animators.Add(explosionEntity, AnimatorComponent());
+    animator.Animations.emplace(ExplosionState, _explosionAnimation);
+    _destroyOnAnimationEnds.Add(explosionEntity, DestroyOnAnimationEndComponent());
+}
+
+void CollisionHandlerSystem::DestroyBrick(const int brickEntity, std::vector<int>& entitiesToRemove)
+{
+    if (!_bricks.Has(brickEntity))
+        return;
+
+    CreateExplosion(brickEntity);
+    entitiesToRemove.push_back(brickEntity);
 }
 
 void CollisionHandlerSystem::HandlePlayerCollision(
@@ -33,17 +65,34 @@ void CollisionHandlerSystem::HandlePlayerCollision(
         return;
 
     auto& movement = _movements.Get(playerEntity);
-    if (movement.Direction.y > 0.0f && IsBelow(playerEntity, collidedEntity))
+    if (movement.Direction.y > 0.0f && !IsBelow(playerEntity, collidedEntity))
     {
         movement.Direction.y = 0.0f;
+        movement.IsGrounded = true;
+        if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity))
+        {
+            auto& playerPosition = _positions.Get(playerEntity);
+            const auto& collidedPosition = _positions.Get(collidedEntity);
+            const auto& playerBox = _boxColliders.Get(playerEntity);
+            const auto& collidedBox = _boxColliders.Get(collidedEntity);
+            playerPosition.Position.y = collidedPosition.Position.y - playerBox.Extents.y - collidedBox.Extents.y;
+        }
         return;
     }
 
-    if (movement.Direction.y < 0.0f && !IsBelow(playerEntity, collidedEntity))
+    if (movement.Direction.y < 0.0f && IsBelow(playerEntity, collidedEntity))
     {
         movement.Direction.y = 0.0f;
+        if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity))
+        {
+            auto& playerPosition = _positions.Get(playerEntity);
+            const auto& collidedPosition = _positions.Get(collidedEntity);
+            const auto& playerBox = _boxColliders.Get(playerEntity);
+            const auto& collidedBox = _boxColliders.Get(collidedEntity);
+            playerPosition.Position.y = collidedPosition.Position.y + playerBox.Extents.y + collidedBox.Extents.y;
+        }
         if (_bricks.Has(collidedEntity))
-            entitiesToRemove.push_back(collidedEntity);
+            DestroyBrick(collidedEntity, entitiesToRemove);
     }
 }
 
@@ -55,8 +104,9 @@ void CollisionHandlerSystem::HandleBulletCollision(
     if (!_bricks.Has(collidedEntity))
         return;
 
-    entitiesToRemove.push_back(bulletEntity);
-    entitiesToRemove.push_back(collidedEntity);
+    if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), bulletEntity) == entitiesToRemove.end())
+        entitiesToRemove.push_back(bulletEntity);
+    DestroyBrick(collidedEntity, entitiesToRemove);
 }
 
 void CollisionHandlerSystem::OnUpdate()
@@ -65,6 +115,9 @@ void CollisionHandlerSystem::OnUpdate()
 
     for (const int entity : _collidableEntities)
     {
+        if (_players.Has(entity) && _movements.Has(entity))
+            _movements.Get(entity).IsGrounded = false;
+
         const auto& collision = _collisions.Get(entity);
         for (const int collidedEntity : collision.CollidedEntities)
         {

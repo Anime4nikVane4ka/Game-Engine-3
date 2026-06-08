@@ -2,6 +2,9 @@
 
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include <SFML/System/Time.hpp>
+
+#include "../Sample/Scenes/GameScene.h"
 
 void GameEngine::Render()
 {
@@ -18,17 +21,21 @@ GameEngine::GameEngine(const GameEngineConfiguration& config)
       _currentScene(0)
 {
     // ToDo: Создание и настройка окна
+    _window.setFramerateLimit(60);
 
     // ToDo: Инициализация ImGui
 
     // ToDo: Создание инпут и ассет менеджеров
-    ImGui::SFML::Init(_window);
+    (void)ImGui::SFML::Init(_window);
     _assetManager.LoadFromFile(GameEngineConfiguration::AssetsFile);
 }
 
 void GameEngine::Initialize()
 {
     // ToDo: Логика инициализации и запуска движка
+    if (_scenes.empty())
+        LoadScene<GameScene>(*this);
+
     _isRunning = true;
 }
 
