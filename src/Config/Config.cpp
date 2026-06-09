@@ -1,7 +1,35 @@
 #include "Config.h"
 
-#include <algorithm>
-#include <charconv>
+#include <fstream>
+#include <stdexcept>
+
+#include <nlohmann/json.hpp>
+
+std::vector<std::string> ReadStringArray(const nlohmann::json& json)
+{
+    std::vector<std::string> result;
+
+    for (const auto& value : json)
+        result.push_back(value.get<std::string>());
+
+    return result;
+}
+
+std::ifstream OpenFile(const std::string& path)
+{
+    std::ifstream file(path);
+    if (file.is_open())
+        return file;
+
+    file.clear();
+    file.open("../" + path);
+    if (file.is_open())
+        return file;
+
+    file.clear();
+    file.open("../../" + path);
+    return file;
+}
 
 Config::Config(const std::string& path)
 {
@@ -10,102 +38,50 @@ Config::Config(const std::string& path)
 
 void Config::LoadFromFile(const std::string& path)
 {
-    _data.clear();
-
-    std::ifstream file(path);
+    std::ifstream file = OpenFile(path);
     if (!file.is_open())
+        throw std::runtime_error("Could not open config file: " + path);
+
+    nlohmann::json json;
+    file >> json;
+
+    const auto& player = json.at("Player");
+    const auto& bbox = player.at("Bbox");
+    Player.BboxWidth = bbox.at(0).get<float>();
+    Player.BboxHeight = bbox.at(1).get<float>();
+    Player.MoveSpeed = player.at("MoveSpeed").get<float>();
+    Player.JumpForce = player.at("JumpForce").get<float>();
+    Player.MaxVelocity = player.at("MaxVelocity").get<float>();
+    Player.Gravity = player.at("Gravity").get<float>();
+    Player.BasePose = player.at("BasePose").get<std::string>();
+    Player.Animations = ReadStringArray(player.at("Animations"));
+
+    const auto& bullet = json.at("Bullet");
+    Bullet.BaseTexture = bullet.at("BaseTexture").get<std::string>();
+    Bullet.Speed = bullet.at("Speed").get<float>();
+    Bullet.Radius = bullet.at("Radius").get<float>();
+
+    Decorations.clear();
+    for (const auto& decoration : json.at("Decorations"))
     {
-        file.clear();
-        file.open("../" + path);
-    }
-    if (!file.is_open())
-    {
-        file.clear();
-        file.open("../../" + path);
-    }
-    if (!file.is_open())
-    {
-        std::cout << "Could not open config file: " << path << "\n";
-        return;
-    }
+        DecorationConfig decorationConfig;
+        decorationConfig.Name = decoration.at("Name").get<std::string>();
+        decorationConfig.BaseTexture = decoration.at("BaseTexture").get<std::string>();
 
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.empty())
-            continue;
-        std::size_t eqPos = line.find('=');
-        if (eqPos == std::string::npos)
-            continue;
+        if (decoration.contains("Animations"))
+            decorationConfig.Animations = ReadStringArray(decoration.at("Animations"));
 
-        std::string key = line.substr(0, eqPos);
-        std::string value = line.substr(eqPos + 1);
-        //std::cout << key << "..." << value << std::endl;
-
-        _data[key] = value;
-    }
-}
-
-std::string Config::getString(const std::string& key) const
-{
-    return _data.at(key);    
-}
-
-int Config::getInt(const std::string& key) const
-{
-    return std::stoi(_data.at(key));
-}
-
-float Config::getFloat(const std::string& key) const
-{
-    std::string value = _data.at(key);
-    std::replace(value.begin(), value.end(), ',', '.');
-
-    float result = 0.0f;
-    std::from_chars(value.data(), value.data() + value.size(), result);
-    return result;
-}
-
-bool Config::getBool(const std::string& key) const
-{
-    std::string flag = _data.at(key);
-
-    if (flag == "true" || flag == "1")
-        return true;
-
-    if (flag == "false" || flag == "0")
-        return false;
-
-    return false;
-}
-
-#include <sstream>
-#include <string>
-
-float Config::getFloatArrayValue(const std::string& key, int index) const
-{
-    std::string line = _data.at(key);
-    std::size_t start = 0;
-    int currentIndex = 0;
-    while (start <= line.size())
-    {
-        std::size_t commaPos = line.find(',', start);
-        std::string part;
-        if (commaPos == std::string::npos)
-            part = line.substr(start);
-        else
-            part = line.substr(start, commaPos - start);
-        if (currentIndex == index)
-        {
-            std::replace(part.begin(), part.end(), ',', '.');
-
-            float result = 0.0f;
-            std::from_chars(part.data(), part.data() + part.size(), result);
-            return result;
-        }
-        start = commaPos + 1;
-        ++currentIndex;
+        Decorations.push_back(decorationConfig);
     }
 
-    return 0.0f;
+    const auto& tile = json.at("Tile");
+    Tile.BaseTexture = tile.at("BaseTexture").get<std::string>();
+
+    const auto& brickTile = json.at("BrickTile");
+    BrickTile.BaseTexture = brickTile.at("BaseTexture").get<std::string>();
+    BrickTile.DestroyAnimation = brickTile.at("DestroyAnimation").get<std::string>();
+
+    const auto& questionTile = json.at("QuestionTile");
+    QuestionTile.BaseTexture = questionTile.at("BaseTexture").get<std::string>();
+    QuestionTile.InactiveTexture = questionTile.at("InactiveTexture").get<std::string>();
 }

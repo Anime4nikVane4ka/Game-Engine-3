@@ -66,11 +66,19 @@ set(SOURCES main.cpp
         GameEngine/Assets/AssetNames.h
         GameEngine/Assets/Animation.cpp
         GameEngine/Assets/Animation.h
+        Config/Config.cpp
+        Config/Config.h
+        Config/LevelConfig.cpp
+        Config/LevelConfig.h
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Assets
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY assets.json
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY config.json
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY level.json
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory(Ecs)

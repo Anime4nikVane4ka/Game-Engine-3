@@ -71,6 +71,18 @@
     {
       "name": "Finish",
       "path": "Assets/Textures/finish.png"
+    },
+    {
+      "name": "Cloud",
+      "path": "Assets/Textures/cloud.png"
+    },
+    {
+      "name": "HillBig",
+      "path": "Assets/Textures/hillBig.png"
+    },
+    {
+      "name": "HillSmall",
+      "path": "Assets/Textures/hillSmall.png"
     }
   ],
   "Animations": [

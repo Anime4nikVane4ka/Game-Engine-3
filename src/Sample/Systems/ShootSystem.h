@@ -28,7 +28,6 @@ class ShootSystem final : public ISystem
     Filter _shooterEntities;
     sf::Clock _clock;
     const sf::Texture& _bulletTexture;
-    float _bulletSpeed = 0.0f;
     float _bulletRadius = 0.0f;
 
     void CreateBullet(int shooterEntity, const ShooterComponent& shooter);
@@ -37,7 +36,6 @@ public:
     ShootSystem(
         World& world,
         const sf::Texture& bulletTexture,
-        const float bulletSpeed,
         const float bulletRadius)
         : ISystem(world),
           _bullets(world.GetStorage<BulletComponent>()),
@@ -53,7 +51,6 @@ public:
               .With<MovementComponent>()
               .Build()),
           _bulletTexture(bulletTexture),
-          _bulletSpeed(bulletSpeed),
           _bulletRadius(bulletRadius)
     {
     }

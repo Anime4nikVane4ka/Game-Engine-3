@@ -5,12 +5,17 @@ struct ShooterComponent
 {
     float CooldownMs = 0.0f;
     float TimeToShootMs = 0.0f;
+    float BulletSpeed = 0.0f;
     bool CanShoot = true;
     bool Shoot = false;
     float DirectionX = 1.0f;
 
     ShooterComponent() = default;
     ShooterComponent(const float cooldownMs) : CooldownMs(cooldownMs) {}
+    ShooterComponent(const float cooldownMs, const float bulletSpeed)
+        : CooldownMs(cooldownMs), BulletSpeed(bulletSpeed)
+    {
+    }
     void Shot()
     {
         CanShoot = false;

@@ -1,0 +1,52 @@
+{
+  "Player": {
+    "Bbox": [96, 96],
+    "MoveSpeed": 5,
+    "JumpForce": 4,
+    "MaxVelocity": 6,
+    "Gravity": 0.1,
+    "BasePose": "IdleAnim",
+    "Animations": [
+      "IdleAnim",
+      "RunAnim",
+      "JumpAnim",
+      "ShootIdleAnim",
+      "ShootRunAnim",
+      "ShootJumpAnim"
+    ]
+  },
+  "Bullet": {
+    "BaseTexture": "Bullet",
+    "Speed": 8,
+    "Radius": 16
+  },
+  "Decorations": [
+    {
+      "Name": "Finish",
+      "BaseTexture": "Finish"
+    },
+    {
+      "Name": "Cloud",
+      "BaseTexture": "Cloud"
+    },
+    {
+      "Name": "HillBig",
+      "BaseTexture": "HillBig"
+    },
+    {
+      "Name": "HillSmall",
+      "BaseTexture": "HillSmall"
+    }
+  ],
+  "Tile": {
+    "BaseTexture": "Tile"
+  },
+  "BrickTile": {
+    "BaseTexture": "Brick Tile",
+    "DestroyAnimation": "ExplosionAnim"
+  },
+  "QuestionTile": {
+    "BaseTexture": "Question Tile",
+    "InactiveTexture": "Question Inactive Tile"
+  }
+}
