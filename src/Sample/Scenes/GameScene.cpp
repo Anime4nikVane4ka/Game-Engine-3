@@ -13,8 +13,8 @@
 #include "../Components/BrickTileComponent.h"
 #include "../Components/CameraComponent.h"
 #include "../Components/CollisionComponent.h"
-#include "../Components/FinishComponent.h"
 #include "../Components/DecorComponent.h"
+#include "../Components/FinishComponent.h"
 #include "../Components/FollowXCameraComponent.h"
 #include "../Components/GravityComponent.h"
 #include "../Components/MovementComponent.h"
@@ -47,10 +47,9 @@ const char* ShootIdleState = "ShootIdle";
 const char* ShootRunState = "ShootRun";
 const char* ShootJumpState = "ShootJump";
 
-const DecorationConfig* FindDecoration(const std::vector<DecorationConfig>& decorations, const std::string& name)
-{
-    for (const auto& decoration : decorations)
-    {
+const DecorationConfig* FindDecoration(const std::vector<DecorationConfig>& decorations,
+    const std::string& name) {
+    for (const auto& decoration : decorations) {
         if (decoration.Name == name)
             return &decoration;
     }
@@ -58,13 +57,9 @@ const DecorationConfig* FindDecoration(const std::vector<DecorationConfig>& deco
     return nullptr;
 }
 
-GameScene::GameScene(GameEngine& gameEngine)
-    : Scene(gameEngine)
-{
-}
+GameScene::GameScene(GameEngine& gameEngine) : Scene(gameEngine) {}
 
-void GameScene::Init()
-{
+void GameScene::Init() {
     RegisterAction(sf::Keyboard::Key::A, "MoveLeft");
     RegisterAction(sf::Keyboard::Key::D, "MoveRight");
     RegisterAction(sf::Keyboard::Key::W, "Jump");
@@ -73,10 +68,10 @@ void GameScene::Init()
     Config config(GameEngineConfiguration::ConfigFile);
     LevelConfig levelConfig(GameEngineConfiguration::LevelFile);
 
-    const auto& explosionAnimation = gameEngine.Assets().GetAnimation(config.BrickTile.DestroyAnimation);
+    const auto& explosionAnimation =
+        gameEngine.Assets().GetAnimation(config.BrickTile.DestroyAnimation);
 
-    systemsManager.AddSystem(std::make_shared<InputSystem>(
-        world,
+    systemsManager.AddSystem(std::make_shared<InputSystem>(world,
         actionMap["MoveLeft"],
         actionMap["MoveRight"],
         actionMap["Jump"],
@@ -86,8 +81,7 @@ void GameScene::Init()
     systemsManager.AddSystem(std::make_shared<MovementSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionDetectionSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionHandlerSystem>(world, explosionAnimation));
-    systemsManager.AddSystem(std::make_shared<ShootSystem>(
-        world,
+    systemsManager.AddSystem(std::make_shared<ShootSystem>(world,
         gameEngine.Assets().GetTexture(config.Bullet.BaseTexture),
         config.Bullet.Radius));
     systemsManager.AddSystem(std::make_shared<FollowCameraSystem>(world, gameEngine.Window()));
@@ -112,22 +106,20 @@ void GameScene::Init()
     auto& sprites = world.GetStorage<SpriteComponent>();
     auto& tiles = world.GetStorage<TileComponent>();
 
-    for (const auto& object : levelConfig.Objects)
-    {
-        if (object.Name == PlayerObject)
-        {
+    for (const auto& object : levelConfig.Objects) {
+        if (object.Name == PlayerObject) {
             const auto& baseAnimation = gameEngine.Assets().GetAnimation(config.Player.BasePose);
 
             const int player = world.CreateEntity();
-            auto& playerPosition = positions.Add(player, PositionComponent(
-                object.X + config.Player.BboxWidth / 2.0f,
-                object.Y - config.Player.BboxHeight / 2.0f));
+            auto& playerPosition = positions.Add(player,
+                PositionComponent(object.X + config.Player.BboxWidth / 2.0f,
+                    object.Y - config.Player.BboxHeight / 2.0f));
             playerPosition.Scale = {4.0f, 4.0f};
-            movements.Add(player, MovementComponent(
-                config.Player.MoveSpeed,
-                {0.0f, 0.0f},
-                config.Player.MaxVelocity,
-                config.Player.JumpForce));
+            movements.Add(player,
+                MovementComponent(config.Player.MoveSpeed,
+                    {0.0f, 0.0f},
+                    config.Player.MaxVelocity,
+                    config.Player.JumpForce));
             gravity.Add(player, GravityComponent(config.Player.Gravity));
             players.Add(player, PlayerComponent());
             shooters.Add(player, ShooterComponent(500.0f, config.Bullet.Speed));
@@ -135,66 +127,70 @@ void GameScene::Init()
             animationStates.Add(player, AnimationStateComponent(IdleState));
 
             auto& playerAnimator = animators.Add(player, AnimatorComponent());
-            playerAnimator.Animations.emplace(IdleState, gameEngine.Assets().GetAnimation(config.Player.Animations.at(0)));
-            playerAnimator.Animations.emplace(RunState, gameEngine.Assets().GetAnimation(config.Player.Animations.at(1)));
-            playerAnimator.Animations.emplace(JumpState, gameEngine.Assets().GetAnimation(config.Player.Animations.at(2)));
-            playerAnimator.Animations.emplace(ShootIdleState, gameEngine.Assets().GetAnimation(config.Player.Animations.at(3)));
-            playerAnimator.Animations.emplace(ShootRunState, gameEngine.Assets().GetAnimation(config.Player.Animations.at(4)));
-            playerAnimator.Animations.emplace(ShootJumpState, gameEngine.Assets().GetAnimation(config.Player.Animations.at(5)));
+            playerAnimator.Animations.emplace(IdleState,
+                gameEngine.Assets().GetAnimation(config.Player.Animations.at(0)));
+            playerAnimator.Animations.emplace(RunState,
+                gameEngine.Assets().GetAnimation(config.Player.Animations.at(1)));
+            playerAnimator.Animations.emplace(JumpState,
+                gameEngine.Assets().GetAnimation(config.Player.Animations.at(2)));
+            playerAnimator.Animations.emplace(ShootIdleState,
+                gameEngine.Assets().GetAnimation(config.Player.Animations.at(3)));
+            playerAnimator.Animations.emplace(ShootRunState,
+                gameEngine.Assets().GetAnimation(config.Player.Animations.at(4)));
+            playerAnimator.Animations.emplace(ShootJumpState,
+                gameEngine.Assets().GetAnimation(config.Player.Animations.at(5)));
 
-            boxColliders.Add(player, BoxColliderComponent(config.Player.BboxWidth, config.Player.BboxHeight));
+            boxColliders.Add(player,
+                BoxColliderComponent(config.Player.BboxWidth, config.Player.BboxHeight));
             collisions.Add(player, CollisionComponent());
-        }
-        else if (object.Name == TileObject)
-        {
+        } else if (object.Name == TileObject) {
             const int tile = world.CreateEntity();
-            positions.Add(tile, PositionComponent(
-                object.X + LevelConfig::CellSize / 2.0f,
-                object.Y - LevelConfig::CellSize / 2.0f));
-            sprites.Add(tile, SpriteComponent(gameEngine.Assets().GetTexture(config.Tile.BaseTexture)));
-            boxColliders.Add(tile, BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize));
+            positions.Add(tile,
+                PositionComponent(object.X + LevelConfig::CellSize / 2.0f,
+                    object.Y - LevelConfig::CellSize / 2.0f));
+            sprites.Add(tile,
+                SpriteComponent(gameEngine.Assets().GetTexture(config.Tile.BaseTexture)));
+            boxColliders.Add(tile,
+                BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize));
             collisions.Add(tile, CollisionComponent());
             tiles.Add(tile, TileComponent());
-        }
-        else if (object.Name == BrickObject)
-        {
+        } else if (object.Name == BrickObject) {
             const int brick = world.CreateEntity();
-            positions.Add(brick, PositionComponent(
-                object.X + LevelConfig::CellSize / 2.0f,
-                object.Y - LevelConfig::CellSize / 2.0f));
-            sprites.Add(brick, SpriteComponent(gameEngine.Assets().GetTexture(config.BrickTile.BaseTexture)));
-            boxColliders.Add(brick, BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize));
+            positions.Add(brick,
+                PositionComponent(object.X + LevelConfig::CellSize / 2.0f,
+                    object.Y - LevelConfig::CellSize / 2.0f));
+            sprites.Add(brick,
+                SpriteComponent(gameEngine.Assets().GetTexture(config.BrickTile.BaseTexture)));
+            boxColliders.Add(brick,
+                BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize));
             collisions.Add(brick, CollisionComponent());
             bricks.Add(brick, BrickTileComponent());
-        }
-        else if (object.Name == FinishObject)
-        {
+        } else if (object.Name == FinishObject) {
             const int finish = world.CreateEntity();
-            positions.Add(finish, PositionComponent(
-                object.X + LevelConfig::CellSize / 2.0f,
-                object.Y - LevelConfig::CellSize));
+            positions.Add(finish,
+                PositionComponent(object.X + LevelConfig::CellSize / 2.0f,
+                    object.Y - LevelConfig::CellSize));
 
             const DecorationConfig* decoration = FindDecoration(config.Decorations, object.Name);
             if (decoration != nullptr)
-                sprites.Add(finish, SpriteComponent(gameEngine.Assets().GetTexture(decoration->BaseTexture)));
+                sprites.Add(finish,
+                    SpriteComponent(gameEngine.Assets().GetTexture(decoration->BaseTexture)));
 
-            boxColliders.Add(finish, BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize * 2.0f));
+            boxColliders.Add(finish,
+                BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize * 2.0f));
             collisions.Add(finish, CollisionComponent());
             decorations.Add(finish, DecorComponent());
             finishes.Add(finish, FinishComponent());
-        }
-        else
-        {
+        } else {
             const DecorationConfig* decoration = FindDecoration(config.Decorations, object.Name);
-            if (decoration != nullptr)
-            {
+            if (decoration != nullptr) {
                 const auto& texture = gameEngine.Assets().GetTexture(decoration->BaseTexture);
                 const auto textureSize = texture.getSize();
                 const int decor = world.CreateEntity();
 
-                positions.Add(decor, PositionComponent(
-                    object.X + textureSize.x / 2.0f,
-                    object.Y - textureSize.y / 2.0f));
+                positions.Add(decor,
+                    PositionComponent(object.X + textureSize.x / 2.0f,
+                        object.Y - textureSize.y / 2.0f));
                 sprites.Add(decor, SpriteComponent(texture));
                 decorations.Add(decor, DecorComponent());
             }
@@ -206,8 +202,7 @@ void GameScene::Init()
     followCameras.Add(camera, FollowXCameraComponent());
 }
 
-void GameScene::Update(float delta)
-{
+void GameScene::Update(float delta) {
     (void)delta;
     gameEngine.Window().clear(sf::Color(100, 100, 255));
     systemsManager.Update();

@@ -6,31 +6,25 @@
 
 constexpr const char* ExplosionState = "Explosion";
 
-void CollisionHandlerSystem::OnInit()
-{
-}
+void CollisionHandlerSystem::OnInit() {}
 
-bool CollisionHandlerSystem::IsSolid(const int entity) const
-{
+bool CollisionHandlerSystem::IsSolid(const int entity) const {
     return _tiles.Has(entity) || _bricks.Has(entity);
 }
 
-bool CollisionHandlerSystem::IsBelow(const int firstEntity, const int secondEntity) const
-{
+bool CollisionHandlerSystem::IsBelow(const int firstEntity, const int secondEntity) const {
     if (!_positions.Has(firstEntity) || !_positions.Has(secondEntity))
         return false;
 
     return _positions.Get(firstEntity).Position.y > _positions.Get(secondEntity).Position.y;
 }
 
-void CollisionHandlerSystem::CreateExplosion(const int brickEntity)
-{
+void CollisionHandlerSystem::CreateExplosion(const int brickEntity) {
     const auto& brickPosition = _positions.Get(brickEntity);
     const int explosionEntity = world.CreateEntity();
 
-    auto& explosionPosition = _positions.Add(explosionEntity, PositionComponent(
-        brickPosition.Position.x,
-        brickPosition.Position.y));
+    auto& explosionPosition = _positions.Add(explosionEntity,
+        PositionComponent(brickPosition.Position.x, brickPosition.Position.y));
     explosionPosition.Scale = {2.0f, 2.0f};
     auto& sprite = _sprites.Add(explosionEntity, SpriteComponent(_explosionAnimation.GetTexture()));
     sprite.TextureRect = sf::IntRect({0, 0}, _explosionAnimation.Size());
@@ -40,8 +34,8 @@ void CollisionHandlerSystem::CreateExplosion(const int brickEntity)
     _destroyOnAnimationEnds.Add(explosionEntity, DestroyOnAnimationEndComponent());
 }
 
-void CollisionHandlerSystem::DestroyBrick(const int brickEntity, std::vector<int>& entitiesToRemove)
-{
+void CollisionHandlerSystem::DestroyBrick(const int brickEntity,
+    std::vector<int>& entitiesToRemove) {
     if (!_bricks.Has(brickEntity))
         return;
 
@@ -49,13 +43,10 @@ void CollisionHandlerSystem::DestroyBrick(const int brickEntity, std::vector<int
     entitiesToRemove.push_back(brickEntity);
 }
 
-void CollisionHandlerSystem::HandlePlayerCollision(
-    const int playerEntity,
+void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity,
     const int collidedEntity,
-    std::vector<int>& entitiesToRemove)
-{
-    if (_finishes.Has(collidedEntity))
-    {
+    std::vector<int>& entitiesToRemove) {
+    if (_finishes.Has(collidedEntity)) {
         if (_movements.Has(playerEntity))
             _movements.Get(playerEntity).Direction = {0.0f, 0.0f};
         return;
@@ -65,62 +56,56 @@ void CollisionHandlerSystem::HandlePlayerCollision(
         return;
 
     auto& movement = _movements.Get(playerEntity);
-    if (movement.Direction.y > 0.0f && !IsBelow(playerEntity, collidedEntity))
-    {
+    if (movement.Direction.y > 0.0f && !IsBelow(playerEntity, collidedEntity)) {
         movement.Direction.y = 0.0f;
         movement.IsGrounded = true;
-        if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity))
-        {
+        if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity)) {
             auto& playerPosition = _positions.Get(playerEntity);
             const auto& collidedPosition = _positions.Get(collidedEntity);
             const auto& playerBox = _boxColliders.Get(playerEntity);
             const auto& collidedBox = _boxColliders.Get(collidedEntity);
-            playerPosition.Position.y = collidedPosition.Position.y - playerBox.Extents.y - collidedBox.Extents.y;
+            playerPosition.Position.y =
+                collidedPosition.Position.y - playerBox.Extents.y - collidedBox.Extents.y;
         }
         return;
     }
 
-    if (movement.Direction.y < 0.0f && IsBelow(playerEntity, collidedEntity))
-    {
+    if (movement.Direction.y < 0.0f && IsBelow(playerEntity, collidedEntity)) {
         movement.Direction.y = 0.0f;
-        if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity))
-        {
+        if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity)) {
             auto& playerPosition = _positions.Get(playerEntity);
             const auto& collidedPosition = _positions.Get(collidedEntity);
             const auto& playerBox = _boxColliders.Get(playerEntity);
             const auto& collidedBox = _boxColliders.Get(collidedEntity);
-            playerPosition.Position.y = collidedPosition.Position.y + playerBox.Extents.y + collidedBox.Extents.y;
+            playerPosition.Position.y =
+                collidedPosition.Position.y + playerBox.Extents.y + collidedBox.Extents.y;
         }
         if (_bricks.Has(collidedEntity))
             DestroyBrick(collidedEntity, entitiesToRemove);
     }
 }
 
-void CollisionHandlerSystem::HandleBulletCollision(
-    const int bulletEntity,
+void CollisionHandlerSystem::HandleBulletCollision(const int bulletEntity,
     const int collidedEntity,
-    std::vector<int>& entitiesToRemove)
-{
+    std::vector<int>& entitiesToRemove) {
     if (!_bricks.Has(collidedEntity))
         return;
 
-    if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), bulletEntity) == entitiesToRemove.end())
+    if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), bulletEntity) ==
+        entitiesToRemove.end())
         entitiesToRemove.push_back(bulletEntity);
     DestroyBrick(collidedEntity, entitiesToRemove);
 }
 
-void CollisionHandlerSystem::OnUpdate()
-{
+void CollisionHandlerSystem::OnUpdate() {
     std::vector<int> entitiesToRemove;
 
-    for (const int entity : _collidableEntities)
-    {
+    for (const int entity : _collidableEntities) {
         if (_players.Has(entity) && _movements.Has(entity))
             _movements.Get(entity).IsGrounded = false;
 
         const auto& collision = _collisions.Get(entity);
-        for (const int collidedEntity : collision.CollidedEntities)
-        {
+        for (const int collidedEntity : collision.CollidedEntities) {
             if (_players.Has(entity))
                 HandlePlayerCollision(entity, collidedEntity, entitiesToRemove);
 
@@ -129,8 +114,7 @@ void CollisionHandlerSystem::OnUpdate()
         }
     }
 
-    for (const int entity : entitiesToRemove)
-    {
+    for (const int entity : entitiesToRemove) {
         if (world.IsEntityAlive(entity))
             world.RemoveEntity(entity);
     }

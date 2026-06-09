@@ -5,8 +5,7 @@
 
 #include <nlohmann/json.hpp>
 
-std::vector<std::string> ReadStringArray(const nlohmann::json& json)
-{
+std::vector<std::string> ReadStringArray(const nlohmann::json& json) {
     std::vector<std::string> result;
 
     for (const auto& value : json)
@@ -15,8 +14,7 @@ std::vector<std::string> ReadStringArray(const nlohmann::json& json)
     return result;
 }
 
-std::ifstream OpenFile(const std::string& path)
-{
+std::ifstream OpenFile(const std::string& path) {
     std::ifstream file(path);
     if (file.is_open())
         return file;
@@ -31,13 +29,11 @@ std::ifstream OpenFile(const std::string& path)
     return file;
 }
 
-Config::Config(const std::string& path)
-{
+Config::Config(const std::string& path) {
     LoadFromFile(path);
 }
 
-void Config::LoadFromFile(const std::string& path)
-{
+void Config::LoadFromFile(const std::string& path) {
     std::ifstream file = OpenFile(path);
     if (!file.is_open())
         throw std::runtime_error("Could not open config file: " + path);
@@ -62,8 +58,7 @@ void Config::LoadFromFile(const std::string& path)
     Bullet.Radius = bullet.at("Radius").get<float>();
 
     Decorations.clear();
-    for (const auto& decoration : json.at("Decorations"))
-    {
+    for (const auto& decoration : json.at("Decorations")) {
         DecorationConfig decorationConfig;
         decorationConfig.Name = decoration.at("Name").get<std::string>();
         decorationConfig.BaseTexture = decoration.at("BaseTexture").get<std::string>();

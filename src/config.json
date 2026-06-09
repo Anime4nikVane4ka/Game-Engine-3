@@ -1,6 +1,9 @@
 {
   "Player": {
-    "Bbox": [96, 96],
+    "Bbox": [
+      96,
+      96
+    ],
     "MoveSpeed": 5,
     "JumpForce": 4,
     "MaxVelocity": 6,

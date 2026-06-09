@@ -1,14 +1,7 @@
 #include "MenuScene.h"
 
-MenuScene::MenuScene(GameEngine& gameEngine)
-    : Scene(gameEngine)
-{
-}
+MenuScene::MenuScene(GameEngine& gameEngine) : Scene(gameEngine) {}
 
-void MenuScene::Init()
-{
-}
+void MenuScene::Init() {}
 
-void MenuScene::Update(float delta)
-{
-}
+void MenuScene::Update(float delta) {}

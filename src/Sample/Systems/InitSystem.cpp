@@ -1,10 +1,9 @@
 #include "InitSystem.h"
 
-#include "../Components/PositionComponent.h"
 #include "../Components/MovementComponent.h"
+#include "../Components/PositionComponent.h"
 
-void InitSystem::OnInit()
-{
+void InitSystem::OnInit() {
     const int player = world.CreateEntity();
     auto& positionsStorage = world.GetStorage<PositionComponent>();
     auto& movementsStorage = world.GetStorage<MovementComponent>();

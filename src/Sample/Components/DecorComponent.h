@@ -1,8 +1,6 @@
 #ifndef DECORCOMPONENT_H
 #define DECORCOMPONENT_H
 
-struct DecorComponent
-{
-};
+struct DecorComponent {};
 
-#endif //DECORCOMPONENT_H
+#endif // DECORCOMPONENT_H

@@ -11,8 +11,7 @@
 #include "../Components/PlayerComponent.h"
 #include "../Components/PositionComponent.h"
 
-class FollowCameraSystem final : public ISystem
-{
+class FollowCameraSystem final : public ISystem {
     sf::RenderWindow& _window;
     ComponentStorage<CameraComponent>& _cameras;
     ComponentStorage<PositionComponent>& _positions;
@@ -20,25 +19,17 @@ class FollowCameraSystem final : public ISystem
     Filter _followCameras;
     Filter _players;
 
-public:
+  public:
     FollowCameraSystem(World& world, sf::RenderWindow& window)
-        : ISystem(world),
-          _window(window),
-          _cameras(world.GetStorage<CameraComponent>()),
+        : ISystem(world), _window(window), _cameras(world.GetStorage<CameraComponent>()),
           _positions(world.GetStorage<PositionComponent>()),
-          _followCameras(FilterBuilder(world)
-              .With<CameraComponent>()
-              .With<FollowXCameraComponent>()
-              .Build()),
-          _players(FilterBuilder(world)
-              .With<PlayerComponent>()
-              .With<PositionComponent>()
-              .Build())
-    {
+          _followCameras(
+              FilterBuilder(world).With<CameraComponent>().With<FollowXCameraComponent>().Build()),
+          _players(FilterBuilder(world).With<PlayerComponent>().With<PositionComponent>().Build()) {
     }
 
     void OnInit() override;
     void OnUpdate() override;
 };
 
-#endif //FOLLOWCAMERASYSTEM_H
+#endif // FOLLOWCAMERASYSTEM_H

@@ -1,9 +1,8 @@
 #ifndef GAMEENGINECONF_H
 #define GAMEENGINECONF_H
 
-class GameEngineConfiguration
-{
-public:
+class GameEngineConfiguration {
+  public:
     static constexpr unsigned int Width = 1280;
     static constexpr unsigned int Height = 768;
     static constexpr const char* AssetsFile = "assets.json";
@@ -11,4 +10,4 @@ public:
     static constexpr const char* LevelFile = "level.json";
 };
 
-#endif //GAMEENGINECONF_H
+#endif // GAMEENGINECONF_H

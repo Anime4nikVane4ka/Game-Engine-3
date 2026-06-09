@@ -31,9 +31,8 @@ class GameEngine {
     void Initialize();
 
     template <typename T, typename... Args>
-    typename std::enable_if<std::is_base_of<Scene, T>::value, std::shared_ptr<T>>::type
-    CreateScene(Args&&... args)
-    {
+    typename std::enable_if<std::is_base_of<Scene, T>::value, std::shared_ptr<T>>::type CreateScene(
+        Args&&... args) {
         std::shared_ptr<T> scene = std::make_shared<T>(std::forward<Args>(args)...);
         scene->Init();
 
@@ -42,22 +41,17 @@ class GameEngine {
 
     template <typename T, typename... Args>
     typename std::enable_if<std::is_base_of<Scene, T>::value, void>::type
-    ChangeSceneWithFlag(const bool additive, Args&&... args)
-    {
+    ChangeSceneWithFlag(const bool additive, Args&&... args) {
         const auto typeHash = typeid(T).hash_code();
         _currentScene = typeHash;
 
-        if (!additive)
-        {
+        if (!additive) {
             _scenes.clear();
             auto scene = CreateScene<T>(std::forward<Args>(args)...);
             _scenes.insert({typeHash, scene});
-        }
-        else
-        {
+        } else {
             const auto foundStorageIterator = _scenes.find(typeHash);
-            if (foundStorageIterator == _scenes.end())
-            {
+            if (foundStorageIterator == _scenes.end()) {
                 auto scene = CreateScene<T>(std::forward<Args>(args)...);
                 _scenes.insert({typeHash, scene});
             }
@@ -66,32 +60,34 @@ class GameEngine {
 
     void Render();
 
-public:
+  public:
     GameEngine(const GameEngineConfiguration& config);
 
-    std::shared_ptr<Scene> CurrentScene() { return _scenes[_currentScene]; }
-    const AssetManager& Assets() const { return _assetManager; }
-    sf::RenderWindow& Window() { return _window; }
+    std::shared_ptr<Scene> CurrentScene() {
+        return _scenes[_currentScene];
+    }
+    const AssetManager& Assets() const {
+        return _assetManager;
+    }
+    sf::RenderWindow& Window() {
+        return _window;
+    }
 
     template <typename T>
-    typename std::enable_if<std::is_base_of<Scene, T>::value, void>::type
-    ChangeScene()
-    {
+    typename std::enable_if<std::is_base_of<Scene, T>::value, void>::type ChangeScene() {
         const auto typeHash = typeid(T).hash_code();
         _currentScene = typeHash;
     }
 
     template <typename T, typename Arg, typename... Args>
-    typename std::enable_if<std::is_base_of<Scene, T>::value, void>::type
-    ChangeScene(Arg&& arg, Args&&... args)
-    {
+    typename std::enable_if<std::is_base_of<Scene, T>::value, void>::type ChangeScene(Arg&& arg,
+        Args&&... args) {
         ChangeSceneWithFlag<T>(true, std::forward<Arg>(arg), std::forward<Args>(args)...);
     }
 
     template <typename T, typename... Args>
-    typename std::enable_if<std::is_base_of<Scene, T>::value, void>::type
-    LoadScene(Args&&... args)
-    {
+    typename std::enable_if<std::is_base_of<Scene, T>::value, void>::type LoadScene(
+        Args&&... args) {
         ChangeSceneWithFlag<T>(false, std::forward<Args>(args)...);
     }
 
@@ -99,16 +95,15 @@ public:
     void Quit();
 
     template <typename T>
-    typename std::enable_if<std::is_same<sf::Keyboard::Key, T>::value ||
-        std::is_same<sf::Mouse::Button, T>::value ||
-        std::is_same<sf::Mouse::Wheel, T>::value ||
-        std::is_same<MouseMove, T>::value, void>::type
-    RegisterInput(const T type, std::shared_ptr<InputAction> action) const
-    {
-        // ToDo: Логика регистрации инпута
+    typename std::enable_if<
+        std::is_same<sf::Keyboard::Key, T>::value || std::is_same<sf::Mouse::Button, T>::value ||
+            std::is_same<sf::Mouse::Wheel, T>::value || std::is_same<MouseMove, T>::value,
+        void>::type
+    RegisterInput(const T type, std::shared_ptr<InputAction> action) const {
+        // ToDo: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (_inputManager != nullptr)
             _inputManager->RegisterInput(_currentScene, type, std::move(action));
     }
 };
 
-#endif //GAMEENGINE_H
+#endif // GAMEENGINE_H

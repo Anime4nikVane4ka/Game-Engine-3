@@ -3,13 +3,12 @@
 
 #include "../../GameEngine/Scene.h"
 
-class GameScene final : public Scene
-{
-public:
+class GameScene final : public Scene {
+  public:
     GameScene(GameEngine& gameEngine);
 
     void Init() override;
     void Update(float delta) override;
 };
 
-#endif //GAMESCENE_H
+#endif // GAMESCENE_H

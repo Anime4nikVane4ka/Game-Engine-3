@@ -3,15 +3,14 @@
 
 #include "../Ecs/World/World.h"
 
-class GUI
-{
-public:
+class GUI {
+  public:
     GUI() = default;
 
     void ToggleCollapsed();
     void Draw(World& world);
 
-private:
+  private:
     bool _collapsed = false;
 
     void DrawAsteroidSpawnControls(World& world);
@@ -19,4 +18,4 @@ private:
     void DrawEntities(World& world);
 };
 
-#endif //GUI_H
+#endif // GUI_H

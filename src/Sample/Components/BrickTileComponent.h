@@ -1,8 +1,6 @@
 #ifndef BRICKTILECOMPONENT_H
 #define BRICKTILECOMPONENT_H
 
-struct BrickTileComponent
-{
-};
+struct BrickTileComponent {};
 
-#endif //BRICKTILECOMPONENT_H
+#endif // BRICKTILECOMPONENT_H

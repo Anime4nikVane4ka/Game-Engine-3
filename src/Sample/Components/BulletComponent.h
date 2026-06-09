@@ -1,13 +1,12 @@
 #ifndef BULLETCOMPONENT_H
 #define BULLETCOMPONENT_H
 
-struct BulletComponent
-{
+struct BulletComponent {
     int Owner = -1;
     float Speed = 0.0f;
 
     BulletComponent() = default;
-    BulletComponent(const int owner, const float speed): Owner(owner), Speed(speed) {}
+    BulletComponent(const int owner, const float speed) : Owner(owner), Speed(speed) {}
 };
 
-#endif //BULLETCOMPONENT_H
+#endif // BULLETCOMPONENT_H

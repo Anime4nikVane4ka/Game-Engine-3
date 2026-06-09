@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 
-struct PlayerConfig
-{
+struct PlayerConfig {
     float BboxWidth = 0.0f;
     float BboxHeight = 0.0f;
     float MoveSpeed = 0.0f;
@@ -16,40 +15,34 @@ struct PlayerConfig
     std::vector<std::string> Animations;
 };
 
-struct BulletConfig
-{
+struct BulletConfig {
     std::string BaseTexture;
     float Speed = 0.0f;
     float Radius = 0.0f;
 };
 
-struct DecorationConfig
-{
+struct DecorationConfig {
     std::string Name;
     std::string BaseTexture;
     std::vector<std::string> Animations;
 };
 
-struct TileConfig
-{
+struct TileConfig {
     std::string BaseTexture;
 };
 
-struct BrickTileConfig
-{
+struct BrickTileConfig {
     std::string BaseTexture;
     std::string DestroyAnimation;
 };
 
-struct QuestionTileConfig
-{
+struct QuestionTileConfig {
     std::string BaseTexture;
     std::string InactiveTexture;
 };
 
-class Config
-{
-public:
+class Config {
+  public:
     PlayerConfig Player;
     BulletConfig Bullet;
     std::vector<DecorationConfig> Decorations;
@@ -63,4 +56,4 @@ public:
     void LoadFromFile(const std::string& path);
 };
 
-#endif //CONFIG_H
+#endif // CONFIG_H

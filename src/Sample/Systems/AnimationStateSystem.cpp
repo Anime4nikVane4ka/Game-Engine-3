@@ -9,19 +9,14 @@ constexpr const char* ShootIdleState = "ShootIdle";
 constexpr const char* ShootRunState = "ShootRun";
 constexpr const char* ShootJumpState = "ShootJump";
 
-bool IsShootState(const std::string& state)
-{
+bool IsShootState(const std::string& state) {
     return state == ShootIdleState || state == ShootRunState || state == ShootJumpState;
 }
 
-void AnimationStateSystem::OnInit()
-{
-}
+void AnimationStateSystem::OnInit() {}
 
-void AnimationStateSystem::OnUpdate()
-{
-    for (const int entity : _players)
-    {
+void AnimationStateSystem::OnUpdate() {
+    for (const int entity : _players) {
         auto& animationState = _animationStates.Get(entity);
         const auto& animator = _animators.Get(entity);
         const auto& movement = _movements.Get(entity);

@@ -2,14 +2,10 @@
 
 #include "GameEngine.h"
 
-Scene::Scene(GameEngine& gameEngine)
-    : gameEngine(gameEngine), systemsManager(world)
-{
-}
+Scene::Scene(GameEngine& gameEngine) : gameEngine(gameEngine), systemsManager(world) {}
 
-std::shared_ptr<InputAction> Scene::RegisterAction(const std::string& name)
-{
-    // ToDo: Логика создания и сохранения экшена
+std::shared_ptr<InputAction> Scene::RegisterAction(const std::string& name) {
+    // ToDo: пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     const auto actionIterator = actionMap.find(name);
     if (actionIterator != actionMap.end())
         return actionIterator->second;
@@ -19,26 +15,22 @@ std::shared_ptr<InputAction> Scene::RegisterAction(const std::string& name)
     return action;
 }
 
-void Scene::RegisterAction(const sf::Keyboard::Key key, const std::string& name)
-{
+void Scene::RegisterAction(const sf::Keyboard::Key key, const std::string& name) {
     const auto action = RegisterAction(name);
     gameEngine.RegisterInput(key, action);
 }
 
-void Scene::RegisterAction(const sf::Mouse::Button btn, const std::string& name)
-{
+void Scene::RegisterAction(const sf::Mouse::Button btn, const std::string& name) {
     const auto action = RegisterAction(name);
     gameEngine.RegisterInput(btn, action);
 }
 
-void Scene::RegisterAction(const sf::Mouse::Wheel wheel, const std::string& name)
-{
+void Scene::RegisterAction(const sf::Mouse::Wheel wheel, const std::string& name) {
     const auto action = RegisterAction(name);
     gameEngine.RegisterInput(wheel, action);
 }
 
-void Scene::RegisterAction(const MouseMove mv, const std::string& name)
-{
+void Scene::RegisterAction(const MouseMove mv, const std::string& name) {
     const auto action = RegisterAction(name);
     gameEngine.RegisterInput(mv, action);
 }

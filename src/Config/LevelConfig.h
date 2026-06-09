@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 
-struct LevelObjectConfig
-{
+struct LevelObjectConfig {
     std::string Name;
     int GridX = 0;
     int GridY = 0;
@@ -13,9 +12,8 @@ struct LevelObjectConfig
     float Y = 0.0f;
 };
 
-class LevelConfig
-{
-public:
+class LevelConfig {
+  public:
     static constexpr int CellSize = 64;
 
     int Width = 0;
@@ -28,4 +26,4 @@ public:
     void LoadFromFile(const std::string& path);
 };
 
-#endif //LEVELCONFIG_H
+#endif // LEVELCONFIG_H

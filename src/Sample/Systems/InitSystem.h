@@ -4,12 +4,10 @@
 #include "../../Ecs/Systems/IInitializer.h"
 
 class InitSystem final : public IInitializer {
-public:
-    InitSystem(World &world) : IInitializer(world) { }
+  public:
+    InitSystem(World& world) : IInitializer(world) {}
 
     void OnInit() override;
 };
 
-
-
-#endif //INITSYSTEM_H
+#endif // INITSYSTEM_H

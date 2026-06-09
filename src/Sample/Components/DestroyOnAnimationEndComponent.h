@@ -1,9 +1,8 @@
 #ifndef DESTROYONANIMATIONENDCOMPONENT_H
 #define DESTROYONANIMATIONENDCOMPONENT_H
 
-struct DestroyOnAnimationEndComponent
-{
+struct DestroyOnAnimationEndComponent {
     DestroyOnAnimationEndComponent() = default;
 };
 
-#endif //DESTROYONANIMATIONENDCOMPONENT_H
+#endif // DESTROYONANIMATIONENDCOMPONENT_H

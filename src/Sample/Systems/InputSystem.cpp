@@ -1,16 +1,12 @@
 #include "InputSystem.h"
 
-void InputSystem::OnInit()
-{
-}
+void InputSystem::OnInit() {}
 
-bool InputSystem::IsActive(const std::shared_ptr<InputAction>& action) const
-{
+bool InputSystem::IsActive(const std::shared_ptr<InputAction>& action) const {
     return action != nullptr && action->Type() == Start;
 }
 
-void InputSystem::OnUpdate()
-{
+void InputSystem::OnUpdate() {
     sf::Vector2f direction(0.0f, 0.0f);
 
     if (IsActive(_moveLeft))
@@ -22,13 +18,11 @@ void InputSystem::OnUpdate()
     const bool jumpActive = IsActive(_jump);
     const bool shootActive = IsActive(_shoot);
 
-    for (const int player : _players)
-    {
+    for (const int player : _players) {
         auto& movement = _movementComponents.Get(player);
         movement.Direction.x = direction.x;
 
-        if (jumpActive && !_jumpWasActive && movement.IsGrounded)
-        {
+        if (jumpActive && !_jumpWasActive && movement.IsGrounded) {
             movement.Direction.y = -movement.JumpForce;
             movement.IsGrounded = false;
         }

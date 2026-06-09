@@ -18,7 +18,7 @@ class Scene {
 
     std::shared_ptr<InputAction> RegisterAction(const std::string& name);
 
-protected:
+  protected:
     GameEngine& gameEngine;
     std::unordered_map<std::string, std::shared_ptr<InputAction>> actionMap;
 
@@ -30,7 +30,7 @@ protected:
     void RegisterAction(sf::Mouse::Wheel wheel, const std::string& name);
     void RegisterAction(MouseMove mv, const std::string& name);
 
-public:
+  public:
     virtual ~Scene() = default;
 
     // ToDo:
@@ -40,4 +40,4 @@ public:
     virtual void Update(float delta) = 0;
 };
 
-#endif //SCENE_H
+#endif // SCENE_H

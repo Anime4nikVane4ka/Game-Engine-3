@@ -1,8 +1,6 @@
 #ifndef FOLLOWXCAMERACOMPONENT_H
 #define FOLLOWXCAMERACOMPONENT_H
 
-struct FollowXCameraComponent
-{
-};
+struct FollowXCameraComponent {};
 
-#endif //FOLLOWXCAMERACOMPONENT_H
+#endif // FOLLOWXCAMERACOMPONENT_H

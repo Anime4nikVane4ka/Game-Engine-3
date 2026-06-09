@@ -3,13 +3,11 @@
 
 #include <SFML/Graphics/View.hpp>
 
-struct CameraComponent
-{
+struct CameraComponent {
     sf::View View;
 
     CameraComponent() = default;
-    CameraComponent(const sf::View& view)
-        : View(view) {}
+    CameraComponent(const sf::View& view) : View(view) {}
 };
 
-#endif //CAMERACOMPONENT_H
+#endif // CAMERACOMPONENT_H

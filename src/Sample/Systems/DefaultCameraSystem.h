@@ -9,27 +9,21 @@
 #include "../Components/CameraComponent.h"
 #include "../Components/DefaultCameraComponent.h"
 
-class DefaultCameraSystem final : public ISystem
-{
+class DefaultCameraSystem final : public ISystem {
     sf::RenderWindow& _window;
     ComponentStorage<CameraComponent>& _cameras;
 
     Filter _defaultCameras;
 
-public:
+  public:
     DefaultCameraSystem(World& world, sf::RenderWindow& window)
-        : ISystem(world),
-          _window(window),
-          _cameras(world.GetStorage<CameraComponent>()),
-          _defaultCameras(FilterBuilder(world)
-              .With<CameraComponent>()
-              .With<DefaultCameraComponent>()
-              .Build())
-    {
+        : ISystem(world), _window(window), _cameras(world.GetStorage<CameraComponent>()),
+          _defaultCameras(
+              FilterBuilder(world).With<CameraComponent>().With<DefaultCameraComponent>().Build()) {
     }
 
     void OnInit() override;
     void OnUpdate() override;
 };
 
-#endif //DEFAULTCAMERASYSTEM_H
+#endif // DEFAULTCAMERASYSTEM_H

@@ -21,8 +21,7 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/TileComponent.h"
 
-class CollisionHandlerSystem final : public ISystem
-{
+class CollisionHandlerSystem final : public ISystem {
     ComponentStorage<AnimationStateComponent>& _animationStates;
     ComponentStorage<AnimatorComponent>& _animators;
     ComponentStorage<CollisionComponent>& _collisions;
@@ -44,13 +43,14 @@ class CollisionHandlerSystem final : public ISystem
     bool IsBelow(int firstEntity, int secondEntity) const;
     void CreateExplosion(int brickEntity);
     void DestroyBrick(int brickEntity, std::vector<int>& entitiesToRemove);
-    void HandlePlayerCollision(int playerEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
-    void HandleBulletCollision(int bulletEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
+    void
+    HandlePlayerCollision(int playerEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
+    void
+    HandleBulletCollision(int bulletEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
 
-public:
+  public:
     CollisionHandlerSystem(World& world, const Animation& explosionAnimation)
-        : ISystem(world),
-          _animationStates(world.GetStorage<AnimationStateComponent>()),
+        : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()),
           _animators(world.GetStorage<AnimatorComponent>()),
           _collisions(world.GetStorage<CollisionComponent>()),
           _boxColliders(world.GetStorage<BoxColliderComponent>()),
@@ -61,17 +61,12 @@ public:
           _movements(world.GetStorage<MovementComponent>()),
           _players(world.GetStorage<PlayerComponent>()),
           _positions(world.GetStorage<PositionComponent>()),
-          _sprites(world.GetStorage<SpriteComponent>()),
-          _tiles(world.GetStorage<TileComponent>()),
-          _collidableEntities(FilterBuilder(world)
-              .With<CollisionComponent>()
-              .Build()),
-          _explosionAnimation(explosionAnimation)
-    {
-    }
+          _sprites(world.GetStorage<SpriteComponent>()), _tiles(world.GetStorage<TileComponent>()),
+          _collidableEntities(FilterBuilder(world).With<CollisionComponent>().Build()),
+          _explosionAnimation(explosionAnimation) {}
 
     void OnInit() override;
     void OnUpdate() override;
 };
 
-#endif //COLLISIONHANDLERSYSTEM_H
+#endif // COLLISIONHANDLERSYSTEM_H

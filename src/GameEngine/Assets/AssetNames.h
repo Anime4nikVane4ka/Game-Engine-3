@@ -30,4 +30,4 @@ static constexpr const char* ExplosionAnim = "ExplosionAnim";
 
 static constexpr const char* BaseFont = "BaseFont";
 
-#endif //ASSETNAMES_H
+#endif // ASSETNAMES_H

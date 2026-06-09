@@ -1,21 +1,18 @@
 #ifndef FILTERBUILDER_H
 #define FILTERBUILDER_H
 
-#include "Filter.h"
 #include "../World/World.h"
+#include "Filter.h"
 
-class FilterBuilder
-{
+class FilterBuilder {
     World& _world;
     std::vector<std::shared_ptr<BaseComponentStorage>> _componentStorages;
 
-public:
+  public:
     // ToDo:
     FilterBuilder(World& world);
 
-    template <typename T>
-    FilterBuilder& With()
-    {
+    template <typename T> FilterBuilder& With() {
         auto storage = _world.GetRawStorage<T>();
         _componentStorages.push_back(storage);
 
@@ -25,4 +22,4 @@ public:
     Filter Build() const;
 };
 
-#endif //FILTERBUILDER_H
+#endif // FILTERBUILDER_H

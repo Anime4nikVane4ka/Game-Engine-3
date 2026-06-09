@@ -8,7 +8,7 @@ class EntityId {
     std::vector<int> _components;
     int _gen;
 
-public:
+  public:
     const int Id;
 
     // ToDo:
@@ -24,14 +24,14 @@ public:
     void Remove();
     void Recycle();
 
-    bool Equals(const EntityId &other) const;
+    bool Equals(const EntityId& other) const;
 
-    bool operator ==(const EntityId& other) const;
-    bool operator !=(const EntityId& other) const;
+    bool operator==(const EntityId& other) const;
+    bool operator!=(const EntityId& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const EntityId& eId);
 };
 
 static const EntityId InvalidEntity(-1, -1);
 
-#endif //ENTITYID_H
+#endif // ENTITYID_H

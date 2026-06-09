@@ -7,8 +7,7 @@
 
 #include "../../GameEngine/Assets/Animation.h"
 
-struct AnimatorComponent
-{
+struct AnimatorComponent {
     std::map<std::string, std::reference_wrapper<const Animation>> Animations;
     int CurrentFrame = 0;
     int CurrentFrameDelay = 0;
@@ -17,4 +16,4 @@ struct AnimatorComponent
     AnimatorComponent() = default;
 };
 
-#endif //ANIMATORCOMPONENT_H
+#endif // ANIMATORCOMPONENT_H
