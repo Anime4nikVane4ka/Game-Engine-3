@@ -5,10 +5,10 @@
 Scene::Scene(GameEngine& gameEngine) : gameEngine(gameEngine), systemsManager(world) {}
 
 std::shared_ptr<InputAction> Scene::RegisterAction(const std::string& name) {
-    // ToDo: ������ �������� � ���������� ������
     const auto actionIterator = actionMap.find(name);
-    if (actionIterator != actionMap.end())
+    if (actionIterator != actionMap.end()) {
         return actionIterator->second;
+    }
 
     auto action = std::make_shared<InputAction>(name);
     actionMap.insert({name, action});

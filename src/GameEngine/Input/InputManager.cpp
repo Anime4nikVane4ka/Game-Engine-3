@@ -10,28 +10,32 @@ InputManager::InputManager(sf::RenderWindow& window, GameEngine& gameEngine)
 void InputManager::ResetEndedActions() {
     for (auto& [_, actionMap] : _actionKeyMaps) {
         for (auto& [_, action] : actionMap) {
-            if (action != nullptr && action->Type() == End)
+            if (action != nullptr && action->Type() == End) {
                 action->Type() = None;
+            }
         }
     }
 
     for (auto& [_, actionMap] : _actionMouseBtnMaps) {
         for (auto& [_, action] : actionMap) {
-            if (action != nullptr && action->Type() == End)
+            if (action != nullptr && action->Type() == End) {
                 action->Type() = None;
+            }
         }
     }
 }
 
 void InputManager::ResetTransientActions(const size_t scene) {
     for (auto& [_, action] : _actionMouseWheelMaps[scene]) {
-        if (action != nullptr)
+        if (action != nullptr) {
             action->Type() = None;
+        }
     }
 
     for (auto& [_, action] : _actionMouseMoveMaps[scene]) {
-        if (action != nullptr)
+        if (action != nullptr) {
             action->Type() = None;
+        }
     }
 }
 
@@ -60,11 +64,9 @@ void InputManager::RegisterInput(const size_t scene,
 }
 
 bool InputManager::ProcessInput(const size_t scene) {
-    // ToDo: ����� end ������� � �������� ����� � none
     ResetEndedActions();
     ResetTransientActions(scene);
 
-    // ToDo: ���� �� ������� ���� � ����������� �� � �������������� ������ �����
     while (const auto event = _window.pollEvent()) {
         ImGui::SFML::ProcessEvent(_window, *event);
 
@@ -75,44 +77,80 @@ bool InputManager::ProcessInput(const size_t scene) {
 
         if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             const auto actionIterator = _actionKeyMaps[scene].find(keyPressed->code);
-            if (actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr)
+            const bool isStartAction =
+                actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr;
+
+            if (isStartAction) {
                 actionIterator->second->Type() = Start;
-        } else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
+            }
+
+            continue;
+        }
+
+        if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
             const auto actionIterator = _actionKeyMaps[scene].find(keyReleased->code);
-            if (actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr)
+            const bool isEndAction =
+                actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr;
+
+            if (isEndAction) {
                 actionIterator->second->Type() = End;
-        } else if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+            }
+
+            continue;
+        }
+
+        if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
             const auto actionIterator = _actionMouseBtnMaps[scene].find(mouseButtonPressed->button);
-            if (actionIterator != _actionMouseBtnMaps[scene].end() &&
-                actionIterator->second != nullptr) {
+            const bool isStartAction = actionIterator != _actionMouseBtnMaps[scene].end() &&
+                                       actionIterator->second != nullptr;
+
+            if (isStartAction) {
                 actionIterator->second->Type() = Start;
                 actionIterator->second->Value2() = mouseButtonPressed->position;
             }
-        } else if (const auto* mouseButtonReleased =
-                       event->getIf<sf::Event::MouseButtonReleased>()) {
+
+            continue;
+        }
+
+        if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
             const auto actionIterator =
                 _actionMouseBtnMaps[scene].find(mouseButtonReleased->button);
-            if (actionIterator != _actionMouseBtnMaps[scene].end() &&
-                actionIterator->second != nullptr) {
+            const bool isEndAction = actionIterator != _actionMouseBtnMaps[scene].end() &&
+                                     actionIterator->second != nullptr;
+
+            if (isEndAction) {
                 actionIterator->second->Type() = End;
                 actionIterator->second->Value2() = mouseButtonReleased->position;
             }
-        } else if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>()) {
+
+            continue;
+        }
+
+        if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>()) {
             const auto actionIterator =
                 _actionMouseWheelMaps[scene].find(mouseWheelScrolled->wheel);
-            if (actionIterator != _actionMouseWheelMaps[scene].end() &&
-                actionIterator->second != nullptr) {
+            const bool isStartAction = actionIterator != _actionMouseWheelMaps[scene].end() &&
+                                       actionIterator->second != nullptr;
+            if (isStartAction) {
                 actionIterator->second->Type() = Start;
                 actionIterator->second->Value() = static_cast<short>(mouseWheelScrolled->delta);
                 actionIterator->second->Value2() = mouseWheelScrolled->position;
             }
-        } else if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
+
+            continue;
+        }
+
+        if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
             const auto actionIterator = _actionMouseMoveMaps[scene].find(Move);
-            if (actionIterator != _actionMouseMoveMaps[scene].end() &&
-                actionIterator->second != nullptr) {
+            const bool isEndAction = actionIterator != _actionMouseMoveMaps[scene].end() &&
+                                     actionIterator->second != nullptr;
+
+            if (isEndAction) {
                 actionIterator->second->Type() = Start;
                 actionIterator->second->Value2() = mouseMoved->position;
             }
+
+            continue;
         }
     }
 

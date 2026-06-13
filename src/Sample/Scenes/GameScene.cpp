@@ -50,8 +50,9 @@ const char* ShootJumpState = "ShootJump";
 const DecorationConfig* FindDecoration(const std::vector<DecorationConfig>& decorations,
     const std::string& name) {
     for (const auto& decoration : decorations) {
-        if (decoration.Name == name)
+        if (decoration.Name == name) {
             return &decoration;
+        }
     }
 
     return nullptr;

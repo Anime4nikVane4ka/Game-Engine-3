@@ -18,31 +18,27 @@ GameEngine::GameEngine(const GameEngineConfiguration& config)
           "Game"),
       _inputManager(std::make_shared<InputManager>(_window, *this)), _isRunning(false),
       _currentScene(0) {
-    // ToDo: �������� � ��������� ����
     _window.setFramerateLimit(60);
 
-    // ToDo: ������������� ImGui
-
-    // ToDo: �������� ����� � ����� ����������
-    (void)ImGui::SFML::Init(_window);
+    ImGui::SFML::Init(_window);
     _assetManager.LoadFromFile(GameEngineConfiguration::AssetsFile);
 }
 
 void GameEngine::Initialize() {
-    // ToDo: ������ ������������� � ������� ������
-    if (_scenes.empty())
+    if (_scenes.empty()) {
         LoadScene<GameScene>(*this);
+    }
 
     _isRunning = true;
 }
 
 void GameEngine::Run() {
-    // ToDo: ������ ��������� �������� �����
     Initialize();
 
     while (_isRunning && _window.isOpen()) {
-        if (_inputManager != nullptr)
+        if (_inputManager != nullptr) {
             _isRunning = _inputManager->ProcessInput(_currentScene);
+        }
 
         const sf::Time deltaTime = _deltaClock.restart();
         ImGui::SFML::Update(_window, deltaTime);
@@ -50,8 +46,9 @@ void GameEngine::Run() {
         _window.clear();
 
         const auto currentSceneIterator = _scenes.find(_currentScene);
-        if (currentSceneIterator != _scenes.end() && currentSceneIterator->second != nullptr)
+        if (currentSceneIterator != _scenes.end() && currentSceneIterator->second != nullptr) {
             currentSceneIterator->second->Update(deltaTime.asSeconds());
+        }
 
         Render();
     }
@@ -60,7 +57,6 @@ void GameEngine::Run() {
 }
 
 void GameEngine::Quit() {
-    // ToDo: �������� � ��������� ������
     _isRunning = false;
     _window.close();
 }

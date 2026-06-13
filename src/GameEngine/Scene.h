@@ -15,7 +15,7 @@
 class GameEngine;
 
 class Scene {
-
+  public:
     std::shared_ptr<InputAction> RegisterAction(const std::string& name);
 
   protected:
@@ -33,7 +33,6 @@ class Scene {
   public:
     virtual ~Scene() = default;
 
-    // ToDo:
     Scene(GameEngine& gameEngine);
 
     virtual void Init() = 0;

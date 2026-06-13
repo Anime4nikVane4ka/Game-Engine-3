@@ -100,9 +100,11 @@ class GameEngine {
             std::is_same<sf::Mouse::Wheel, T>::value || std::is_same<MouseMove, T>::value,
         void>::type
     RegisterInput(const T type, std::shared_ptr<InputAction> action) const {
-        // ToDo: ������ ����������� ������
-        if (_inputManager != nullptr)
-            _inputManager->RegisterInput(_currentScene, type, std::move(action));
+        if (_inputManager == nullptr) {
+            return;
+        }
+
+        _inputManager->RegisterInput(_currentScene, type, std::move(action));
     }
 };
 

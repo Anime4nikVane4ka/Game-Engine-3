@@ -17,8 +17,10 @@ SystemsManager& SystemsManager::AddSystem(std::shared_ptr<ISystem> system) {
 
 void SystemsManager::Initialize() {
     // ToDo: Логика вызова метода Initialize у еще не вызывавшихся инициализаторов
-    if (_newInitializers.empty())
+    if (_newInitializers.empty()) {
         return;
+    }
+
     for (int i = 0; i < _newInitializers.size(); i++) {
         _newInitializers[i]->OnInit();
         _initializers.push_back(_newInitializers[i]);
