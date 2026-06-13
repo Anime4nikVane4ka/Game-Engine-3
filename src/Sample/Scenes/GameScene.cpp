@@ -143,7 +143,11 @@ void GameScene::Init() {
             boxColliders.Add(player,
                 BoxColliderComponent(config.Player.BboxWidth, config.Player.BboxHeight));
             collisions.Add(player, CollisionComponent());
-        } else if (object.Name == TileObject) {
+
+            continue;
+        }
+
+        if (object.Name == TileObject) {
             const int tile = world.CreateEntity();
             positions.Add(tile,
                 PositionComponent(object.X + LevelConfig::CellSize / 2.0f,
@@ -154,7 +158,11 @@ void GameScene::Init() {
                 BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize));
             collisions.Add(tile, CollisionComponent());
             tiles.Add(tile, TileComponent());
-        } else if (object.Name == BrickObject) {
+
+            continue;
+        }
+
+        if (object.Name == BrickObject) {
             const int brick = world.CreateEntity();
             positions.Add(brick,
                 PositionComponent(object.X + LevelConfig::CellSize / 2.0f,
@@ -165,7 +173,11 @@ void GameScene::Init() {
                 BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize));
             collisions.Add(brick, CollisionComponent());
             bricks.Add(brick, BrickTileComponent());
-        } else if (object.Name == FinishObject) {
+
+            continue;
+        }
+
+        if (object.Name == FinishObject) {
             const int finish = world.CreateEntity();
             positions.Add(finish,
                 PositionComponent(object.X + LevelConfig::CellSize / 2.0f,
@@ -181,19 +193,21 @@ void GameScene::Init() {
             collisions.Add(finish, CollisionComponent());
             decorations.Add(finish, DecorComponent());
             finishes.Add(finish, FinishComponent());
-        } else {
-            const DecorationConfig* decoration = FindDecoration(config.Decorations, object.Name);
-            if (decoration != nullptr) {
-                const auto& texture = gameEngine.Assets().GetTexture(decoration->BaseTexture);
-                const auto textureSize = texture.getSize();
-                const int decor = world.CreateEntity();
 
-                positions.Add(decor,
-                    PositionComponent(object.X + textureSize.x / 2.0f,
-                        object.Y - textureSize.y / 2.0f));
-                sprites.Add(decor, SpriteComponent(texture));
-                decorations.Add(decor, DecorComponent());
-            }
+            continue;
+        }
+
+        const DecorationConfig* decoration = FindDecoration(config.Decorations, object.Name);
+        if (decoration != nullptr) {
+            const auto& texture = gameEngine.Assets().GetTexture(decoration->BaseTexture);
+            const auto textureSize = texture.getSize();
+            const int decor = world.CreateEntity();
+
+            positions.Add(decor,
+                PositionComponent(object.X + textureSize.x / 2.0f,
+                    object.Y - textureSize.y / 2.0f));
+            sprites.Add(decor, SpriteComponent(texture));
+            decorations.Add(decor, DecorComponent());
         }
     }
 
