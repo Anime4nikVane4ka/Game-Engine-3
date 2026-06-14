@@ -48,7 +48,10 @@ class PathfindingSystem final : public ISystem {
     int FindOpenNode(const std::vector<PathNode>& nodes) const;
     std::vector<sf::Vector2i> BuildPath(const std::vector<PathNode>& nodes, int nodeIndex) const;
     std::vector<sf::Vector2i> FindPath(const sf::Vector2i& start, const sf::Vector2i& target);
-    void FollowPath(int entity, PathfindingComponent& pathfinding, const sf::Vector2i& targetCell);
+    void FollowPath(int entity,
+        PathfindingComponent& pathfinding,
+        const sf::Vector2f& targetPosition,
+        const sf::Vector2i& targetCell);
 
   public:
     PathfindingSystem(World& world)

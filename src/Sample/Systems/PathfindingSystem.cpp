@@ -161,10 +161,27 @@ std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
 
 void PathfindingSystem::FollowPath(const int entity,
     PathfindingComponent& pathfinding,
+    const sf::Vector2f& targetPosition,
     const sf::Vector2i& targetCell) {
     auto& movement = _movements.Get(entity);
     const auto& position = _positions.Get(entity);
     const sf::Vector2i currentCell = GetCell(position.Position);
+    const float directDistanceX = targetPosition.x - position.Position.x;
+
+    if (currentCell.y == targetCell.y) {
+        pathfinding.Path.clear();
+        pathfinding.CurrentPathIndex = 0;
+        pathfinding.NeedUpdate = true;
+
+        if (std::abs(directDistanceX) <= movement.Speed)
+            movement.Direction.x = 0.0f;
+        else if (directDistanceX > 0.0f)
+            movement.Direction.x = 1.0f;
+        else
+            movement.Direction.x = -1.0f;
+
+        return;
+    }
 
     if (pathfinding.NeedUpdate || pathfinding.Path.empty() ||
         pathfinding.Path.back() != targetCell) {
@@ -189,8 +206,8 @@ void PathfindingSystem::FollowPath(const int entity,
     }
 
     const sf::Vector2i nextCell = pathfinding.Path[pathfinding.CurrentPathIndex];
-    const sf::Vector2f targetPosition = GetCellCenter(nextCell);
-    const float distanceX = targetPosition.x - position.Position.x;
+    const sf::Vector2f nextPosition = GetCellCenter(nextCell);
+    const float distanceX = nextPosition.x - position.Position.x;
 
     if (std::abs(distanceX) <= movement.Speed)
         movement.Direction.x = 0.0f;
@@ -215,7 +232,8 @@ void PathfindingSystem::OnUpdate() {
     if (playerEntity == -1)
         return;
 
-    const sf::Vector2i playerCell = GetCell(_positions.Get(playerEntity).Position);
+    const auto& playerPosition = _positions.Get(playerEntity).Position;
+    const sf::Vector2i playerCell = GetCell(playerPosition);
 
     for (const int entity : _pathfindingEntities) {
         auto& pathfinding = _pathfindings.Get(entity);
@@ -227,6 +245,6 @@ void PathfindingSystem::OnUpdate() {
             continue;
         }
 
-        FollowPath(entity, pathfinding, playerCell);
+        FollowPath(entity, pathfinding, playerPosition, playerCell);
     }
 }
