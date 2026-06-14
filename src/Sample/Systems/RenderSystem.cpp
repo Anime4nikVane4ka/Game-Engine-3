@@ -12,18 +12,23 @@
 #include <string>
 
 void RenderSystem::OnInit() {
-    if (_renderMode == RenderMode::Textures) {
-        for (const int entity : _renderEntities)
-            if (!_players.Has(entity))
-                DrawSprite(entity);
-
-        for (const int entity : _renderEntities)
-            if (_players.Has(entity))
-                DrawSprite(entity);
-
+    if (_renderMode != RenderMode::Textures) {
         return;
     }
+
+    for (const int entity : _renderEntities) {
+        if (!_players.Has(entity)) {
+            DrawSprite(entity);
+        }
+    }
+
+    for (const int entity : _renderEntities) {
+        if (_players.Has(entity)) {
+            DrawSprite(entity);
+        }
+    }
 }
+
 void RenderSystem::DrawColliders() {
     for (const int entity : _positionEntities) {
         const auto& position = _positions.Get(entity).Position;
@@ -108,8 +113,9 @@ void RenderSystem::DrawSprite(const int entity) {
     const auto& position = _positions.Get(entity);
     auto& spriteComponent = _sprites.Get(entity);
 
-    if (spriteComponent.Texture == nullptr)
+    if (spriteComponent.Texture == nullptr) {
         return;
+    }
 
     sf::Sprite sprite(*spriteComponent.Texture);
     sprite.setTextureRect(spriteComponent.TextureRect);
@@ -119,8 +125,10 @@ void RenderSystem::DrawSprite(const int entity) {
     sf::Vector2f scale = position.Scale;
     if (_players.Has(entity) && _movements.Has(entity)) {
         const auto& movement = _movements.Get(entity);
-        if (movement.Direction.x != 0.0f)
+
+        if (movement.Direction.x != 0.0f) {
             spriteComponent.DirectionX = movement.Direction.x;
+        }
 
         scale.x = std::abs(scale.x) * spriteComponent.DirectionX;
     }
@@ -132,13 +140,17 @@ void RenderSystem::DrawSprite(const int entity) {
 
 void RenderSystem::OnUpdate() {
     if (_renderMode == RenderMode::Textures) {
-        for (const int entity : _renderEntities)
-            if (!_players.Has(entity))
+        for (const int entity : _renderEntities) {
+            if (!_players.Has(entity)) {
                 DrawSprite(entity);
+            }
+        }
 
-        for (const int entity : _renderEntities)
-            if (_players.Has(entity))
+        for (const int entity : _renderEntities) {
+            if (_players.Has(entity)) {
                 DrawSprite(entity);
+            }
+        }
 
         return;
     }
