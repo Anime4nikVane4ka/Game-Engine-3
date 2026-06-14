@@ -9,8 +9,9 @@
 void AssetManager::LoadFromFile(const std::string& path) {
     // ToDo: Логика загрузки ассетов из файла конфигурации
     std::ifstream file(path);
-    if (!file.is_open())
+    if (!file.is_open()) {
         throw std::runtime_error("Can not open assets file: " + path);
+    }
 
     nlohmann::json assets;
     file >> assets;
@@ -20,10 +21,7 @@ void AssetManager::LoadFromFile(const std::string& path) {
     }
 
     for (const auto& animation : assets.at("Animations")) {
-        AddAnimation(animation.at("name").get<std::string>(),
-            animation.at("textureName").get<std::string>(),
-            animation.at("frameCount").get<short>(),
-            animation.at("frameDuration").get<int>());
+        AddAnimation(animation.at("name").get<std::string>(), animation.at("textureName").get<std::string>(), animation.at("frameCount").get<short>(), animation.at("frameDuration").get<int>());
     }
 
     for (const auto& font : assets.at("Fonts")) {
@@ -34,17 +32,15 @@ void AssetManager::LoadFromFile(const std::string& path) {
 void AssetManager::AddTexture(const std::string& name, const std::string& path) {
     // ToDo: Логика загрузки текстуры из файла
     sf::Texture texture;
-    if (!texture.loadFromFile(path))
+    if (!texture.loadFromFile(path)) {
         throw std::runtime_error("Can not load texture: " + path);
+    }
 
     _textures.erase(name);
     _textures.emplace(name, std::move(texture));
 }
 
-void AssetManager::AddAnimation(const std::string& name,
-    const std::string& textureName,
-    const short frameCount,
-    const int frameDuration) {
+void AssetManager::AddAnimation(const std::string& name, const std::string& textureName, const short frameCount, const int frameDuration) {
     // ToDo: Логика загрузки анимации из файла
     _animations.erase(name);
     _animations.emplace(name, Animation(GetTexture(textureName), frameCount, frameDuration));
@@ -53,8 +49,9 @@ void AssetManager::AddAnimation(const std::string& name,
 void AssetManager::AddFont(const std::string& name, const std::string& path) {
     // ToDo: Логика загрузки шрифта из файла
     sf::Font font;
-    if (!font.openFromFile(path))
+    if (!font.openFromFile(path)) {
         throw std::runtime_error("Can not load font: " + path);
+    }
 
     _fonts.erase(name);
     _fonts.emplace(name, std::move(font));

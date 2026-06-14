@@ -2,7 +2,7 @@
 #define BESTTIMESTORAGE_H
 
 class BestTimeStorage {
-public:
+  public:
     static float Load();
     static void SaveIfBetter(float timeSeconds);
 };

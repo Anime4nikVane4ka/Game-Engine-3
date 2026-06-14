@@ -12,9 +12,7 @@ bool CollisionDetectionSystem::CheckAabbVsAabb(const int firstEntity, const int 
     const auto& firstBox = _boxColliders.Get(firstEntity);
     const auto& secondBox = _boxColliders.Get(secondEntity);
 
-    return std::abs(firstPosition.x - secondPosition.x) <=
-               firstBox.Extents.x + secondBox.Extents.x &&
-           std::abs(firstPosition.y - secondPosition.y) <= firstBox.Extents.y + secondBox.Extents.y;
+    return std::abs(firstPosition.x - secondPosition.x) <= firstBox.Extents.x + secondBox.Extents.x && std::abs(firstPosition.y - secondPosition.y) <= firstBox.Extents.y + secondBox.Extents.y;
 }
 
 bool CollisionDetectionSystem::CheckAabbVsCircle(const int boxEntity, const int circleEntity) {
@@ -23,10 +21,8 @@ bool CollisionDetectionSystem::CheckAabbVsCircle(const int boxEntity, const int 
     const auto& box = _boxColliders.Get(boxEntity);
     const auto& circle = _circleColliders.Get(circleEntity);
 
-    const float closestX =
-        std::clamp(circlePosition.x, boxPosition.x - box.Extents.x, boxPosition.x + box.Extents.x);
-    const float closestY =
-        std::clamp(circlePosition.y, boxPosition.y - box.Extents.y, boxPosition.y + box.Extents.y);
+    const float closestX = std::clamp(circlePosition.x, boxPosition.x - box.Extents.x, boxPosition.x + box.Extents.x);
+    const float closestY = std::clamp(circlePosition.y, boxPosition.y - box.Extents.y, boxPosition.y + box.Extents.y);
 
     const float dx = circlePosition.x - closestX;
     const float dy = circlePosition.y - closestY;

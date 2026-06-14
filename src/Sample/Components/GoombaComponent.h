@@ -9,8 +9,7 @@ struct GoombaComponent {
     float ViewDistance = 512.0f;
 
     GoombaComponent() = default;
-    GoombaComponent(const bool isChasing, const float viewDistance)
-        : IsChasing(isChasing), ViewDistance(viewDistance) {}
+    GoombaComponent(const bool isChasing, const float viewDistance) : IsChasing(isChasing), ViewDistance(viewDistance) {}
 };
 
 #endif // GOOMBACOMPONENT_H

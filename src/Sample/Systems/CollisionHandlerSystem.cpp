@@ -17,10 +17,8 @@ bool CollisionHandlerSystem::IsSolid(const int entity) const {
     return _tiles.Has(entity) || _bricks.Has(entity);
 }
 
-bool CollisionHandlerSystem::IsVerticalCollision(const int firstEntity,
-    const int secondEntity) const {
-    if (!_positions.Has(firstEntity) || !_positions.Has(secondEntity) ||
-        !_boxColliders.Has(firstEntity) || !_boxColliders.Has(secondEntity))
+bool CollisionHandlerSystem::IsVerticalCollision(const int firstEntity, const int secondEntity) const {
+    if (!_positions.Has(firstEntity) || !_positions.Has(secondEntity) || !_boxColliders.Has(firstEntity) || !_boxColliders.Has(secondEntity))
         return false;
 
     const auto& firstPosition = _positions.Get(firstEntity);
@@ -28,10 +26,8 @@ bool CollisionHandlerSystem::IsVerticalCollision(const int firstEntity,
     const auto& firstBox = _boxColliders.Get(firstEntity);
     const auto& secondBox = _boxColliders.Get(secondEntity);
 
-    const float overlapX = firstBox.Extents.x + secondBox.Extents.x -
-                           std::abs(firstPosition.Position.x - secondPosition.Position.x);
-    const float overlapY = firstBox.Extents.y + secondBox.Extents.y -
-                           std::abs(firstPosition.Position.y - secondPosition.Position.y);
+    const float overlapX = firstBox.Extents.x + secondBox.Extents.x - std::abs(firstPosition.Position.x - secondPosition.Position.x);
+    const float overlapY = firstBox.Extents.y + secondBox.Extents.y - std::abs(firstPosition.Position.y - secondPosition.Position.y);
 
     return overlapY <= overlapX;
 }
@@ -47,8 +43,7 @@ void CollisionHandlerSystem::CreateExplosion(const int brickEntity) {
     const auto& brickPosition = _positions.Get(brickEntity);
     const int explosionEntity = world.CreateEntity();
 
-    auto& explosionPosition = _positions.Add(explosionEntity,
-        PositionComponent(brickPosition.Position.x, brickPosition.Position.y));
+    auto& explosionPosition = _positions.Add(explosionEntity, PositionComponent(brickPosition.Position.x, brickPosition.Position.y));
     explosionPosition.Scale = {2.0f, 2.0f};
     auto& sprite = _sprites.Add(explosionEntity, SpriteComponent(_explosionAnimation.GetTexture()));
     sprite.TextureRect = sf::IntRect({0, 0}, _explosionAnimation.Size());
@@ -62,9 +57,7 @@ void CollisionHandlerSystem::CreateCoin(const int questionTileEntity) {
     const auto& questionTilePosition = _positions.Get(questionTileEntity);
     const int coinEntity = world.CreateEntity();
 
-    _positions.Add(coinEntity,
-        PositionComponent(questionTilePosition.Position.x,
-            questionTilePosition.Position.y - CoinOffsetY));
+    _positions.Add(coinEntity, PositionComponent(questionTilePosition.Position.x, questionTilePosition.Position.y - CoinOffsetY));
     auto& sprite = _sprites.Add(coinEntity, SpriteComponent(_coinAnimation.GetTexture()));
     sprite.TextureRect = sf::IntRect({0, 0}, _coinAnimation.Size());
     _animationStates.Add(coinEntity, AnimationStateComponent(CoinState));
@@ -73,8 +66,7 @@ void CollisionHandlerSystem::CreateCoin(const int questionTileEntity) {
     _destroyOnAnimationEnds.Add(coinEntity, DestroyOnAnimationEndComponent(CoinLifetimeFrames));
 }
 
-void CollisionHandlerSystem::ActivateQuestionTile(const int playerEntity,
-    const int questionTileEntity) {
+void CollisionHandlerSystem::ActivateQuestionTile(const int playerEntity, const int questionTileEntity) {
     if (!_questionTiles.Has(questionTileEntity))
         return;
 
@@ -83,8 +75,7 @@ void CollisionHandlerSystem::ActivateQuestionTile(const int playerEntity,
         return;
 
     const auto& movement = _movements.Get(playerEntity);
-    if (movement.Direction.y >= 0.0f || IsAbove(playerEntity, questionTileEntity) ||
-        !IsVerticalCollision(playerEntity, questionTileEntity))
+    if (movement.Direction.y >= 0.0f || IsAbove(playerEntity, questionTileEntity) || !IsVerticalCollision(playerEntity, questionTileEntity))
         return;
 
     questionTile.IsActive = false;
@@ -93,8 +84,7 @@ void CollisionHandlerSystem::ActivateQuestionTile(const int playerEntity,
     CreateCoin(questionTileEntity);
 }
 
-void CollisionHandlerSystem::DestroyBrick(const int brickEntity,
-    std::vector<int>& entitiesToRemove) {
+void CollisionHandlerSystem::DestroyBrick(const int brickEntity, std::vector<int>& entitiesToRemove) {
     if (!_bricks.Has(brickEntity))
         return;
 
@@ -109,16 +99,12 @@ void CollisionHandlerSystem::RequestPlayerRespawn(const int playerEntity) {
     _respawns.Get(playerEntity).NeedRespawn = true;
 }
 
-void CollisionHandlerSystem::HandleSolidCollision(const int entity,
-    const int collidedEntity,
-    std::vector<int>& entitiesToRemove,
-    const bool destroyBrickFromBelow) {
+void CollisionHandlerSystem::HandleSolidCollision(const int entity, const int collidedEntity, std::vector<int>& entitiesToRemove, const bool destroyBrickFromBelow) {
     if (!IsSolid(collidedEntity) || !_movements.Has(entity))
         return;
 
     auto& movement = _movements.Get(entity);
-    if (movement.Direction.y > 0.0f && IsAbove(entity, collidedEntity) &&
-        IsVerticalCollision(entity, collidedEntity)) {
+    if (movement.Direction.y > 0.0f && IsAbove(entity, collidedEntity) && IsVerticalCollision(entity, collidedEntity)) {
         movement.Direction.y = 0.0f;
         movement.IsGrounded = true;
         if (_boxColliders.Has(entity) && _boxColliders.Has(collidedEntity)) {
@@ -126,29 +112,25 @@ void CollisionHandlerSystem::HandleSolidCollision(const int entity,
             const auto& collidedPosition = _positions.Get(collidedEntity);
             const auto& entityBox = _boxColliders.Get(entity);
             const auto& collidedBox = _boxColliders.Get(collidedEntity);
-            entityPosition.Position.y =
-                collidedPosition.Position.y - entityBox.Extents.y - collidedBox.Extents.y;
+            entityPosition.Position.y = collidedPosition.Position.y - entityBox.Extents.y - collidedBox.Extents.y;
         }
         return;
     }
 
-    if (movement.Direction.y < 0.0f && !IsAbove(entity, collidedEntity) &&
-        IsVerticalCollision(entity, collidedEntity)) {
+    if (movement.Direction.y < 0.0f && !IsAbove(entity, collidedEntity) && IsVerticalCollision(entity, collidedEntity)) {
         movement.Direction.y = 0.0f;
         if (_boxColliders.Has(entity) && _boxColliders.Has(collidedEntity)) {
             auto& entityPosition = _positions.Get(entity);
             const auto& collidedPosition = _positions.Get(collidedEntity);
             const auto& entityBox = _boxColliders.Get(entity);
             const auto& collidedBox = _boxColliders.Get(collidedEntity);
-            entityPosition.Position.y =
-                collidedPosition.Position.y + entityBox.Extents.y + collidedBox.Extents.y;
+            entityPosition.Position.y = collidedPosition.Position.y + entityBox.Extents.y + collidedBox.Extents.y;
         }
         if (destroyBrickFromBelow && _bricks.Has(collidedEntity))
             DestroyBrick(collidedEntity, entitiesToRemove);
     }
 
-    if (!IsVerticalCollision(entity, collidedEntity) && movement.Direction.x != 0.0f &&
-        _boxColliders.Has(entity) && _boxColliders.Has(collidedEntity)) {
+    if (!IsVerticalCollision(entity, collidedEntity) && movement.Direction.x != 0.0f && _boxColliders.Has(entity) && _boxColliders.Has(collidedEntity)) {
         movement.Direction.x = 0.0f;
 
         auto& entityPosition = _positions.Get(entity);
@@ -157,18 +139,14 @@ void CollisionHandlerSystem::HandleSolidCollision(const int entity,
         const auto& collidedBox = _boxColliders.Get(collidedEntity);
 
         if (entityPosition.Position.x < collidedPosition.Position.x) {
-            entityPosition.Position.x =
-                collidedPosition.Position.x - entityBox.Extents.x - collidedBox.Extents.x;
+            entityPosition.Position.x = collidedPosition.Position.x - entityBox.Extents.x - collidedBox.Extents.x;
         } else {
-            entityPosition.Position.x =
-                collidedPosition.Position.x + entityBox.Extents.x + collidedBox.Extents.x;
+            entityPosition.Position.x = collidedPosition.Position.x + entityBox.Extents.x + collidedBox.Extents.x;
         }
     }
 }
 
-void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity,
-    const int collidedEntity,
-    std::vector<int>& entitiesToRemove) {
+void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity, const int collidedEntity, std::vector<int>& entitiesToRemove) {
     if (_finishes.Has(collidedEntity)) {
         const int eventEntity = world.CreateEntity();
         world.GetStorage<FinishReachedEvent>().Add(eventEntity, FinishReachedEvent());
@@ -185,25 +163,19 @@ void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity,
     HandleSolidCollision(playerEntity, collidedEntity, entitiesToRemove, true);
 }
 
-void CollisionHandlerSystem::HandleGoombaCollision(const int goombaEntity,
-    const int collidedEntity,
-    std::vector<int>& entitiesToRemove) {
+void CollisionHandlerSystem::HandleGoombaCollision(const int goombaEntity, const int collidedEntity, std::vector<int>& entitiesToRemove) {
     HandleSolidCollision(goombaEntity, collidedEntity, entitiesToRemove, false);
 }
 
-void CollisionHandlerSystem::HandleBulletCollision(const int bulletEntity,
-    const int collidedEntity,
-    std::vector<int>& entitiesToRemove) {
+void CollisionHandlerSystem::HandleBulletCollision(const int bulletEntity, const int collidedEntity, std::vector<int>& entitiesToRemove) {
     if (!_bricks.Has(collidedEntity) && !_goombas.Has(collidedEntity))
         return;
 
-    if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), bulletEntity) ==
-        entitiesToRemove.end())
+    if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), bulletEntity) == entitiesToRemove.end())
         entitiesToRemove.push_back(bulletEntity);
 
     if (_goombas.Has(collidedEntity)) {
-        if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), collidedEntity) ==
-            entitiesToRemove.end())
+        if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), collidedEntity) == entitiesToRemove.end())
             entitiesToRemove.push_back(collidedEntity);
         return;
     }

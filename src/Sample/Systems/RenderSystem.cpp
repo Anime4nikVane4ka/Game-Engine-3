@@ -2,14 +2,14 @@
 
 #include <cmath>
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/System/Angle.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/System/Angle.hpp>
 
-#include <string>
 #include <imgui.h>
+#include <string>
 
 void RenderSystem::OnInit() {
     if (_renderMode == RenderMode::Textures) {
@@ -23,8 +23,6 @@ void RenderSystem::OnInit() {
 
         return;
     }
-
-
 }
 void RenderSystem::DrawColliders() {
     for (const int entity : _positionEntities) {
@@ -94,19 +92,14 @@ void RenderSystem::DrawGrid() {
             const int gridX = static_cast<int>(x / cellSize);
             const int gridY = _levelHeight - static_cast<int>(y / cellSize);
 
-            if (gridY < 0  || gridY > _levelHeight) {
+            if (gridY < 0 || gridY > _levelHeight) {
                 continue;
             }
 
             const sf::Vector2i screenPosition = _window.mapCoordsToPixel({x + 4.0f, y - 18.0f});
-            const std::string text =
-                "(" + std::to_string(gridX) + ", " + std::to_string(gridY) + ")";
+            const std::string text = "(" + std::to_string(gridX) + ", " + std::to_string(gridY) + ")";
 
-            drawList->AddText(
-                ImVec2(static_cast<float>(screenPosition.x), static_cast<float>(screenPosition.y)),
-                IM_COL32(255, 255, 255, 180),
-                text.c_str()
-            );
+            drawList->AddText(ImVec2(static_cast<float>(screenPosition.x), static_cast<float>(screenPosition.y)), IM_COL32(255, 255, 255, 180), text.c_str());
         }
     }
 }
@@ -120,8 +113,7 @@ void RenderSystem::DrawSprite(const int entity) {
 
     sf::Sprite sprite(*spriteComponent.Texture);
     sprite.setTextureRect(spriteComponent.TextureRect);
-    sprite.setOrigin(
-        {spriteComponent.TextureRect.size.x / 2.0f, spriteComponent.TextureRect.size.y / 2.0f});
+    sprite.setOrigin({spriteComponent.TextureRect.size.x / 2.0f, spriteComponent.TextureRect.size.y / 2.0f});
     sprite.setPosition(position.Position);
 
     sf::Vector2f scale = position.Scale;

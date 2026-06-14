@@ -1,10 +1,9 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
+#include "../../GUI/GUI.h"
 #include "../../GameEngine/Scene.h"
 #include "../Systems/RenderSystem.h"
-#include "../../GUI/GUI.h"
-
 
 class GameScene final : public Scene {
     bool _paused = false;

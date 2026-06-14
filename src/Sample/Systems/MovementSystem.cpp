@@ -19,12 +19,8 @@ void MovementSystem::OnUpdate() {
         auto& position = _positionComponents.Get(entity);
         const auto& movement = _movementComponents.Get(entity);
 
-        const float velocityX = Clamp(movement.Speed * movement.Direction.x,
-            -movement.MaxVelocity,
-            movement.MaxVelocity);
-        const float velocityY = Clamp(movement.Speed * movement.Direction.y,
-            -movement.MaxVelocity,
-            movement.MaxVelocity);
+        const float velocityX = Clamp(movement.Speed * movement.Direction.x, -movement.MaxVelocity, movement.MaxVelocity);
+        const float velocityY = Clamp(movement.Speed * movement.Direction.y, -movement.MaxVelocity, movement.MaxVelocity);
 
         position.Position.x += velocityX;
         position.Position.y += velocityY;

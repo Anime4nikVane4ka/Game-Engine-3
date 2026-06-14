@@ -17,13 +17,8 @@ class AnimationSystem final : public ISystem {
 
   public:
     AnimationSystem(World& world)
-        : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()),
-          _animators(world.GetStorage<AnimatorComponent>()),
-          _sprites(world.GetStorage<SpriteComponent>()), _animatedEntities(FilterBuilder(world)
-                                                                 .With<AnimationStateComponent>()
-                                                                 .With<AnimatorComponent>()
-                                                                 .With<SpriteComponent>()
-                                                                 .Build()) {}
+        : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()), _animators(world.GetStorage<AnimatorComponent>()), _sprites(world.GetStorage<SpriteComponent>()),
+          _animatedEntities(FilterBuilder(world).With<AnimationStateComponent>().With<AnimatorComponent>().With<SpriteComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

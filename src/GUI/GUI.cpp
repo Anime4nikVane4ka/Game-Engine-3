@@ -54,13 +54,7 @@ void GUI::DrawHud(World& world, float levelTimeSeconds) {
     ImGui::SetNextWindowPos(ImVec2(10, 10));
     ImGui::SetNextWindowBgAlpha(0.35f);
 
-    ImGui::Begin("HUD", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_AlwaysAutoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoCollapse
-    );
+    ImGui::Begin("HUD", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
     ImGui::Text("Time: %.2f", levelTimeSeconds);
 
@@ -108,16 +102,26 @@ void GUI::DrawEntities(World& world) {
             flags += name;
         };
 
-        if (players.Has(entityId)) addFlag("Player");
-        if (tiles.Has(entityId)) addFlag("Tile");
-        if (bricks.Has(entityId)) addFlag("Brick");
-        if (finishes.Has(entityId)) addFlag("Finish");
-        if (decorations.Has(entityId)) addFlag("Decor");
-        if (bullets.Has(entityId)) addFlag("Bullet");
-        if (cameras.Has(entityId)) addFlag("Camera");
-        if (followCameras.Has(entityId)) addFlag("FollowXCamera");
-        if (defaultCameras.Has(entityId)) addFlag("DefaultCamera");
-        if (questionTiles.Has(entityId)) addFlag("QuestionTile");
+        if (players.Has(entityId))
+            addFlag("Player");
+        if (tiles.Has(entityId))
+            addFlag("Tile");
+        if (bricks.Has(entityId))
+            addFlag("Brick");
+        if (finishes.Has(entityId))
+            addFlag("Finish");
+        if (decorations.Has(entityId))
+            addFlag("Decor");
+        if (bullets.Has(entityId))
+            addFlag("Bullet");
+        if (cameras.Has(entityId))
+            addFlag("Camera");
+        if (followCameras.Has(entityId))
+            addFlag("FollowXCamera");
+        if (defaultCameras.Has(entityId))
+            addFlag("DefaultCamera");
+        if (questionTiles.Has(entityId))
+            addFlag("QuestionTile");
 
         std::string title = "Entity " + std::to_string(entityId);
 

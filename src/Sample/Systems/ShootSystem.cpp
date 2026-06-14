@@ -10,14 +10,11 @@ void ShootSystem::CreateBullet(const int shooterEntity, const ShooterComponent& 
     const auto& shooterPosition = _positions.Get(shooterEntity);
     const int bulletEntity = world.CreateEntity();
 
-    auto& bulletPosition = _positions.Add(bulletEntity,
-        PositionComponent(shooterPosition.Position.x + shooter.DirectionX * 48.0f,
-            shooterPosition.Position.y - 8.0f));
+    auto& bulletPosition = _positions.Add(bulletEntity, PositionComponent(shooterPosition.Position.x + shooter.DirectionX * 48.0f, shooterPosition.Position.y - 8.0f));
     auto& bullet = _bullets.Add(bulletEntity, BulletComponent(shooterEntity, shooter.BulletSpeed));
     _movements.Add(bulletEntity, MovementComponent(bullet.Speed, shooter.DirectionX, 0.0f));
     auto& sprite = _sprites.Add(bulletEntity, SpriteComponent(_bulletTexture));
-    bulletPosition.Scale = {_bulletRadius * 2.0f / sprite.TextureRect.size.x,
-        _bulletRadius * 2.0f / sprite.TextureRect.size.y};
+    bulletPosition.Scale = {_bulletRadius * 2.0f / sprite.TextureRect.size.x, _bulletRadius * 2.0f / sprite.TextureRect.size.y};
     _circleColliders.Add(bulletEntity, CircleColliderComponent(_bulletRadius));
     _collisions.Add(bulletEntity, CollisionComponent());
 }

@@ -9,8 +9,7 @@ struct AnimationStateComponent {
     bool NeedChange = false;
 
     AnimationStateComponent() = default;
-    AnimationStateComponent(const std::string& initialState)
-        : CurrentState(initialState), NewState(initialState) {}
+    AnimationStateComponent(const std::string& initialState) : CurrentState(initialState), NewState(initialState) {}
 };
 
 #endif // ANIMATIONSTATECOMPONENT_H

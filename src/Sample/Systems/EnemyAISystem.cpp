@@ -31,9 +31,7 @@ bool EnemyAISystem::HasObstacleBetween(const sf::Vector2f& from, const sf::Vecto
     return false;
 }
 
-bool EnemyAISystem::LineIntersectsBox(const sf::Vector2f& from,
-    const sf::Vector2f& to,
-    const int boxEntity) const {
+bool EnemyAISystem::LineIntersectsBox(const sf::Vector2f& from, const sf::Vector2f& to, const int boxEntity) const {
     const auto& position = _positions.Get(boxEntity).Position;
     const auto& box = _boxColliders.Get(boxEntity);
 

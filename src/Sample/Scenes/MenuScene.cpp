@@ -1,13 +1,13 @@
 #include "MenuScene.h"
-#include <imgui.h>
-#include <SFML/Graphics/Color.hpp>
 #include "../BestTimeStorage.h"
+#include <SFML/Graphics/Color.hpp>
+#include <imgui.h>
 
 #include "../../GameEngine/GameEngine.h"
-#include "GameScene.h"
 #include "../Components/CameraComponent.h"
 #include "../Components/DefaultCameraComponent.h"
 #include "../Systems/DefaultCameraSystem.h"
+#include "GameScene.h"
 
 MenuScene::MenuScene(GameEngine& gameEngine) : Scene(gameEngine) {}
 
@@ -28,17 +28,9 @@ void MenuScene::Update(float delta) {
     systemsManager.Update();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
 
-    ImGui::SetNextWindowSize(ImVec2(
-       static_cast<float>(GameEngineConfiguration::Width),
-       static_cast<float>(GameEngineConfiguration::Height)
-   ));
+    ImGui::SetNextWindowSize(ImVec2(static_cast<float>(GameEngineConfiguration::Width), static_cast<float>(GameEngineConfiguration::Height)));
 
-    ImGui::Begin("Menu", nullptr,
-       ImGuiWindowFlags_NoTitleBar |
-       ImGuiWindowFlags_NoResize |
-       ImGuiWindowFlags_NoMove |
-       ImGuiWindowFlags_NoCollapse
-   );
+    ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
     ImGui::SetCursorPos(ImVec2(540, 280));
 
     const float bestTime = BestTimeStorage::Load();

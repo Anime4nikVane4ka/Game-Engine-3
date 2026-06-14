@@ -17,18 +17,10 @@ class RespawnSystem final : public ISystem {
 
     float _fallLimitY;
 
-public:
+  public:
     RespawnSystem(World& world, float fallLimitY)
-        : ISystem(world),
-          _positions(world.GetStorage<PositionComponent>()),
-          _movements(world.GetStorage<MovementComponent>()),
-          _respawns(world.GetStorage<RespawnComponent>()),
-          _entities(FilterBuilder(world)
-              .With<PositionComponent>()
-              .With<MovementComponent>()
-              .With<RespawnComponent>()
-              .Build()),
-          _fallLimitY(fallLimitY) {}
+        : ISystem(world), _positions(world.GetStorage<PositionComponent>()), _movements(world.GetStorage<MovementComponent>()), _respawns(world.GetStorage<RespawnComponent>()),
+          _entities(FilterBuilder(world).With<PositionComponent>().With<MovementComponent>().With<RespawnComponent>().Build()), _fallLimitY(fallLimitY) {}
 
     void OnInit() override {}
     void OnUpdate() override;

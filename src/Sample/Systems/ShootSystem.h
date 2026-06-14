@@ -33,17 +33,9 @@ class ShootSystem final : public ISystem {
 
   public:
     ShootSystem(World& world, const sf::Texture& bulletTexture, const float bulletRadius)
-        : ISystem(world), _bullets(world.GetStorage<BulletComponent>()),
-          _circleColliders(world.GetStorage<CircleColliderComponent>()),
-          _collisions(world.GetStorage<CollisionComponent>()),
-          _movements(world.GetStorage<MovementComponent>()),
-          _positions(world.GetStorage<PositionComponent>()),
-          _shooters(world.GetStorage<ShooterComponent>()),
-          _sprites(world.GetStorage<SpriteComponent>()), _shooterEntities(FilterBuilder(world)
-                                                                 .With<ShooterComponent>()
-                                                                 .With<PositionComponent>()
-                                                                 .With<MovementComponent>()
-                                                                 .Build()),
+        : ISystem(world), _bullets(world.GetStorage<BulletComponent>()), _circleColliders(world.GetStorage<CircleColliderComponent>()), _collisions(world.GetStorage<CollisionComponent>()),
+          _movements(world.GetStorage<MovementComponent>()), _positions(world.GetStorage<PositionComponent>()), _shooters(world.GetStorage<ShooterComponent>()),
+          _sprites(world.GetStorage<SpriteComponent>()), _shooterEntities(FilterBuilder(world).With<ShooterComponent>().With<PositionComponent>().With<MovementComponent>().Build()),
           _bulletTexture(bulletTexture), _bulletRadius(bulletRadius) {}
 
     void OnInit() override;

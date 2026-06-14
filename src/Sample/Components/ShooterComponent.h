@@ -11,8 +11,7 @@ struct ShooterComponent {
 
     ShooterComponent() = default;
     ShooterComponent(const float cooldownMs) : CooldownMs(cooldownMs) {}
-    ShooterComponent(const float cooldownMs, const float bulletSpeed)
-        : CooldownMs(cooldownMs), BulletSpeed(bulletSpeed) {}
+    ShooterComponent(const float cooldownMs, const float bulletSpeed) : CooldownMs(cooldownMs), BulletSpeed(bulletSpeed) {}
     void Shot() {
         CanShoot = false;
         TimeToShootMs = CooldownMs;

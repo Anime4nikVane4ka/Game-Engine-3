@@ -8,13 +8,11 @@
 void PathfindingSystem::OnInit() {}
 
 sf::Vector2i PathfindingSystem::GetCell(const sf::Vector2f& position) const {
-    return sf::Vector2i(static_cast<int>(position.x) / LevelConfig::CellSize,
-        static_cast<int>(position.y) / LevelConfig::CellSize);
+    return sf::Vector2i(static_cast<int>(position.x) / LevelConfig::CellSize, static_cast<int>(position.y) / LevelConfig::CellSize);
 }
 
 sf::Vector2f PathfindingSystem::GetCellCenter(const sf::Vector2i& cell) const {
-    return sf::Vector2f(cell.x * LevelConfig::CellSize + LevelConfig::CellSize / 2.0f,
-        cell.y * LevelConfig::CellSize + LevelConfig::CellSize / 2.0f);
+    return sf::Vector2f(cell.x * LevelConfig::CellSize + LevelConfig::CellSize / 2.0f, cell.y * LevelConfig::CellSize + LevelConfig::CellSize / 2.0f);
 }
 
 sf::Vector2i PathfindingSystem::GetMaxCell() {
@@ -63,8 +61,7 @@ int PathfindingSystem::GetHeuristic(const sf::Vector2i& from, const sf::Vector2i
     return (std::abs(to.x - from.x) + std::abs(to.y - from.y)) * 10;
 }
 
-int PathfindingSystem::FindNode(const std::vector<PathNode>& nodes,
-    const sf::Vector2i& cell) const {
+int PathfindingSystem::FindNode(const std::vector<PathNode>& nodes, const sf::Vector2i& cell) const {
     for (int i = 0; i < nodes.size(); i++) {
         if (nodes[i].Cell == cell)
             return i;
@@ -87,8 +84,7 @@ int PathfindingSystem::FindOpenNode(const std::vector<PathNode>& nodes) const {
     return bestIndex;
 }
 
-std::vector<sf::Vector2i> PathfindingSystem::BuildPath(const std::vector<PathNode>& nodes,
-    int nodeIndex) const {
+std::vector<sf::Vector2i> PathfindingSystem::BuildPath(const std::vector<PathNode>& nodes, int nodeIndex) const {
     std::vector<sf::Vector2i> path;
 
     while (nodeIndex >= 0) {
@@ -100,8 +96,7 @@ std::vector<sf::Vector2i> PathfindingSystem::BuildPath(const std::vector<PathNod
     return path;
 }
 
-std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
-    const sf::Vector2i& target) {
+std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start, const sf::Vector2i& target) {
     if (start == target)
         return {target};
 
@@ -139,11 +134,7 @@ std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
             const int nodeIndex = FindNode(nodes, nextCell);
 
             if (nodeIndex == -1) {
-                nodes.push_back(PathNode{nextCell,
-                    currentIndex,
-                    nextCost,
-                    nextCost + GetHeuristic(nextCell, target),
-                    false});
+                nodes.push_back(PathNode{nextCell, currentIndex, nextCost, nextCost + GetHeuristic(nextCell, target), false});
                 continue;
             }
 
@@ -159,15 +150,12 @@ std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
     return {};
 }
 
-void PathfindingSystem::FollowPath(const int entity,
-    PathfindingComponent& pathfinding,
-    const sf::Vector2i& targetCell) {
+void PathfindingSystem::FollowPath(const int entity, PathfindingComponent& pathfinding, const sf::Vector2i& targetCell) {
     auto& movement = _movements.Get(entity);
     const auto& position = _positions.Get(entity);
     const sf::Vector2i currentCell = GetCell(position.Position);
 
-    if (pathfinding.NeedUpdate || pathfinding.Path.empty() ||
-        pathfinding.Path.back() != targetCell) {
+    if (pathfinding.NeedUpdate || pathfinding.Path.empty() || pathfinding.Path.back() != targetCell) {
         pathfinding.Path = FindPath(currentCell, targetCell);
         pathfinding.CurrentPathIndex = 0;
         pathfinding.NeedUpdate = false;
@@ -178,8 +166,7 @@ void PathfindingSystem::FollowPath(const int entity,
         return;
     }
 
-    while (pathfinding.CurrentPathIndex < pathfinding.Path.size() &&
-           pathfinding.Path[pathfinding.CurrentPathIndex] == currentCell) {
+    while (pathfinding.CurrentPathIndex < pathfinding.Path.size() && pathfinding.Path[pathfinding.CurrentPathIndex] == currentCell) {
         pathfinding.CurrentPathIndex++;
     }
 

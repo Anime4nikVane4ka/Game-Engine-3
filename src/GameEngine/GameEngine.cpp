@@ -11,11 +11,8 @@ void GameEngine::Render() {
 }
 
 GameEngine::GameEngine(const GameEngineConfiguration& config)
-    : _config(config),
-      _window(sf::VideoMode({GameEngineConfiguration::Width, GameEngineConfiguration::Height}),
-          "Game"),
-      _inputManager(std::make_shared<InputManager>(_window, *this)), _isRunning(false),
-      _currentScene(0) {
+    : _config(config), _window(sf::VideoMode({GameEngineConfiguration::Width, GameEngineConfiguration::Height}), "Game"), _inputManager(std::make_shared<InputManager>(_window, *this)),
+      _isRunning(false), _currentScene(0) {
     _window.setFramerateLimit(60);
 
     ImGui::SFML::Init(_window);

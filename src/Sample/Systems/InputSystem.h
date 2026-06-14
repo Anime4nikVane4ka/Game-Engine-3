@@ -27,15 +27,9 @@ class InputSystem final : public ISystem {
     bool IsActive(const std::shared_ptr<InputAction>& action) const;
 
   public:
-    InputSystem(World& world,
-        std::shared_ptr<InputAction> moveLeft,
-        std::shared_ptr<InputAction> moveRight,
-        std::shared_ptr<InputAction> jump,
-        std::shared_ptr<InputAction> shoot)
-        : ISystem(world), _movementComponents(world.GetStorage<MovementComponent>()),
-          _shooterComponents(world.GetStorage<ShooterComponent>()),
-          _players(FilterBuilder(world).With<PlayerComponent>().With<MovementComponent>().Build()),
-          _moveLeft(std::move(moveLeft)), _moveRight(std::move(moveRight)), _jump(std::move(jump)),
+    InputSystem(World& world, std::shared_ptr<InputAction> moveLeft, std::shared_ptr<InputAction> moveRight, std::shared_ptr<InputAction> jump, std::shared_ptr<InputAction> shoot)
+        : ISystem(world), _movementComponents(world.GetStorage<MovementComponent>()), _shooterComponents(world.GetStorage<ShooterComponent>()),
+          _players(FilterBuilder(world).With<PlayerComponent>().With<MovementComponent>().Build()), _moveLeft(std::move(moveLeft)), _moveRight(std::move(moveRight)), _jump(std::move(jump)),
           _shoot(std::move(shoot)) {}
 
     void OnInit() override;

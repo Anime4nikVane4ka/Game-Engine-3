@@ -5,8 +5,7 @@ struct DestroyOnAnimationEndComponent {
     int FramesRemaining = -1;
 
     DestroyOnAnimationEndComponent() = default;
-    explicit DestroyOnAnimationEndComponent(const int framesRemaining)
-        : FramesRemaining(framesRemaining) {}
+    explicit DestroyOnAnimationEndComponent(const int framesRemaining) : FramesRemaining(framesRemaining) {}
 };
 
 #endif // DESTROYONANIMATIONENDCOMPONENT_H
