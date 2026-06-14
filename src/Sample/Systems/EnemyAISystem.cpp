@@ -1,7 +1,5 @@
 #include "EnemyAISystem.h"
 
-const float WaitBeforePatrolMs = 5000.0f;
-
 void EnemyAISystem::OnInit() {}
 
 bool EnemyAISystem::IsSolid(const int entity) const {
@@ -110,7 +108,7 @@ void EnemyAISystem::OnUpdate() {
 
         if (wasChasing) {
             goomba.IsReturningToPatrol = false;
-            goomba.WaitBeforePatrolMs = WaitBeforePatrolMs;
+            goomba.WaitBeforePatrolMs = goomba.MaxWaitBeforePatrolMs;
         }
     }
 }

@@ -5,6 +5,7 @@ struct GoombaComponent {
     bool IsChasing = false;
     bool IsReturningToPatrol = false;
     float WaitBeforePatrolMs = 0.0f;
+    float MaxWaitBeforePatrolMs = 5000.0f;
     float ViewDistance = 512.0f;
 
     GoombaComponent() = default;

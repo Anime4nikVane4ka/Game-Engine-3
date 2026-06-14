@@ -124,18 +124,19 @@ std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
         if (currentIndex == -1)
             break;
 
-        auto& currentNode = nodes[currentIndex];
-        currentNode.Closed = true;
+        nodes[currentIndex].Closed = true;
+        const sf::Vector2i currentCell = nodes[currentIndex].Cell;
+        const int currentCost = nodes[currentIndex].Cost;
 
-        if (currentNode.Cell == target)
+        if (currentCell == target)
             return BuildPath(nodes, currentIndex);
 
         for (const auto& direction : directions) {
-            const sf::Vector2i nextCell = currentNode.Cell + direction;
+            const sf::Vector2i nextCell = currentCell + direction;
             if (!IsInsideGrid(nextCell, maxCell) || IsBlocked(nextCell))
                 continue;
 
-            const int nextCost = currentNode.Cost + (direction.y == 0 ? 10 : 14);
+            const int nextCost = currentCost + (direction.y == 0 ? 10 : 14);
             const int nodeIndex = FindNode(nodes, nextCell);
 
             if (nodeIndex == -1) {
@@ -161,27 +162,10 @@ std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
 
 void PathfindingSystem::FollowPath(const int entity,
     PathfindingComponent& pathfinding,
-    const sf::Vector2f& targetPosition,
     const sf::Vector2i& targetCell) {
     auto& movement = _movements.Get(entity);
     const auto& position = _positions.Get(entity);
     const sf::Vector2i currentCell = GetCell(position.Position);
-    const float directDistanceX = targetPosition.x - position.Position.x;
-
-    if (currentCell.y == targetCell.y) {
-        pathfinding.Path.clear();
-        pathfinding.CurrentPathIndex = 0;
-        pathfinding.NeedUpdate = true;
-
-        if (std::abs(directDistanceX) <= movement.Speed)
-            movement.Direction.x = 0.0f;
-        else if (directDistanceX > 0.0f)
-            movement.Direction.x = 1.0f;
-        else
-            movement.Direction.x = -1.0f;
-
-        return;
-    }
 
     if (pathfinding.NeedUpdate || pathfinding.Path.empty() ||
         pathfinding.Path.back() != targetCell) {
@@ -232,8 +216,7 @@ void PathfindingSystem::OnUpdate() {
     if (playerEntity == -1)
         return;
 
-    const auto& playerPosition = _positions.Get(playerEntity).Position;
-    const sf::Vector2i playerCell = GetCell(playerPosition);
+    const sf::Vector2i playerCell = GetCell(_positions.Get(playerEntity).Position);
 
     for (const int entity : _pathfindingEntities) {
         auto& pathfinding = _pathfindings.Get(entity);
@@ -245,6 +228,6 @@ void PathfindingSystem::OnUpdate() {
             continue;
         }
 
-        FollowPath(entity, pathfinding, playerPosition, playerCell);
+        FollowPath(entity, pathfinding, playerCell);
     }
 }
