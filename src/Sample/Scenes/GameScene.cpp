@@ -265,7 +265,7 @@ void GameScene::Update(float delta) {
         _levelTimeSeconds += delta;
 
     }
-    _gui.Draw(world, _renderMode, _levelTimeSeconds);
+    _gui.Draw(world, _renderMode, _levelTimeSeconds, gameEngine.Assets());
 
     if (_paused) {
         ImGui::SetNextWindowPos(ImVec2(0, 0));
