@@ -78,6 +78,10 @@ set(SOURCES main.cpp
         Sample/Components/RespawnComponent.h
         Sample/Systems/RespawnSystem.h
         Sample/Systems/RespawnSystem.cpp
+        GUI/GUI.cpp
+        GUI/GUI.h
+        Sample/BestTimeStorage.h
+        Sample/BestTimeStorage.cpp
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Assets
