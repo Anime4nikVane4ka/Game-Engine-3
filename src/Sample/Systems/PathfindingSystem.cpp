@@ -17,7 +17,7 @@ sf::Vector2f PathfindingSystem::GetCellCenter(const sf::Vector2i& cell) const {
         cell.y * LevelConfig::CellSize + LevelConfig::CellSize / 2.0f);
 }
 
-sf::Vector2i PathfindingSystem::GetMaxCell() const {
+sf::Vector2i PathfindingSystem::GetMaxCell() {
     sf::Vector2i maxCell = {0, 0};
 
     for (const int entity : _solidEntities) {
@@ -43,7 +43,7 @@ bool PathfindingSystem::IsSolid(const int entity) const {
     return _tiles.Has(entity) || _bricks.Has(entity);
 }
 
-bool PathfindingSystem::IsBlocked(const sf::Vector2i& cell) const {
+bool PathfindingSystem::IsBlocked(const sf::Vector2i& cell) {
     for (const int entity : _solidEntities) {
         if (!IsSolid(entity))
             continue;
@@ -102,7 +102,7 @@ std::vector<sf::Vector2i> PathfindingSystem::BuildPath(const std::vector<PathNod
 }
 
 std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
-    const sf::Vector2i& target) const {
+    const sf::Vector2i& target) {
     if (start == target)
         return {target};
 

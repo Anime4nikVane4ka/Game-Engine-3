@@ -39,15 +39,15 @@ class PathfindingSystem final : public ISystem {
 
     sf::Vector2i GetCell(const sf::Vector2f& position) const;
     sf::Vector2f GetCellCenter(const sf::Vector2i& cell) const;
-    sf::Vector2i GetMaxCell() const;
+    sf::Vector2i GetMaxCell();
     bool IsSolid(int entity) const;
-    bool IsBlocked(const sf::Vector2i& cell) const;
+    bool IsBlocked(const sf::Vector2i& cell);
     bool IsInsideGrid(const sf::Vector2i& cell, const sf::Vector2i& maxCell) const;
     int GetHeuristic(const sf::Vector2i& from, const sf::Vector2i& to) const;
     int FindNode(const std::vector<PathNode>& nodes, const sf::Vector2i& cell) const;
     int FindOpenNode(const std::vector<PathNode>& nodes) const;
     std::vector<sf::Vector2i> BuildPath(const std::vector<PathNode>& nodes, int nodeIndex) const;
-    std::vector<sf::Vector2i> FindPath(const sf::Vector2i& start, const sf::Vector2i& target) const;
+    std::vector<sf::Vector2i> FindPath(const sf::Vector2i& start, const sf::Vector2i& target);
     void FollowPath(int entity, PathfindingComponent& pathfinding, const sf::Vector2i& targetCell);
 
   public:

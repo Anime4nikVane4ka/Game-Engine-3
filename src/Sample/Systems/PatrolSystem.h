@@ -1,6 +1,9 @@
 #ifndef PATROLSYSTEM_H
 #define PATROLSYSTEM_H
 
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
+
 #include "../../Ecs/Filter/Filter.h"
 #include "../../Ecs/Filter/FilterBuilder.h"
 #include "../../Ecs/Systems/ISystem.h"
@@ -16,6 +19,7 @@ class PatrolSystem final : public ISystem {
     ComponentStorage<PositionComponent>& _positions;
 
     Filter _patrolEntities;
+    sf::Clock _clock;
 
   public:
     PatrolSystem(World& world)

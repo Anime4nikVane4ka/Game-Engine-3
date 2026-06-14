@@ -29,6 +29,10 @@
       "path": "Assets/Animations/explosion.png"
     },
     {
+      "name": "TexGoombaMove",
+      "path": "Assets/Animations/GoombaMove.png"
+    },
+    {
       "name": "Bullet",
       "path": "Assets/Textures/Bullet.png"
     },
@@ -127,6 +131,12 @@
       "textureName": "TexExplosion",
       "frameCount": 12,
       "frameDuration": 4
+    },
+    {
+      "name": "GoombaMoveAnim",
+      "textureName": "TexGoombaMove",
+      "frameCount": 3,
+      "frameDuration": 15
     }
   ],
   "Fonts": [

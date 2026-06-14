@@ -1,12 +1,14 @@
 #include "EnemyAISystem.h"
 
+const float WaitBeforePatrolMs = 5000.0f;
+
 void EnemyAISystem::OnInit() {}
 
 bool EnemyAISystem::IsSolid(const int entity) const {
     return _tiles.Has(entity) || _bricks.Has(entity);
 }
 
-bool EnemyAISystem::IsPlayerInView(const int goombaEntity, const int playerEntity) const {
+bool EnemyAISystem::IsPlayerInView(const int goombaEntity, const int playerEntity) {
     const auto& goomba = _goombas.Get(goombaEntity);
     const auto& goombaPosition = _positions.Get(goombaEntity).Position;
     const auto& playerPosition = _positions.Get(playerEntity).Position;
@@ -19,7 +21,7 @@ bool EnemyAISystem::IsPlayerInView(const int goombaEntity, const int playerEntit
     return distance <= viewDistance && !HasObstacleBetween(goombaPosition, playerPosition);
 }
 
-bool EnemyAISystem::HasObstacleBetween(const sf::Vector2f& from, const sf::Vector2f& to) const {
+bool EnemyAISystem::HasObstacleBetween(const sf::Vector2f& from, const sf::Vector2f& to) {
     for (const int entity : _solidEntities) {
         if (!IsSolid(entity))
             continue;
@@ -87,14 +89,28 @@ bool EnemyAISystem::LineIntersectsBox(const sf::Vector2f& from,
 void EnemyAISystem::OnUpdate() {
     for (const int goombaEntity : _goombaEntities) {
         auto& goomba = _goombas.Get(goombaEntity);
-        goomba.IsChasing = false;
+        const bool wasChasing = goomba.IsChasing;
+        bool playerInView = false;
 
         for (const int playerEntity : _playerEntities) {
             if (!IsPlayerInView(goombaEntity, playerEntity))
                 continue;
 
-            goomba.IsChasing = true;
+            playerInView = true;
             break;
+        }
+
+        goomba.IsChasing = playerInView;
+
+        if (playerInView) {
+            goomba.IsReturningToPatrol = false;
+            goomba.WaitBeforePatrolMs = 0.0f;
+            continue;
+        }
+
+        if (wasChasing) {
+            goomba.IsReturningToPatrol = false;
+            goomba.WaitBeforePatrolMs = WaitBeforePatrolMs;
         }
     }
 }

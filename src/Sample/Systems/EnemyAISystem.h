@@ -25,8 +25,8 @@ class EnemyAISystem final : public ISystem {
     Filter _solidEntities;
 
     bool IsSolid(int entity) const;
-    bool IsPlayerInView(int goombaEntity, int playerEntity) const;
-    bool HasObstacleBetween(const sf::Vector2f& from, const sf::Vector2f& to) const;
+    bool IsPlayerInView(int goombaEntity, int playerEntity);
+    bool HasObstacleBetween(const sf::Vector2f& from, const sf::Vector2f& to);
     bool LineIntersectsBox(const sf::Vector2f& from, const sf::Vector2f& to, int boxEntity) const;
 
   public:

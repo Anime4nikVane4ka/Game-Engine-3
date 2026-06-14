@@ -44,6 +44,18 @@ void LevelConfig::LoadFromFile(const std::string& path) {
         levelObject.X = levelObject.GridX * CellSize;
         levelObject.Y = (Height - levelObject.GridY) * CellSize;
 
+        if (object.contains("patrol")) {
+            for (const auto& point : object.at("patrol")) {
+                LevelPointConfig patrolPoint;
+                patrolPoint.GridX = point.at("x").get<int>();
+                patrolPoint.GridY = point.at("y").get<int>();
+                patrolPoint.X = patrolPoint.GridX * CellSize;
+                patrolPoint.Y = (Height - patrolPoint.GridY) * CellSize;
+
+                levelObject.PatrolPoints.push_back(patrolPoint);
+            }
+        }
+
         Objects.push_back(levelObject);
     }
 }

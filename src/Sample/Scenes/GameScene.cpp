@@ -30,6 +30,9 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/TileComponent.h"
 #include "../Components/FinishReachedEvent.h"
+#include "../Components/GoombaComponent.h"
+#include "../Components/PathfindingComponent.h"
+#include "../Components/PatrolComponent.h"
 #include "../Components/RespawnComponent.h"
 #include "../Components/BulletComponent.h"
 #include "../Components/DefaultCameraComponent.h"
@@ -39,10 +42,13 @@
 #include "../Systems/CollisionDetectionSystem.h"
 #include "../Systems/CollisionHandlerSystem.h"
 #include "../Systems/DestroyOnAnimationEndSystem.h"
+#include "../Systems/EnemyAISystem.h"
 #include "../Systems/FollowCameraSystem.h"
 #include "../Systems/GravitySystem.h"
 #include "../Systems/InputSystem.h"
 #include "../Systems/MovementSystem.h"
+#include "../Systems/PathfindingSystem.h"
+#include "../Systems/PatrolSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/ShootSystem.h"
 #include "../Systems/RespawnSystem.h"
@@ -52,6 +58,7 @@ const char* PlayerObject = "Player";
 const char* TileObject = "Tile";
 const char* BrickObject = "Brick";
 const char* FinishObject = "Finish";
+const char* GoombaObject = "Goomba";
 
 const char* IdleState = "Idle";
 const char* RunState = "Run";
@@ -59,6 +66,7 @@ const char* JumpState = "Jump";
 const char* ShootIdleState = "ShootIdle";
 const char* ShootRunState = "ShootRun";
 const char* ShootJumpState = "ShootJump";
+const char* GoombaMoveState = "Move";
 
 const DecorationConfig* FindDecoration(const std::vector<DecorationConfig>& decorations,
     const std::string& name) {
@@ -95,6 +103,9 @@ void GameScene::Init() {
         actionMap["Jump"],
         actionMap["Shoot"]));
     systemsManager.AddSystem(std::make_shared<AnimationStateSystem>(world));
+    systemsManager.AddSystem(std::make_shared<EnemyAISystem>(world));
+    systemsManager.AddSystem(std::make_shared<PatrolSystem>(world));
+    systemsManager.AddSystem(std::make_shared<PathfindingSystem>(world));
     systemsManager.AddSystem(std::make_shared<GravitySystem>(world));
     systemsManager.AddSystem(std::make_shared<MovementSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionDetectionSystem>(world));
@@ -122,8 +133,11 @@ void GameScene::Init() {
     auto& decorations = world.GetStorage<DecorComponent>();
     auto& finishes = world.GetStorage<FinishComponent>();
     auto& followCameras = world.GetStorage<FollowXCameraComponent>();
+    auto& goombas = world.GetStorage<GoombaComponent>();
     auto& gravity = world.GetStorage<GravityComponent>();
     auto& movements = world.GetStorage<MovementComponent>();
+    auto& pathfindings = world.GetStorage<PathfindingComponent>();
+    auto& patrols = world.GetStorage<PatrolComponent>();
     auto& players = world.GetStorage<PlayerComponent>();
     auto& positions = world.GetStorage<PositionComponent>();
     auto& shooters = world.GetStorage<ShooterComponent>();
@@ -171,6 +185,52 @@ void GameScene::Init() {
             boxColliders.Add(player,
                 BoxColliderComponent(config.Player.BboxWidth, config.Player.BboxHeight));
             collisions.Add(player, CollisionComponent());
+
+            continue;
+        }
+
+        if (object.Name == GoombaObject) {
+            const auto& baseAnimation = gameEngine.Assets().GetAnimation(config.Goomba.BasePose);
+
+            const int goomba = world.CreateEntity();
+            auto& goombaPosition = positions.Add(goomba,
+                PositionComponent(object.X + config.Goomba.BboxWidth / 2.0f,
+                    object.Y - config.Goomba.BboxHeight / 2.0f));
+            goombaPosition.Scale = {
+                config.Goomba.BboxWidth / baseAnimation.Size().x,
+                config.Goomba.BboxHeight / baseAnimation.Size().y
+            };
+
+            movements.Add(goomba,
+                MovementComponent(config.Goomba.MoveSpeed,
+                    {0.0f, 0.0f},
+                    config.Goomba.MaxVelocity,
+                    config.Goomba.JumpForce));
+            gravity.Add(goomba, GravityComponent(config.Goomba.Gravity));
+            goombas.Add(goomba, GoombaComponent(false, config.Goomba.ViewDistance));
+            pathfindings.Add(goomba, PathfindingComponent());
+            sprites.Add(goomba, SpriteComponent(baseAnimation.GetTexture()));
+            animationStates.Add(goomba, AnimationStateComponent(GoombaMoveState));
+
+            auto& goombaAnimator = animators.Add(goomba, AnimatorComponent());
+            goombaAnimator.Animations.emplace(GoombaMoveState,
+                gameEngine.Assets().GetAnimation(config.Goomba.Animations.at(0)));
+
+            if (object.PatrolPoints.size() >= 2) {
+                patrols.Add(goomba,
+                    PatrolComponent(
+                        {object.PatrolPoints.at(0).X + config.Goomba.BboxWidth / 2.0f,
+                            object.PatrolPoints.at(0).Y - config.Goomba.BboxHeight / 2.0f},
+                        {object.PatrolPoints.at(1).X + config.Goomba.BboxWidth / 2.0f,
+                            object.PatrolPoints.at(1).Y - config.Goomba.BboxHeight / 2.0f}));
+            } else {
+                patrols.Add(goomba,
+                    PatrolComponent(goombaPosition.Position, goombaPosition.Position));
+            }
+
+            boxColliders.Add(goomba,
+                BoxColliderComponent(config.Goomba.BboxWidth, config.Goomba.BboxHeight));
+            collisions.Add(goomba, CollisionComponent());
 
             continue;
         }
