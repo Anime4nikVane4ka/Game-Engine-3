@@ -4,6 +4,9 @@
 
 #include <SFML/Graphics/Color.hpp>
 #include "MenuScene.h"
+#include <imgui.h>
+#include <string>
+#include "../BestTimeStorage.h"
 
 
 #include "../../Config/Config.h"
@@ -28,6 +31,9 @@
 #include "../Components/TileComponent.h"
 #include "../Components/FinishReachedEvent.h"
 #include "../Components/RespawnComponent.h"
+#include "../Components/BulletComponent.h"
+#include "../Components/DefaultCameraComponent.h"
+#include "../Components/QuestionTileComponent.h"
 #include "../Systems/AnimationStateSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionDetectionSystem.h"
@@ -68,11 +74,14 @@ const DecorationConfig* FindDecoration(const std::vector<DecorationConfig>& deco
 GameScene::GameScene(GameEngine& gameEngine) : Scene(gameEngine) {}
 
 void GameScene::Init() {
+    _levelTimeSeconds = 0.0f;
+
     RegisterAction(sf::Keyboard::Key::A, "MoveLeft");
     RegisterAction(sf::Keyboard::Key::D, "MoveRight");
     RegisterAction(sf::Keyboard::Key::W, "Jump");
     RegisterAction(sf::Keyboard::Key::Space, "Shoot");
     RegisterAction(sf::Keyboard::Key::Escape, "ExitToMenu");
+    RegisterAction(sf::Keyboard::Key::P, "Pause");
 
     Config config(GameEngineConfiguration::ConfigFile);
     LevelConfig levelConfig(GameEngineConfiguration::LevelFile);
@@ -98,7 +107,11 @@ void GameScene::Init() {
     systemsManager.AddSystem(std::make_shared<FollowCameraSystem>(world, gameEngine.Window()));
     systemsManager.AddSystem(std::make_shared<AnimationSystem>(world));
     systemsManager.AddSystem(std::make_shared<DestroyOnAnimationEndSystem>(world));
-    systemsManager.AddSystem(std::make_shared<RenderSystem>(world, gameEngine.Window()));
+    systemsManager.AddSystem(std::make_shared<RenderSystem>(
+    world,
+    gameEngine.Window(),
+    _renderMode,
+    levelConfig.Height));
 
     auto& animationStates = world.GetStorage<AnimationStateComponent>();
     auto& animators = world.GetStorage<AnimatorComponent>();
@@ -231,18 +244,69 @@ void GameScene::Init() {
     followCameras.Add(camera, FollowXCameraComponent());
 }
 
+
+
 void GameScene::Update(float delta) {
     (void)delta;
     if (actionMap["ExitToMenu"]->Type() == Start) {
         gameEngine.LoadScene<MenuScene>(gameEngine);
         return;
     }
+    const bool pauseActive = actionMap["Pause"]->Type() == Start;
+    if (pauseActive && !_pauseWasActive) {
+        _paused = !_paused;
+    }
+    _pauseWasActive = pauseActive;
+
     gameEngine.Window().clear(sf::Color(100, 100, 255));
-    systemsManager.Update();
+
+    if (!_paused) {
+        systemsManager.Update();
+        _levelTimeSeconds += delta;
+
+    }
+    _gui.Draw(world, _renderMode, _levelTimeSeconds);
+
+    if (_paused) {
+        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetNextWindowSize(ImVec2(
+            static_cast<float>(GameEngineConfiguration::Width),
+            static_cast<float>(GameEngineConfiguration::Height)
+        ));
+
+        ImGui::Begin("PauseOverlay", nullptr,
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoCollapse |
+            ImGuiWindowFlags_NoBackground |
+            ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoInputs
+        );
+
+        const char* pauseText = "PAUSE";
+
+        ImGui::SetWindowFontScale(4.0f);
+
+        const ImVec2 windowSize = ImGui::GetWindowSize();
+        const ImVec2 textSize = ImGui::CalcTextSize(pauseText);
+
+        ImGui::SetCursorPos(ImVec2(
+            (windowSize.x - textSize.x) * 0.5f,
+            (windowSize.y - textSize.y) * 0.5f
+        ));
+
+        ImGui::TextUnformatted(pauseText);
+
+        ImGui::SetWindowFontScale(1.0f);
+        ImGui::End();
+    }
+
     auto finishEvents = FilterBuilder(world).With<FinishReachedEvent>().Build();
 
     for (const int eventEntity : finishEvents) {
         (void)eventEntity;
+        BestTimeStorage::SaveIfBetter(_levelTimeSeconds);
         gameEngine.LoadScene<MenuScene>(gameEngine);
         return;
     }
