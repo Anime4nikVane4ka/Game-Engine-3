@@ -1,6 +1,7 @@
 #include "CollisionHandlerSystem.h"
 
 #include <algorithm>
+#include <cmath>
 #include "../Components/FinishReachedEvent.h"
 
 #include <SFML/Graphics/Rect.hpp>
@@ -13,11 +14,30 @@ bool CollisionHandlerSystem::IsSolid(const int entity) const {
     return _tiles.Has(entity) || _bricks.Has(entity);
 }
 
-bool CollisionHandlerSystem::IsBelow(const int firstEntity, const int secondEntity) const {
+bool CollisionHandlerSystem::IsVerticalCollision(const int firstEntity,
+    const int secondEntity) const {
+    if (!_positions.Has(firstEntity) || !_positions.Has(secondEntity) ||
+        !_boxColliders.Has(firstEntity) || !_boxColliders.Has(secondEntity))
+        return false;
+
+    const auto& firstPosition = _positions.Get(firstEntity);
+    const auto& secondPosition = _positions.Get(secondEntity);
+    const auto& firstBox = _boxColliders.Get(firstEntity);
+    const auto& secondBox = _boxColliders.Get(secondEntity);
+
+    const float overlapX = firstBox.Extents.x + secondBox.Extents.x -
+                           std::abs(firstPosition.Position.x - secondPosition.Position.x);
+    const float overlapY = firstBox.Extents.y + secondBox.Extents.y -
+                           std::abs(firstPosition.Position.y - secondPosition.Position.y);
+
+    return overlapY <= overlapX;
+}
+
+bool CollisionHandlerSystem::IsAbove(const int firstEntity, const int secondEntity) const {
     if (!_positions.Has(firstEntity) || !_positions.Has(secondEntity))
         return false;
 
-    return _positions.Get(firstEntity).Position.y > _positions.Get(secondEntity).Position.y;
+    return _positions.Get(firstEntity).Position.y < _positions.Get(secondEntity).Position.y;
 }
 
 void CollisionHandlerSystem::CreateExplosion(const int brickEntity) {
@@ -59,7 +79,8 @@ void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity,
         return;
 
     auto& movement = _movements.Get(playerEntity);
-    if (movement.Direction.y > 0.0f && !IsBelow(playerEntity, collidedEntity)) {
+    if (movement.Direction.y > 0.0f && IsAbove(playerEntity, collidedEntity) &&
+        IsVerticalCollision(playerEntity, collidedEntity)) {
         movement.Direction.y = 0.0f;
         movement.IsGrounded = true;
         if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity)) {
@@ -73,7 +94,8 @@ void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity,
         return;
     }
 
-    if (movement.Direction.y < 0.0f && IsBelow(playerEntity, collidedEntity)) {
+    if (movement.Direction.y < 0.0f && !IsAbove(playerEntity, collidedEntity) &&
+        IsVerticalCollision(playerEntity, collidedEntity)) {
         movement.Direction.y = 0.0f;
         if (_boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity)) {
             auto& playerPosition = _positions.Get(playerEntity);
@@ -85,6 +107,24 @@ void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity,
         }
         if (_bricks.Has(collidedEntity))
             DestroyBrick(collidedEntity, entitiesToRemove);
+    }
+
+    if (!IsVerticalCollision(playerEntity, collidedEntity) && movement.Direction.x != 0.0f &&
+        _boxColliders.Has(playerEntity) && _boxColliders.Has(collidedEntity)) {
+        movement.Direction.x = 0.0f;
+
+        auto& playerPosition = _positions.Get(playerEntity);
+        const auto& collidedPosition = _positions.Get(collidedEntity);
+        const auto& playerBox = _boxColliders.Get(playerEntity);
+        const auto& collidedBox = _boxColliders.Get(collidedEntity);
+
+        if (playerPosition.Position.x < collidedPosition.Position.x) {
+            playerPosition.Position.x =
+                collidedPosition.Position.x - playerBox.Extents.x - collidedBox.Extents.x;
+        } else {
+            playerPosition.Position.x =
+                collidedPosition.Position.x + playerBox.Extents.x + collidedBox.Extents.x;
+        }
     }
 }
 

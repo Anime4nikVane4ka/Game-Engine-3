@@ -40,7 +40,8 @@ class CollisionHandlerSystem final : public ISystem {
     const Animation& _explosionAnimation;
 
     bool IsSolid(int entity) const;
-    bool IsBelow(int firstEntity, int secondEntity) const;
+    bool IsVerticalCollision(int firstEntity, int secondEntity) const;
+    bool IsAbove(int firstEntity, int secondEntity) const;
     void CreateExplosion(int brickEntity);
     void DestroyBrick(int brickEntity, std::vector<int>& entitiesToRemove);
     void
