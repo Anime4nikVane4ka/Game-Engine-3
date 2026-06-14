@@ -55,8 +55,7 @@ bool PathfindingSystem::IsBlocked(const sf::Vector2i& cell) {
     return false;
 }
 
-bool PathfindingSystem::IsInsideGrid(const sf::Vector2i& cell,
-    const sf::Vector2i& maxCell) const {
+bool PathfindingSystem::IsInsideGrid(const sf::Vector2i& cell, const sf::Vector2i& maxCell) const {
     return cell.x >= 0 && cell.y >= 0 && cell.x <= maxCell.x && cell.y <= maxCell.y;
 }
 

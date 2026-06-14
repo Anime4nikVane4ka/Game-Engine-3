@@ -2,13 +2,10 @@
 
 #include <SFML/System/Time.hpp>
 #include <imgui-SFML.h>
-#include <imgui.h>
 
-//#include "../Sample/Scenes/GameScene.h"
 #include "../Sample/Scenes/MenuScene.h"
 
 void GameEngine::Render() {
-    // ToDo: ������ ������� ���� � ui
     ImGui::SFML::Render(_window);
     _window.display();
 }
@@ -28,7 +25,6 @@ GameEngine::GameEngine(const GameEngineConfiguration& config)
 void GameEngine::Initialize() {
     if (_scenes.empty()) {
         LoadScene<MenuScene>(*this);
-        //LoadScene<GameScene>(*this);
     }
 
     _isRunning = true;
