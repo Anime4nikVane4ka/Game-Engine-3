@@ -65,6 +65,7 @@
   },
   "QuestionTile": {
     "BaseTexture": "Question Tile",
-    "InactiveTexture": "Question Inactive Tile"
+    "InactiveTexture": "Question Inactive Tile",
+    "CoinAnimation": "CoinAnim"
   }
 }

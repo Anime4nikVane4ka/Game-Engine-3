@@ -91,4 +91,5 @@ void Config::LoadFromFile(const std::string& path) {
     const auto& questionTile = json.at("QuestionTile");
     QuestionTile.BaseTexture = questionTile.at("BaseTexture").get<std::string>();
     QuestionTile.InactiveTexture = questionTile.at("InactiveTexture").get<std::string>();
+    QuestionTile.CoinAnimation = questionTile.at("CoinAnimation").get<std::string>();
 }
