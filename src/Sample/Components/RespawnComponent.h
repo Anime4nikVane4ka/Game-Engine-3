@@ -5,6 +5,7 @@
 
 struct RespawnComponent {
     sf::Vector2f Position;
+    bool NeedRespawn = false;
 
     RespawnComponent() = default;
     explicit RespawnComponent(const sf::Vector2f& position) : Position(position) {}

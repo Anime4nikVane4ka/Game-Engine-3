@@ -18,10 +18,16 @@ set(SOURCES main.cpp
         Sample/Systems/DestroyOnAnimationEndSystem.h
         Sample/Systems/DefaultCameraSystem.cpp
         Sample/Systems/DefaultCameraSystem.h
+        Sample/Systems/EnemyAISystem.cpp
+        Sample/Systems/EnemyAISystem.h
         Sample/Systems/FollowCameraSystem.cpp
         Sample/Systems/FollowCameraSystem.h
         Sample/Systems/GravitySystem.cpp
         Sample/Systems/GravitySystem.h
+        Sample/Systems/PathfindingSystem.cpp
+        Sample/Systems/PathfindingSystem.h
+        Sample/Systems/PatrolSystem.cpp
+        Sample/Systems/PatrolSystem.h
         Sample/Systems/ShootSystem.cpp
         Sample/Systems/ShootSystem.h
         Sample/Scenes/MenuScene.cpp
@@ -44,6 +50,9 @@ set(SOURCES main.cpp
         Sample/Components/FinishComponent.h
         Sample/Components/FollowXCameraComponent.h
         Sample/Components/GravityComponent.h
+        Sample/Components/GoombaComponent.h
+        Sample/Components/PathfindingComponent.h
+        Sample/Components/PatrolComponent.h
         Sample/Components/PlayerComponent.h
         Sample/Components/QuestionTileComponent.h
         Sample/Components/ShooterComponent.h

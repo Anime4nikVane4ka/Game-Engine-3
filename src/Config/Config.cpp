@@ -52,6 +52,18 @@ void Config::LoadFromFile(const std::string& path) {
     Player.BasePose = player.at("BasePose").get<std::string>();
     Player.Animations = ReadStringArray(player.at("Animations"));
 
+    const auto& goomba = json.at("Goomba");
+    const auto& goombaBbox = goomba.at("Bbox");
+    Goomba.BboxWidth = goombaBbox.at(0).get<float>();
+    Goomba.BboxHeight = goombaBbox.at(1).get<float>();
+    Goomba.MoveSpeed = goomba.at("MoveSpeed").get<float>();
+    Goomba.JumpForce = goomba.at("JumpForce").get<float>();
+    Goomba.MaxVelocity = goomba.at("MaxVelocity").get<float>();
+    Goomba.Gravity = goomba.at("Gravity").get<float>();
+    Goomba.ViewDistance = goomba.at("ViewDistance").get<float>();
+    Goomba.BasePose = goomba.at("BasePose").get<std::string>();
+    Goomba.Animations = ReadStringArray(goomba.at("Animations"));
+
     const auto& bullet = json.at("Bullet");
     Bullet.BaseTexture = bullet.at("BaseTexture").get<std::string>();
     Bullet.Speed = bullet.at("Speed").get<float>();

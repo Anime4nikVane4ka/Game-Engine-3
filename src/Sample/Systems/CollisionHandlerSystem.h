@@ -15,9 +15,11 @@
 #include "../Components/CollisionComponent.h"
 #include "../Components/DestroyOnAnimationEndComponent.h"
 #include "../Components/FinishComponent.h"
+#include "../Components/GoombaComponent.h"
 #include "../Components/MovementComponent.h"
 #include "../Components/PlayerComponent.h"
 #include "../Components/PositionComponent.h"
+#include "../Components/RespawnComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TileComponent.h"
 
@@ -30,9 +32,11 @@ class CollisionHandlerSystem final : public ISystem {
     ComponentStorage<BulletComponent>& _bullets;
     ComponentStorage<DestroyOnAnimationEndComponent>& _destroyOnAnimationEnds;
     ComponentStorage<FinishComponent>& _finishes;
+    ComponentStorage<GoombaComponent>& _goombas;
     ComponentStorage<MovementComponent>& _movements;
     ComponentStorage<PlayerComponent>& _players;
     ComponentStorage<PositionComponent>& _positions;
+    ComponentStorage<RespawnComponent>& _respawns;
     ComponentStorage<SpriteComponent>& _sprites;
     ComponentStorage<TileComponent>& _tiles;
 
@@ -40,11 +44,19 @@ class CollisionHandlerSystem final : public ISystem {
     const Animation& _explosionAnimation;
 
     bool IsSolid(int entity) const;
-    bool IsBelow(int firstEntity, int secondEntity) const;
+    bool IsVerticalCollision(int firstEntity, int secondEntity) const;
+    bool IsAbove(int firstEntity, int secondEntity) const;
     void CreateExplosion(int brickEntity);
     void DestroyBrick(int brickEntity, std::vector<int>& entitiesToRemove);
+    void RequestPlayerRespawn(int playerEntity);
+    void HandleSolidCollision(int entity,
+        int collidedEntity,
+        std::vector<int>& entitiesToRemove,
+        bool destroyBrickFromBelow);
     void
     HandlePlayerCollision(int playerEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
+    void
+    HandleGoombaCollision(int goombaEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
     void
     HandleBulletCollision(int bulletEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
 
@@ -58,9 +70,11 @@ class CollisionHandlerSystem final : public ISystem {
           _bullets(world.GetStorage<BulletComponent>()),
           _destroyOnAnimationEnds(world.GetStorage<DestroyOnAnimationEndComponent>()),
           _finishes(world.GetStorage<FinishComponent>()),
+          _goombas(world.GetStorage<GoombaComponent>()),
           _movements(world.GetStorage<MovementComponent>()),
           _players(world.GetStorage<PlayerComponent>()),
           _positions(world.GetStorage<PositionComponent>()),
+          _respawns(world.GetStorage<RespawnComponent>()),
           _sprites(world.GetStorage<SpriteComponent>()), _tiles(world.GetStorage<TileComponent>()),
           _collidableEntities(FilterBuilder(world).With<CollisionComponent>().Build()),
           _explosionAnimation(explosionAnimation) {}

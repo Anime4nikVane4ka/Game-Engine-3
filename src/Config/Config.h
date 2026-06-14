@@ -15,6 +15,18 @@ struct PlayerConfig {
     std::vector<std::string> Animations;
 };
 
+struct GoombaConfig {
+    float BboxWidth = 0.0f;
+    float BboxHeight = 0.0f;
+    float MoveSpeed = 0.0f;
+    float JumpForce = 0.0f;
+    float MaxVelocity = 0.0f;
+    float Gravity = 0.0f;
+    float ViewDistance = 0.0f;
+    std::string BasePose;
+    std::vector<std::string> Animations;
+};
+
 struct BulletConfig {
     std::string BaseTexture;
     float Speed = 0.0f;
@@ -44,6 +56,7 @@ struct QuestionTileConfig {
 class Config {
   public:
     PlayerConfig Player;
+    GoombaConfig Goomba;
     BulletConfig Bullet;
     std::vector<DecorationConfig> Decorations;
     TileConfig Tile;

@@ -4,12 +4,20 @@
 #include <string>
 #include <vector>
 
+struct LevelPointConfig {
+    int GridX = 0;
+    int GridY = 0;
+    float X = 0.0f;
+    float Y = 0.0f;
+};
+
 struct LevelObjectConfig {
     std::string Name;
     int GridX = 0;
     int GridY = 0;
     float X = 0.0f;
     float Y = 0.0f;
+    std::vector<LevelPointConfig> PatrolPoints;
 };
 
 class LevelConfig {
