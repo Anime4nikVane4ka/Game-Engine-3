@@ -52,6 +52,10 @@ set(SOURCES main.cpp
         Sample/Systems/InputSystem.cpp
         Sample/Systems/InputSystem.h
         Sample/Components/MoveInputEvent.h
+        Sample/Components/FinishReachedEvent.h
+        Sample/Components/RespawnComponent.h
+        Sample/Systems/RespawnSystem.cpp
+        Sample/Systems/RespawnSystem.h
         GameEngine/Input/InputManager.cpp
         GameEngine/Input/InputManager.h
         GameEngine/Input/InputAction.cpp
@@ -70,6 +74,10 @@ set(SOURCES main.cpp
         Config/Config.h
         Config/LevelConfig.cpp
         Config/LevelConfig.h
+        Sample/Components/FinishReachedEvent.h
+        Sample/Components/RespawnComponent.h
+        Sample/Systems/RespawnSystem.h
+        Sample/Systems/RespawnSystem.cpp
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Assets

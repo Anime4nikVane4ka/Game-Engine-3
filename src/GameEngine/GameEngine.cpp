@@ -4,7 +4,8 @@
 #include <imgui-SFML.h>
 #include <imgui.h>
 
-#include "../Sample/Scenes/GameScene.h"
+//#include "../Sample/Scenes/GameScene.h"
+#include "../Sample/Scenes/MenuScene.h"
 
 void GameEngine::Render() {
     // ToDo: ������ ������� ���� � ui
@@ -26,7 +27,8 @@ GameEngine::GameEngine(const GameEngineConfiguration& config)
 
 void GameEngine::Initialize() {
     if (_scenes.empty()) {
-        LoadScene<GameScene>(*this);
+        LoadScene<MenuScene>(*this);
+        //LoadScene<GameScene>(*this);
     }
 
     _isRunning = true;

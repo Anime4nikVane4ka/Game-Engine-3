@@ -1,0 +1,7 @@
+
+#ifndef ECS_DEMO_FINISHREACHEDEVENT_H
+#define ECS_DEMO_FINISHREACHEDEVENT_H
+
+struct FinishReachedEvent {};
+
+#endif // ECS_DEMO_FINISHREACHEDEVENT_H

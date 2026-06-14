@@ -1,6 +1,7 @@
 #include "CollisionHandlerSystem.h"
 
 #include <algorithm>
+#include "../Components/FinishReachedEvent.h"
 
 #include <SFML/Graphics/Rect.hpp>
 
@@ -47,6 +48,8 @@ void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity,
     const int collidedEntity,
     std::vector<int>& entitiesToRemove) {
     if (_finishes.Has(collidedEntity)) {
+        const int eventEntity = world.CreateEntity();
+        world.GetStorage<FinishReachedEvent>().Add(eventEntity, FinishReachedEvent());
         if (_movements.Has(playerEntity))
             _movements.Get(playerEntity).Direction = {0.0f, 0.0f};
         return;

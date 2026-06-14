@@ -3,10 +3,13 @@
 #include <memory>
 
 #include <SFML/Graphics/Color.hpp>
+#include "MenuScene.h"
+
 
 #include "../../Config/Config.h"
 #include "../../Config/LevelConfig.h"
 #include "../../GameEngine/GameEngine.h"
+#include "../../Ecs/Filter/FilterBuilder.h"
 #include "../Components/AnimationStateComponent.h"
 #include "../Components/AnimatorComponent.h"
 #include "../Components/BoxColliderComponent.h"
@@ -23,6 +26,8 @@
 #include "../Components/ShooterComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TileComponent.h"
+#include "../Components/FinishReachedEvent.h"
+#include "../Components/RespawnComponent.h"
 #include "../Systems/AnimationStateSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionDetectionSystem.h"
@@ -34,6 +39,8 @@
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/ShootSystem.h"
+#include "../Systems/RespawnSystem.h"
+
 
 const char* PlayerObject = "Player";
 const char* TileObject = "Tile";
@@ -65,6 +72,7 @@ void GameScene::Init() {
     RegisterAction(sf::Keyboard::Key::D, "MoveRight");
     RegisterAction(sf::Keyboard::Key::W, "Jump");
     RegisterAction(sf::Keyboard::Key::Space, "Shoot");
+    RegisterAction(sf::Keyboard::Key::Escape, "ExitToMenu");
 
     Config config(GameEngineConfiguration::ConfigFile);
     LevelConfig levelConfig(GameEngineConfiguration::LevelFile);
@@ -82,6 +90,8 @@ void GameScene::Init() {
     systemsManager.AddSystem(std::make_shared<MovementSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionDetectionSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionHandlerSystem>(world, explosionAnimation));
+    systemsManager.AddSystem(std::make_shared<RespawnSystem>(world,
+    static_cast<float>(GameEngineConfiguration::Height + LevelConfig::CellSize)));
     systemsManager.AddSystem(std::make_shared<ShootSystem>(world,
         gameEngine.Assets().GetTexture(config.Bullet.BaseTexture),
         config.Bullet.Radius));
@@ -104,6 +114,7 @@ void GameScene::Init() {
     auto& players = world.GetStorage<PlayerComponent>();
     auto& positions = world.GetStorage<PositionComponent>();
     auto& shooters = world.GetStorage<ShooterComponent>();
+    auto& respawns = world.GetStorage<RespawnComponent>();
     auto& sprites = world.GetStorage<SpriteComponent>();
     auto& tiles = world.GetStorage<TileComponent>();
 
@@ -116,6 +127,9 @@ void GameScene::Init() {
                 PositionComponent(object.X + config.Player.BboxWidth / 2.0f,
                     object.Y - config.Player.BboxHeight / 2.0f));
             playerPosition.Scale = {4.0f, 4.0f};
+
+            respawns.Add(player, RespawnComponent(playerPosition.Position));
+
             movements.Add(player,
                 MovementComponent(config.Player.MoveSpeed,
                     {0.0f, 0.0f},
@@ -219,6 +233,17 @@ void GameScene::Init() {
 
 void GameScene::Update(float delta) {
     (void)delta;
+    if (actionMap["ExitToMenu"]->Type() == Start) {
+        gameEngine.LoadScene<MenuScene>(gameEngine);
+        return;
+    }
     gameEngine.Window().clear(sf::Color(100, 100, 255));
     systemsManager.Update();
+    auto finishEvents = FilterBuilder(world).With<FinishReachedEvent>().Build();
+
+    for (const int eventEntity : finishEvents) {
+        (void)eventEntity;
+        gameEngine.LoadScene<MenuScene>(gameEngine);
+        return;
+    }
 }
