@@ -27,7 +27,7 @@
     "JumpForce": 4,
     "MaxVelocity": 4,
     "Gravity": 0.1,
-    "ViewDistance": 256,
+    "ViewDistance": 512,
     "BasePose": "GoombaMoveAnim",
     "Animations": [
       "GoombaMoveAnim"

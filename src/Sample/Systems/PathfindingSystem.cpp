@@ -123,18 +123,19 @@ std::vector<sf::Vector2i> PathfindingSystem::FindPath(const sf::Vector2i& start,
         if (currentIndex == -1)
             break;
 
-        auto& currentNode = nodes[currentIndex];
-        currentNode.Closed = true;
+        nodes[currentIndex].Closed = true;
+        const sf::Vector2i currentCell = nodes[currentIndex].Cell;
+        const int currentCost = nodes[currentIndex].Cost;
 
-        if (currentNode.Cell == target)
+        if (currentCell == target)
             return BuildPath(nodes, currentIndex);
 
         for (const auto& direction : directions) {
-            const sf::Vector2i nextCell = currentNode.Cell + direction;
+            const sf::Vector2i nextCell = currentCell + direction;
             if (!IsInsideGrid(nextCell, maxCell) || IsBlocked(nextCell))
                 continue;
 
-            const int nextCost = currentNode.Cost + (direction.y == 0 ? 10 : 14);
+            const int nextCost = currentCost + (direction.y == 0 ? 10 : 14);
             const int nodeIndex = FindNode(nodes, nextCell);
 
             if (nodeIndex == -1) {
@@ -188,8 +189,8 @@ void PathfindingSystem::FollowPath(const int entity,
     }
 
     const sf::Vector2i nextCell = pathfinding.Path[pathfinding.CurrentPathIndex];
-    const sf::Vector2f targetPosition = GetCellCenter(nextCell);
-    const float distanceX = targetPosition.x - position.Position.x;
+    const sf::Vector2f nextPosition = GetCellCenter(nextCell);
+    const float distanceX = nextPosition.x - position.Position.x;
 
     if (std::abs(distanceX) <= movement.Speed)
         movement.Direction.x = 0.0f;
