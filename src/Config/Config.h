@@ -51,6 +51,7 @@ struct BrickTileConfig {
 struct QuestionTileConfig {
     std::string BaseTexture;
     std::string InactiveTexture;
+    std::string CoinAnimation;
 };
 
 class Config {

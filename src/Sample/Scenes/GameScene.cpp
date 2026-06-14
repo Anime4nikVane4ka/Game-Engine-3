@@ -2,41 +2,40 @@
 
 #include <memory>
 
-#include <SFML/Graphics/Color.hpp>
+#include "../BestTimeStorage.h"
 #include "MenuScene.h"
+#include <SFML/Graphics/Color.hpp>
 #include <imgui.h>
 #include <string>
-#include "../BestTimeStorage.h"
-
 
 #include "../../Config/Config.h"
 #include "../../Config/LevelConfig.h"
-#include "../../GameEngine/GameEngine.h"
 #include "../../Ecs/Filter/FilterBuilder.h"
+#include "../../GameEngine/GameEngine.h"
 #include "../Components/AnimationStateComponent.h"
 #include "../Components/AnimatorComponent.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/BrickTileComponent.h"
+#include "../Components/BulletComponent.h"
 #include "../Components/CameraComponent.h"
 #include "../Components/CollisionComponent.h"
 #include "../Components/DecorComponent.h"
+#include "../Components/DefaultCameraComponent.h"
 #include "../Components/FinishComponent.h"
+#include "../Components/FinishReachedEvent.h"
 #include "../Components/FollowXCameraComponent.h"
+#include "../Components/GoombaComponent.h"
 #include "../Components/GravityComponent.h"
 #include "../Components/MovementComponent.h"
+#include "../Components/PathfindingComponent.h"
+#include "../Components/PatrolComponent.h"
 #include "../Components/PlayerComponent.h"
 #include "../Components/PositionComponent.h"
+#include "../Components/QuestionTileComponent.h"
+#include "../Components/RespawnComponent.h"
 #include "../Components/ShooterComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TileComponent.h"
-#include "../Components/FinishReachedEvent.h"
-#include "../Components/GoombaComponent.h"
-#include "../Components/PathfindingComponent.h"
-#include "../Components/PatrolComponent.h"
-#include "../Components/RespawnComponent.h"
-#include "../Components/BulletComponent.h"
-#include "../Components/DefaultCameraComponent.h"
-#include "../Components/QuestionTileComponent.h"
 #include "../Systems/AnimationStateSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionDetectionSystem.h"
@@ -50,13 +49,13 @@
 #include "../Systems/PathfindingSystem.h"
 #include "../Systems/PatrolSystem.h"
 #include "../Systems/RenderSystem.h"
-#include "../Systems/ShootSystem.h"
 #include "../Systems/RespawnSystem.h"
-
+#include "../Systems/ShootSystem.h"
 
 const char* PlayerObject = "Player";
 const char* TileObject = "Tile";
 const char* BrickObject = "Brick";
+const char* QuestionObject = "Question";
 const char* FinishObject = "Finish";
 const char* GoombaObject = "Goomba";
 
@@ -96,6 +95,7 @@ void GameScene::Init() {
 
     const auto& explosionAnimation =
         gameEngine.Assets().GetAnimation(config.BrickTile.DestroyAnimation);
+    const auto& coinAnimation = gameEngine.Assets().GetAnimation(config.QuestionTile.CoinAnimation);
 
     systemsManager.AddSystem(std::make_shared<InputSystem>(world,
         actionMap["MoveLeft"],
@@ -109,20 +109,22 @@ void GameScene::Init() {
     systemsManager.AddSystem(std::make_shared<GravitySystem>(world));
     systemsManager.AddSystem(std::make_shared<MovementSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionDetectionSystem>(world));
-    systemsManager.AddSystem(std::make_shared<CollisionHandlerSystem>(world, explosionAnimation));
+    systemsManager.AddSystem(std::make_shared<CollisionHandlerSystem>(world,
+        explosionAnimation,
+        coinAnimation,
+        gameEngine.Assets().GetTexture(config.QuestionTile.InactiveTexture)));
     systemsManager.AddSystem(std::make_shared<RespawnSystem>(world,
-    static_cast<float>(GameEngineConfiguration::Height + LevelConfig::CellSize)));
+        static_cast<float>(GameEngineConfiguration::Height + LevelConfig::CellSize)));
     systemsManager.AddSystem(std::make_shared<ShootSystem>(world,
         gameEngine.Assets().GetTexture(config.Bullet.BaseTexture),
         config.Bullet.Radius));
     systemsManager.AddSystem(std::make_shared<FollowCameraSystem>(world, gameEngine.Window()));
     systemsManager.AddSystem(std::make_shared<AnimationSystem>(world));
     systemsManager.AddSystem(std::make_shared<DestroyOnAnimationEndSystem>(world));
-    systemsManager.AddSystem(std::make_shared<RenderSystem>(
-    world,
-    gameEngine.Window(),
-    _renderMode,
-    levelConfig.Height));
+    systemsManager.AddSystem(std::make_shared<RenderSystem>(world,
+        gameEngine.Window(),
+        _renderMode,
+        levelConfig.Height));
 
     auto& animationStates = world.GetStorage<AnimationStateComponent>();
     auto& animators = world.GetStorage<AnimatorComponent>();
@@ -140,6 +142,7 @@ void GameScene::Init() {
     auto& patrols = world.GetStorage<PatrolComponent>();
     auto& players = world.GetStorage<PlayerComponent>();
     auto& positions = world.GetStorage<PositionComponent>();
+    auto& questionTiles = world.GetStorage<QuestionTileComponent>();
     auto& shooters = world.GetStorage<ShooterComponent>();
     auto& respawns = world.GetStorage<RespawnComponent>();
     auto& sprites = world.GetStorage<SpriteComponent>();
@@ -196,10 +199,8 @@ void GameScene::Init() {
             auto& goombaPosition = positions.Add(goomba,
                 PositionComponent(object.X + config.Goomba.BboxWidth / 2.0f,
                     object.Y - config.Goomba.BboxHeight / 2.0f));
-            goombaPosition.Scale = {
-                config.Goomba.BboxWidth / baseAnimation.Size().x,
-                config.Goomba.BboxHeight / baseAnimation.Size().y
-            };
+            goombaPosition.Scale = {config.Goomba.BboxWidth / baseAnimation.Size().x,
+                config.Goomba.BboxHeight / baseAnimation.Size().y};
 
             movements.Add(goomba,
                 MovementComponent(config.Goomba.MoveSpeed,
@@ -265,6 +266,22 @@ void GameScene::Init() {
             continue;
         }
 
+        if (object.Name == QuestionObject) {
+            const int questionTile = world.CreateEntity();
+            positions.Add(questionTile,
+                PositionComponent(object.X + LevelConfig::CellSize / 2.0f,
+                    object.Y - LevelConfig::CellSize / 2.0f));
+            sprites.Add(questionTile,
+                SpriteComponent(gameEngine.Assets().GetTexture(config.QuestionTile.BaseTexture)));
+            boxColliders.Add(questionTile,
+                BoxColliderComponent(LevelConfig::CellSize, LevelConfig::CellSize));
+            collisions.Add(questionTile, CollisionComponent());
+            tiles.Add(questionTile, TileComponent());
+            questionTiles.Add(questionTile, QuestionTileComponent());
+
+            continue;
+        }
+
         if (object.Name == FinishObject) {
             const int finish = world.CreateEntity();
             positions.Add(finish,
@@ -304,8 +321,6 @@ void GameScene::Init() {
     followCameras.Add(camera, FollowXCameraComponent());
 }
 
-
-
 void GameScene::Update(float delta) {
     (void)delta;
     if (actionMap["ExitToMenu"]->Type() == Start) {
@@ -323,26 +338,19 @@ void GameScene::Update(float delta) {
     if (!_paused) {
         systemsManager.Update();
         _levelTimeSeconds += delta;
-
     }
     _gui.Draw(world, _renderMode, _levelTimeSeconds);
 
     if (_paused) {
         ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2(
-            static_cast<float>(GameEngineConfiguration::Width),
-            static_cast<float>(GameEngineConfiguration::Height)
-        ));
+        ImGui::SetNextWindowSize(ImVec2(static_cast<float>(GameEngineConfiguration::Width),
+            static_cast<float>(GameEngineConfiguration::Height)));
 
-        ImGui::Begin("PauseOverlay", nullptr,
-            ImGuiWindowFlags_NoTitleBar |
-            ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoCollapse |
-            ImGuiWindowFlags_NoBackground |
-            ImGuiWindowFlags_NoScrollbar |
-            ImGuiWindowFlags_NoInputs
-        );
+        ImGui::Begin("PauseOverlay",
+            nullptr,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground |
+                ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs);
 
         const char* pauseText = "PAUSE";
 
@@ -351,10 +359,8 @@ void GameScene::Update(float delta) {
         const ImVec2 windowSize = ImGui::GetWindowSize();
         const ImVec2 textSize = ImGui::CalcTextSize(pauseText);
 
-        ImGui::SetCursorPos(ImVec2(
-            (windowSize.x - textSize.x) * 0.5f,
-            (windowSize.y - textSize.y) * 0.5f
-        ));
+        ImGui::SetCursorPos(
+            ImVec2((windowSize.x - textSize.x) * 0.5f, (windowSize.y - textSize.y) * 0.5f));
 
         ImGui::TextUnformatted(pauseText);
 

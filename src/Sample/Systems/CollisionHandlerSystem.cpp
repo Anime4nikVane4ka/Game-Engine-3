@@ -1,12 +1,15 @@
 #include "CollisionHandlerSystem.h"
 
+#include "../Components/FinishReachedEvent.h"
 #include <algorithm>
 #include <cmath>
-#include "../Components/FinishReachedEvent.h"
 
 #include <SFML/Graphics/Rect.hpp>
 
 constexpr const char* ExplosionState = "Explosion";
+constexpr const char* CoinState = "Coin";
+constexpr int CoinLifetimeFrames = 30;
+constexpr float CoinOffsetY = 64.0f;
 
 void CollisionHandlerSystem::OnInit() {}
 
@@ -53,6 +56,41 @@ void CollisionHandlerSystem::CreateExplosion(const int brickEntity) {
     auto& animator = _animators.Add(explosionEntity, AnimatorComponent());
     animator.Animations.emplace(ExplosionState, _explosionAnimation);
     _destroyOnAnimationEnds.Add(explosionEntity, DestroyOnAnimationEndComponent());
+}
+
+void CollisionHandlerSystem::CreateCoin(const int questionTileEntity) {
+    const auto& questionTilePosition = _positions.Get(questionTileEntity);
+    const int coinEntity = world.CreateEntity();
+
+    _positions.Add(coinEntity,
+        PositionComponent(questionTilePosition.Position.x,
+            questionTilePosition.Position.y - CoinOffsetY));
+    auto& sprite = _sprites.Add(coinEntity, SpriteComponent(_coinAnimation.GetTexture()));
+    sprite.TextureRect = sf::IntRect({0, 0}, _coinAnimation.Size());
+    _animationStates.Add(coinEntity, AnimationStateComponent(CoinState));
+    auto& animator = _animators.Add(coinEntity, AnimatorComponent());
+    animator.Animations.emplace(CoinState, _coinAnimation);
+    _destroyOnAnimationEnds.Add(coinEntity, DestroyOnAnimationEndComponent(CoinLifetimeFrames));
+}
+
+void CollisionHandlerSystem::ActivateQuestionTile(const int playerEntity,
+    const int questionTileEntity) {
+    if (!_questionTiles.Has(questionTileEntity))
+        return;
+
+    auto& questionTile = _questionTiles.Get(questionTileEntity);
+    if (!questionTile.IsActive)
+        return;
+
+    const auto& movement = _movements.Get(playerEntity);
+    if (movement.Direction.y >= 0.0f || IsAbove(playerEntity, questionTileEntity) ||
+        !IsVerticalCollision(playerEntity, questionTileEntity))
+        return;
+
+    questionTile.IsActive = false;
+    _sprites.Get(questionTileEntity) = SpriteComponent(_inactiveQuestionTexture);
+    _players.Get(playerEntity).AddScore(1);
+    CreateCoin(questionTileEntity);
 }
 
 void CollisionHandlerSystem::DestroyBrick(const int brickEntity,
@@ -181,6 +219,11 @@ void CollisionHandlerSystem::OnUpdate() {
             _movements.Get(entity).IsGrounded = false;
 
         const auto& collision = _collisions.Get(entity);
+        if (_players.Has(entity)) {
+            for (const int collidedEntity : collision.CollidedEntities)
+                ActivateQuestionTile(entity, collidedEntity);
+        }
+
         for (const int collidedEntity : collision.CollidedEntities) {
             if (_players.Has(entity))
                 HandlePlayerCollision(entity, collidedEntity, entitiesToRemove);

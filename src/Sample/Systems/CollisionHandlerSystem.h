@@ -19,6 +19,7 @@
 #include "../Components/MovementComponent.h"
 #include "../Components/PlayerComponent.h"
 #include "../Components/PositionComponent.h"
+#include "../Components/QuestionTileComponent.h"
 #include "../Components/RespawnComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TileComponent.h"
@@ -36,17 +37,22 @@ class CollisionHandlerSystem final : public ISystem {
     ComponentStorage<MovementComponent>& _movements;
     ComponentStorage<PlayerComponent>& _players;
     ComponentStorage<PositionComponent>& _positions;
+    ComponentStorage<QuestionTileComponent>& _questionTiles;
     ComponentStorage<RespawnComponent>& _respawns;
     ComponentStorage<SpriteComponent>& _sprites;
     ComponentStorage<TileComponent>& _tiles;
 
     Filter _collidableEntities;
+    const Animation& _coinAnimation;
     const Animation& _explosionAnimation;
+    const sf::Texture& _inactiveQuestionTexture;
 
     bool IsSolid(int entity) const;
     bool IsVerticalCollision(int firstEntity, int secondEntity) const;
     bool IsAbove(int firstEntity, int secondEntity) const;
     void CreateExplosion(int brickEntity);
+    void CreateCoin(int questionTileEntity);
+    void ActivateQuestionTile(int playerEntity, int questionTileEntity);
     void DestroyBrick(int brickEntity, std::vector<int>& entitiesToRemove);
     void RequestPlayerRespawn(int playerEntity);
     void HandleSolidCollision(int entity,
@@ -61,7 +67,10 @@ class CollisionHandlerSystem final : public ISystem {
     HandleBulletCollision(int bulletEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
 
   public:
-    CollisionHandlerSystem(World& world, const Animation& explosionAnimation)
+    CollisionHandlerSystem(World& world,
+        const Animation& explosionAnimation,
+        const Animation& coinAnimation,
+        const sf::Texture& inactiveQuestionTexture)
         : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()),
           _animators(world.GetStorage<AnimatorComponent>()),
           _collisions(world.GetStorage<CollisionComponent>()),
@@ -74,10 +83,12 @@ class CollisionHandlerSystem final : public ISystem {
           _movements(world.GetStorage<MovementComponent>()),
           _players(world.GetStorage<PlayerComponent>()),
           _positions(world.GetStorage<PositionComponent>()),
+          _questionTiles(world.GetStorage<QuestionTileComponent>()),
           _respawns(world.GetStorage<RespawnComponent>()),
           _sprites(world.GetStorage<SpriteComponent>()), _tiles(world.GetStorage<TileComponent>()),
           _collidableEntities(FilterBuilder(world).With<CollisionComponent>().Build()),
-          _explosionAnimation(explosionAnimation) {}
+          _coinAnimation(coinAnimation), _explosionAnimation(explosionAnimation),
+          _inactiveQuestionTexture(inactiveQuestionTexture) {}
 
     void OnInit() override;
     void OnUpdate() override;
