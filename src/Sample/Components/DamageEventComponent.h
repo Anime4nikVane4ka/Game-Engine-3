@@ -6,8 +6,7 @@ struct DamageEventComponent {
     int SecondEntity = -1;
 
     DamageEventComponent() = default;
-    DamageEventComponent(const int firstEntity, const int secondEntity)
-        : FirstEntity(firstEntity), SecondEntity(secondEntity) {}
+    DamageEventComponent(const int firstEntity, const int secondEntity) : FirstEntity(firstEntity), SecondEntity(secondEntity) {}
 };
 
 #endif // DAMAGEEVENTCOMPONENT_H

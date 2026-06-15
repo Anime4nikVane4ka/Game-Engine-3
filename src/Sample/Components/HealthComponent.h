@@ -8,10 +8,8 @@ struct HealthComponent {
     float InvulnerabilityLeftMs = 0.0f;
 
     HealthComponent() = default;
-    HealthComponent(const int health)
-        : Health(health), MaxHealth(health) {}
-    HealthComponent(const int health, const float invulnerabilityTimeMs)
-        : Health(health), MaxHealth(health), InvulnerabilityTimeMs(invulnerabilityTimeMs) {}
+    HealthComponent(const int health) : Health(health), MaxHealth(health) {}
+    HealthComponent(const int health, const float invulnerabilityTimeMs) : Health(health), MaxHealth(health), InvulnerabilityTimeMs(invulnerabilityTimeMs) {}
 };
 
 #endif // HEALTHCOMPONENT_H

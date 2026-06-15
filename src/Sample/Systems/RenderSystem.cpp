@@ -160,7 +160,7 @@ void RenderSystem::DrawHealthBars() {
 
         if (_boxColliders.Has(entity)) {
             const auto& box = _boxColliders.Get(entity);
-            //width = box.Size.x;
+            // width = box.Size.x;
             topOffset = box.Extents.y;
         } else if (_circleColliders.Has(entity)) {
             const auto& circle = _circleColliders.Get(entity);

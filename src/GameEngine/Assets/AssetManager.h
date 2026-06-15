@@ -30,6 +30,10 @@ class AssetManager {
     const std::unordered_map<std::string, Animation>& GetAnimations() const {
         return _animations;
     }
+
+    const std::unordered_map<std::string, sf::Font>& GetFonts() const {
+        return _fonts;
+    }
 };
 
 #endif // ASSETMANAGER_H

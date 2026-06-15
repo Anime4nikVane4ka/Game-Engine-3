@@ -40,9 +40,9 @@ class RenderSystem final : public ISystem {
   public:
     RenderSystem(World& world, sf::RenderWindow& window, RenderMode& renderMode, int levelHeight)
         : ISystem(world), _window(window), _movements(world.GetStorage<MovementComponent>()), _players(world.GetStorage<PlayerComponent>()), _positions(world.GetStorage<PositionComponent>()),
-          _sprites(world.GetStorage<SpriteComponent>()), _healths(world.GetStorage<HealthComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()), _circleColliders(world.GetStorage<CircleColliderComponent>()),
-          _renderMode(renderMode), _levelHeight(levelHeight), _renderEntities(FilterBuilder(world).With<PositionComponent>().With<SpriteComponent>().Build()),
-          _positionEntities(FilterBuilder(world).With<PositionComponent>().Build()) {}
+          _sprites(world.GetStorage<SpriteComponent>()), _healths(world.GetStorage<HealthComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()),
+          _circleColliders(world.GetStorage<CircleColliderComponent>()), _renderMode(renderMode), _levelHeight(levelHeight),
+          _renderEntities(FilterBuilder(world).With<PositionComponent>().With<SpriteComponent>().Build()), _positionEntities(FilterBuilder(world).With<PositionComponent>().Build()) {}
     void DrawColliders();
     void DrawGrid();
     void OnInit() override;

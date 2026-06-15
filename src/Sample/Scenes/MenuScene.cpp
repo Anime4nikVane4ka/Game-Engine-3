@@ -8,6 +8,9 @@
 #include "../Components/DefaultCameraComponent.h"
 #include "../Systems/DefaultCameraSystem.h"
 #include "GameScene.h"
+#ifdef ENABLE_LEVEL_EDITOR
+#include "EditorScene.h"
+#endif
 
 MenuScene::MenuScene(GameEngine& gameEngine) : Scene(gameEngine) {}
 
@@ -49,8 +52,16 @@ void MenuScene::Update(float delta) {
         gameEngine.LoadScene<GameScene>(gameEngine);
     }
 
+#ifdef ENABLE_LEVEL_EDITOR
+    ImGui::SetCursorPos(ImVec2(540, 370));
+
+    if (ImGui::Button("Editor", ImVec2(200, 80))) {
+        gameEngine.LoadScene<EditorScene>(gameEngine);
+    }
+#endif
+
     // Ставим курсор ниже, где будет кнопка Exit.
-    ImGui::SetCursorPos(ImVec2(540, 380));
+    ImGui::SetCursorPos(ImVec2(540, 460));
 
     // Рисуем кнопку Exit.
     // Если пользователь нажал кнопку, закрываем игру.
