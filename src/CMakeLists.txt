@@ -95,6 +95,7 @@ set(SOURCES main.cpp
         GUI/GUI.h
         Sample/BestTimeStorage.h
         Sample/BestTimeStorage.cpp
+
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Assets
@@ -111,9 +112,22 @@ add_subdirectory(Ecs)
 add_executable(${TARGET_NAME}
         ${SOURCES})
 
+option(ENABLE_LEVEL_EDITOR "Build level editor" ON)
+
+if (ENABLE_LEVEL_EDITOR)
+    target_compile_definitions(${TARGET_NAME} PRIVATE ENABLE_LEVEL_EDITOR)
+
+    target_sources(${TARGET_NAME} PRIVATE
+            Sample/Scenes/EditorScene.cpp
+            Sample/Scenes/EditorScene.h
+    )
+endif ()
+
 #target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 target_compile_features(${TARGET_NAME} PRIVATE cxx_std_20)
 
 target_link_libraries(${TARGET_NAME} PUBLIC ${ECS_LIB_NAME})
 target_link_libraries(${TARGET_NAME} PUBLIC ImGui-SFML::ImGui-SFML)
 target_link_libraries(${TARGET_NAME} PRIVATE nlohmann_json::nlohmann_json)
+target_compile_definitions(${TARGET_NAME} PRIVATE ENABLE_LEVEL_EDITOR)
+

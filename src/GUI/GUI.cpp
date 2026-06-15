@@ -1,8 +1,8 @@
 ﻿#include "GUI.h"
 
-#include <string>
-
+#include <algorithm>
 #include <imgui.h>
+#include <string>
 
 #include "../Sample/Components/BrickTileComponent.h"
 #include "../Sample/Components/BulletComponent.h"
@@ -15,17 +15,51 @@
 #include "../Sample/Components/PositionComponent.h"
 #include "../Sample/Components/QuestionTileComponent.h"
 #include "../Sample/Components/TileComponent.h"
+#include <SFML/System/Vector2.hpp>
+#include <imgui-SFML.h>
 
-void GUI::Draw(World& world, RenderMode& renderMode, float levelTimeSeconds) {
+namespace {
+sf::Vector2f FitImageSize(const sf::Vector2u& textureSize, const float maxSize) {
+    if (textureSize.x == 0 || textureSize.y == 0) {
+        return {maxSize, maxSize};
+    }
+
+    const float width = static_cast<float>(textureSize.x);
+    const float height = static_cast<float>(textureSize.y);
+
+    const float scale = maxSize / std::max(width, height);
+
+    return {width * scale, height * scale};
+}
+
+sf::Vector2f FitImageSize(const sf::Vector2i& textureSize, const float maxSize) {
+    return FitImageSize(sf::Vector2u(static_cast<unsigned int>(textureSize.x), static_cast<unsigned int>(textureSize.y)), maxSize);
+}
+} // namespace
+
+void GUI::Draw(World& world, RenderMode& renderMode, float levelTimeSeconds, const AssetManager& assetManager) {
     DrawHud(world, levelTimeSeconds);
 
     ImGui::Begin("Game UI");
 
-    DrawRenderModeControls(renderMode);
+    if (ImGui::BeginTabBar("GameUiTabs")) {
+        if (ImGui::BeginTabItem("Render")) {
+            DrawRenderModeControls(renderMode);
+            ImGui::EndTabItem();
+        }
 
-    ImGui::Separator();
+        if (ImGui::BeginTabItem("Entities")) {
+            DrawEntities(world);
+            ImGui::EndTabItem();
+        }
 
-    DrawEntities(world);
+        if (ImGui::BeginTabItem("Assets")) {
+            DrawAssets(assetManager);
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
+    }
 
     ImGui::End();
 }
@@ -153,5 +187,52 @@ void GUI::DrawEntities(World& world) {
         }
 
         ImGui::PopID();
+    }
+}
+void GUI::DrawAssets(const AssetManager& assetManager) {
+    if (ImGui::BeginTabBar("AssetsTabs")) {
+        if (ImGui::BeginTabItem("Textures")) {
+            for (const auto& [name, texture] : assetManager.GetTextures()) {
+                ImGui::PushID(name.c_str());
+
+                if (ImGui::ImageButton(name.c_str(), texture, FitImageSize(texture.getSize(), 64.0f))) {
+                }
+
+                ImGui::SameLine();
+                ImGui::Text("%s", name.c_str());
+
+                ImGui::PopID();
+            }
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Animations")) {
+            for (const auto& [name, animation] : assetManager.GetAnimations()) {
+                ImGui::PushID(name.c_str());
+
+                if (ImGui::ImageButton(name.c_str(), animation.GetTexture(), FitImageSize(animation.Size(), 64.0f))) {
+                }
+
+                ImGui::SameLine();
+                ImGui::Text("%s", name.c_str());
+
+                ImGui::PopID();
+            }
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Fonts")) {
+            for (const auto& [name, font] : assetManager.GetFonts()) {
+                (void)font;
+
+                if (ImGui::Button(name.c_str(), ImVec2(160.0f, 40.0f))) {
+                }
+            }
+
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
 }

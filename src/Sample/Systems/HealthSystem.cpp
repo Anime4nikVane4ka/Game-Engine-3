@@ -34,13 +34,11 @@ void HealthSystem::HandleGoombaDamage(const int goombaEntity, const int bulletEn
     if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), bulletEntity) == entitiesToRemove.end())
         entitiesToRemove.push_back(bulletEntity);
 
-    if (!ApplyDamage(goombaEntity, 1)) {
+    if (!ApplyDamage(goombaEntity, 1))
         return;
-    }
 
-    if (_healths.Get(goombaEntity).Health <= 0 && std::find(entitiesToRemove.begin(), entitiesToRemove.end(), goombaEntity) == entitiesToRemove.end()) {
+    if (_healths.Get(goombaEntity).Health <= 0 && std::find(entitiesToRemove.begin(), entitiesToRemove.end(), goombaEntity) == entitiesToRemove.end())
         entitiesToRemove.push_back(goombaEntity);
-    }
 }
 
 void HealthSystem::HandleDamageEvent(const int eventEntity, std::vector<int>& entitiesToRemove) {
@@ -77,13 +75,10 @@ void HealthSystem::OnUpdate() {
 
     for (const int entity : _healthEntities) {
         auto& health = _healths.Get(entity);
-
         if (health.InvulnerabilityLeftMs > 0.0f) {
             health.InvulnerabilityLeftMs -= deltaTimeMs;
-
-            if (health.InvulnerabilityLeftMs < 0.0f) {
+            if (health.InvulnerabilityLeftMs < 0.0f)
                 health.InvulnerabilityLeftMs = 0.0f;
-            }
         }
     }
 

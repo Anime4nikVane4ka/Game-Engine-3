@@ -92,7 +92,8 @@ void GameScene::Init() {
     RegisterAction(sf::Keyboard::Key::P, "Pause");
 
     Config config(GameEngineConfiguration::ConfigFile);
-    LevelConfig levelConfig(GameEngineConfiguration::LevelFile);
+    // LevelConfig levelConfig(GameEngineConfiguration::LevelFile);
+    LevelConfig levelConfig("level_editor.json");
 
     const auto& explosionAnimation = gameEngine.Assets().GetAnimation(config.BrickTile.DestroyAnimation);
     const auto& coinAnimation = gameEngine.Assets().GetAnimation(config.QuestionTile.CoinAnimation);
@@ -286,7 +287,7 @@ void GameScene::Update(float delta) {
         systemsManager.Update();
         _levelTimeSeconds += delta;
     }
-    _gui.Draw(world, _renderMode, _levelTimeSeconds);
+    _gui.Draw(world, _renderMode, _levelTimeSeconds, gameEngine.Assets());
 
     if (_paused) {
         ImGui::SetNextWindowPos(ImVec2(0, 0));
