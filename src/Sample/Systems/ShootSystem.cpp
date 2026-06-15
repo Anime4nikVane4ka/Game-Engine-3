@@ -1,5 +1,7 @@
 #include "ShootSystem.h"
 
+#include <vector>
+
 #include <SFML/System/Time.hpp>
 
 void ShootSystem::OnInit() {
@@ -19,8 +21,27 @@ void ShootSystem::CreateBullet(const int shooterEntity, const ShooterComponent& 
     _collisions.Add(bulletEntity, CollisionComponent());
 }
 
+void ShootSystem::UpdateBullets(const float deltaTimeMs) {
+    std::vector<int> bulletsToRemove;
+
+    for (const int bulletEntity : _bulletEntities) {
+        auto& bullet = _bullets.Get(bulletEntity);
+        bullet.TimeToLiveMs -= deltaTimeMs;
+
+        if (bullet.TimeToLiveMs <= 0.0f)
+            bulletsToRemove.push_back(bulletEntity);
+    }
+
+    for (const int bulletEntity : bulletsToRemove) {
+        if (world.IsEntityAlive(bulletEntity))
+            world.RemoveEntity(bulletEntity);
+    }
+}
+
 void ShootSystem::OnUpdate() {
     const float deltaTimeMs = _clock.restart().asMilliseconds();
+
+    UpdateBullets(deltaTimeMs);
 
     for (const int shooterEntity : _shooterEntities) {
         auto& shooter = _shooters.Get(shooterEntity);
