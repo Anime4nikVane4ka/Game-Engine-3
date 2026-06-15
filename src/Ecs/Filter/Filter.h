@@ -18,12 +18,11 @@ class Filter {
 
     size_t FindMinComponentStorage() const;
 
-public:
+  public:
     // ToDo:
     Filter(World& world, const std::vector<std::shared_ptr<BaseComponentStorage>>& componentStorages);
 
-    class Iterator
-    {
+    class Iterator {
         World& _world;
         const std::span<const int> _minStorageEntities;
         const std::vector<std::shared_ptr<BaseComponentStorage>>& _storages;
@@ -36,16 +35,13 @@ public:
 
         Iterator& Increment();
 
-    public:
+      public:
         using iterator_category = std::input_iterator_tag;
         using value_type = int;
         using difference_type = std::ptrdiff_t;
 
         // ToDo: Логика поиска первой подходящей сущности для итератоора
-        Iterator(World& world,
-            const std::vector<std::shared_ptr<BaseComponentStorage>>& storages,
-            const std::span<const int>& minStorageEntities, const size_t minStorageIndex,
-            const size_t current);
+        Iterator(World& world, const std::vector<std::shared_ptr<BaseComponentStorage>>& storages, const std::span<const int>& minStorageEntities, const size_t minStorageIndex, const size_t current);
 
         value_type operator*() const;
 
@@ -59,4 +55,4 @@ public:
     Iterator end();
 };
 
-#endif //FILTER_H
+#endif // FILTER_H

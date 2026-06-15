@@ -10,8 +10,7 @@
 #include "../Components/CollisionComponent.h"
 #include "../Components/PositionComponent.h"
 
-class CollisionDetectionSystem final : public ISystem
-{
+class CollisionDetectionSystem final : public ISystem {
     ComponentStorage<PositionComponent>& _positions;
     ComponentStorage<CollisionComponent>& _collisions;
     ComponentStorage<BoxColliderComponent>& _boxColliders;
@@ -24,22 +23,13 @@ class CollisionDetectionSystem final : public ISystem
     bool CheckAabbVsCircle(int boxEntity, int circleEntity);
     bool CheckCircleVsCircle(int firstEntity, int secondEntity);
 
-public:
+  public:
     CollisionDetectionSystem(World& world)
-        : ISystem(world),
-          _positions(world.GetStorage<PositionComponent>()),
-          _collisions(world.GetStorage<CollisionComponent>()),
-          _boxColliders(world.GetStorage<BoxColliderComponent>()),
-          _circleColliders(world.GetStorage<CircleColliderComponent>()),
-          _collidableEntities(FilterBuilder(world)
-              .With<PositionComponent>()
-              .With<CollisionComponent>()
-              .Build())
-    {
-    }
+        : ISystem(world), _positions(world.GetStorage<PositionComponent>()), _collisions(world.GetStorage<CollisionComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()),
+          _circleColliders(world.GetStorage<CircleColliderComponent>()), _collidableEntities(FilterBuilder(world).With<PositionComponent>().With<CollisionComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;
 };
 
-#endif //COLLISIONDETECTIONSYSTEM_H
+#endif // COLLISIONDETECTIONSYSTEM_H

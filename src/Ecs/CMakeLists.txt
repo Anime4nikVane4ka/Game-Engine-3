@@ -9,7 +9,7 @@ set(SOURCES World/World.cpp
 )
 
 add_library(${LIB_NAME}
-    ${SOURCES})
+        ${SOURCES})
 
 target_compile_definitions(${LIB_NAME} PUBLIC -DDEBUG)
 #target_compile_options(${LIB_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)

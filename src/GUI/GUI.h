@@ -2,21 +2,16 @@
 #define GUI_H
 
 #include "../Ecs/World/World.h"
+#include "../Sample/Systems/RenderSystem.h"
 
-class GUI
-{
-public:
-    GUI() = default;
+class GUI {
+  public:
+    void Draw(World& world, RenderMode& renderMode, float levelTimeSeconds);
 
-    void ToggleCollapsed();
-    void Draw(World& world);
-
-private:
-    bool _collapsed = false;
-
-    void DrawAsteroidSpawnControls(World& world);
-    void DrawUfoSpawnControls(World& world);
+  private:
+    void DrawRenderModeControls(RenderMode& renderMode);
     void DrawEntities(World& world);
+    void DrawHud(World& world, float levelTimeSeconds);
 };
 
-#endif //GUI_H
+#endif // GUI_H

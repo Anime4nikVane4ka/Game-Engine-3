@@ -1,8 +1,6 @@
 #ifndef DEFAULTCAMERACOMPONENT_H
 #define DEFAULTCAMERACOMPONENT_H
 
-struct DefaultCameraComponent
-{
-};
+struct DefaultCameraComponent {};
 
-#endif //DEFAULTCAMERACOMPONENT_H
+#endif // DEFAULTCAMERACOMPONENT_H

@@ -2,26 +2,75 @@
 #define CONFIG_H
 
 #include <string>
-#include <map>
-#include <fstream>
-#include <iostream>
+#include <vector>
 
-class Config
-{
-private:
-    std::map<std::string, std::string> _data;
+struct PlayerConfig {
+    float BboxWidth = 0.0f;
+    float BboxHeight = 0.0f;
+    float MoveSpeed = 0.0f;
+    float JumpForce = 0.0f;
+    float MaxVelocity = 0.0f;
+    float Gravity = 0.0f;
+    int Health = 0;
+    float InvulnerabilityTimeMs = 0.0f;
+    std::string BasePose;
+    std::vector<std::string> Animations;
+};
 
-public:
+struct GoombaConfig {
+    float BboxWidth = 0.0f;
+    float BboxHeight = 0.0f;
+    float MoveSpeed = 0.0f;
+    float JumpForce = 0.0f;
+    float MaxVelocity = 0.0f;
+    float Gravity = 0.0f;
+    float ViewDistance = 0.0f;
+    int Health = 0;
+    std::string BasePose;
+    std::vector<std::string> Animations;
+};
+
+struct BulletConfig {
+    std::string BaseTexture;
+    float Speed = 0.0f;
+    float Radius = 0.0f;
+};
+
+struct DecorationConfig {
+    std::string Name;
+    std::string BaseTexture;
+    std::vector<std::string> Animations;
+};
+
+struct TileConfig {
+    std::string BaseTexture;
+};
+
+struct BrickTileConfig {
+    std::string BaseTexture;
+    std::string DestroyAnimation;
+};
+
+struct QuestionTileConfig {
+    std::string BaseTexture;
+    std::string InactiveTexture;
+    std::string CoinAnimation;
+};
+
+class Config {
+  public:
+    PlayerConfig Player;
+    GoombaConfig Goomba;
+    BulletConfig Bullet;
+    std::vector<DecorationConfig> Decorations;
+    TileConfig Tile;
+    BrickTileConfig BrickTile;
+    QuestionTileConfig QuestionTile;
+
     Config() = default;
     Config(const std::string& path);
 
     void LoadFromFile(const std::string& path);
-
-    std::string getString(const std::string& key) const;
-    int getInt(const std::string& key) const;
-    float getFloat(const std::string& key) const;
-    bool getBool(const std::string& key) const;
-    float getFloatArrayValue(const std::string& key, int index) const;
 };
 
 #endif // CONFIG_H

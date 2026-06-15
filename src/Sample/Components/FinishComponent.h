@@ -1,8 +1,6 @@
 #ifndef FINISHCOMPONENT_H
 #define FINISHCOMPONENT_H
 
-struct FinishComponent
-{
-};
+struct FinishComponent {};
 
-#endif //FINISHCOMPONENT_H
+#endif // FINISHCOMPONENT_H

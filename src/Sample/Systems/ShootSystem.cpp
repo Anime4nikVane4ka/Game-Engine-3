@@ -1,51 +1,60 @@
 #include "ShootSystem.h"
 
-#include "../../Config/Config.h"
+#include <vector>
 
 #include <SFML/System/Time.hpp>
 
-void ShootSystem::OnInit()
-{
-    Config config("config.txt");
-    _bulletSpeed = config.getFloat("bullet_speed");
-
+void ShootSystem::OnInit() {
     _clock.restart();
 }
 
-void ShootSystem::OnUpdate()
-{
-    const float deltaTimeMs = static_cast<float>(_clock.restart().asMilliseconds());
-    for (const int shooterEntity : _shooterComponents.Entities())
-        _shooterComponents.Get(shooterEntity).Update(deltaTimeMs);
+void ShootSystem::CreateBullet(const int shooterEntity, const ShooterComponent& shooter) {
+    const auto& shooterPosition = _positions.Get(shooterEntity);
+    const int bulletEntity = world.CreateEntity();
 
-    for (const auto eventEntity : _shootEvents)
-    {
-        auto& shootEvent = _shootInputEvents.Get(eventEntity);
-        const int shooterEntity = shootEvent.Entity;
+    auto& bulletPosition = _positions.Add(bulletEntity, PositionComponent(shooterPosition.Position.x + shooter.DirectionX * 48.0f, shooterPosition.Position.y - 8.0f));
+    auto& bullet = _bullets.Add(bulletEntity, BulletComponent(shooterEntity, shooter.BulletSpeed));
+    _movements.Add(bulletEntity, MovementComponent(bullet.Speed, shooter.DirectionX, 0.0f));
+    auto& sprite = _sprites.Add(bulletEntity, SpriteComponent(_bulletTexture));
+    bulletPosition.Scale = {_bulletRadius * 2.0f / sprite.TextureRect.size.x, _bulletRadius * 2.0f / sprite.TextureRect.size.y};
+    _circleColliders.Add(bulletEntity, CircleColliderComponent(_bulletRadius));
+    _collisions.Add(bulletEntity, CollisionComponent());
+}
 
-        if (shootEvent.Shoot
-            && _shooterComponents.Has(shooterEntity)
-            && _positions.Has(shooterEntity))
-        {
-            auto& shooter = _shooterComponents.Get(shooterEntity); // ��������� ���������� ��������
-            if (shooter.CanShoot)
-            {
-                const auto& shooterPosition = _positions.Get(shooterEntity);
-                const int bulletEntity = world.CreateEntity();
+void ShootSystem::UpdateBullets(const float deltaTimeMs) {
+    std::vector<int> bulletsToRemove;
 
-                _positions.Add(bulletEntity, PositionComponent(
-                    shooterPosition.Position.x,
-                    shooterPosition.Position.y));
-                _movements.Add(bulletEntity, MovementComponent(_bulletSpeed, 0.0f, -1.0f));
-                _boxColliders.Add(bulletEntity, BoxColliderComponent(6.0f, 16.0f));
-                _rectangleShapes.Add(bulletEntity, RectangleShapeComponent(6.0f, 16.0f, sf::Color::Yellow));
-                _collisions.Add(bulletEntity, CollisionComponent());
-                _bullets.Add(bulletEntity, BulletComponent(shooterEntity));
+    for (const int bulletEntity : _bulletEntities) {
+        auto& bullet = _bullets.Get(bulletEntity);
+        bullet.TimeToLiveMs -= deltaTimeMs;
 
-                shooter.Shot();
-            }
-        }
+        if (bullet.TimeToLiveMs <= 0.0f)
+            bulletsToRemove.push_back(bulletEntity);
+    }
 
-        world.RemoveEntity(eventEntity);
+    for (const int bulletEntity : bulletsToRemove) {
+        if (world.IsEntityAlive(bulletEntity))
+            world.RemoveEntity(bulletEntity);
+    }
+}
+
+void ShootSystem::OnUpdate() {
+    const float deltaTimeMs = _clock.restart().asMilliseconds();
+
+    UpdateBullets(deltaTimeMs);
+
+    for (const int shooterEntity : _shooterEntities) {
+        auto& shooter = _shooters.Get(shooterEntity);
+        const auto& movement = _movements.Get(shooterEntity);
+
+        if (movement.Direction.x != 0.0f)
+            shooter.DirectionX = movement.Direction.x;
+
+        shooter.Update(deltaTimeMs);
+        if (!shooter.Shoot || !shooter.CanShoot)
+            continue;
+
+        CreateBullet(shooterEntity, shooter);
+        shooter.Shot();
     }
 }

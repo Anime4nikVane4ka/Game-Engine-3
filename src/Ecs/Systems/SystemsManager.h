@@ -4,17 +4,17 @@
 #include <memory>
 #include <vector>
 
-#include "ISystem.h"
 #include "../World/World.h"
+#include "ISystem.h"
 
-class SystemsManager
-{
+class SystemsManager {
     std::vector<std::shared_ptr<IInitializer>> _newInitializers;
     std::vector<std::shared_ptr<IInitializer>> _initializers;
     std::vector<std::shared_ptr<ISystem>> _systems;
 
     World& _world;
-public:
+
+  public:
     // ToDo:
     SystemsManager(World& world);
 
@@ -25,6 +25,4 @@ public:
     void Update();
 };
 
-
-
-#endif //SYSTEMSMANAGER_H
+#endif // SYSTEMSMANAGER_H

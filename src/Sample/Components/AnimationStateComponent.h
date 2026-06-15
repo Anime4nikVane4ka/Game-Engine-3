@@ -3,16 +3,13 @@
 
 #include <string>
 
-struct AnimationStateComponent
-{
+struct AnimationStateComponent {
     std::string CurrentState;
     std::string NewState;
     bool NeedChange = false;
 
     AnimationStateComponent() = default;
-    explicit AnimationStateComponent(const std::string& initialState)
-        : CurrentState(initialState), NewState(initialState)
-    {}
+    AnimationStateComponent(const std::string& initialState) : CurrentState(initialState), NewState(initialState) {}
 };
 
-#endif //ANIMATIONSTATECOMPONENT_H
+#endif // ANIMATIONSTATECOMPONENT_H

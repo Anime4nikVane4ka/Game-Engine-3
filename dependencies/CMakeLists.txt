@@ -3,6 +3,7 @@ include(FetchContent)
 set(SFML_VERSION 3.0.0)
 set(IMGUI_VERSION 1.91.8)
 set(IMGUI_SFML_VERSION 3.0)
+set(NLOHMANN_JSON_VERSION 3.11.3)
 
 # It's nice to get stripped-down release zips instead of cloning
 # a repo and checking out a tag
@@ -19,6 +20,11 @@ FetchContent_Declare(
 FetchContent_Declare(
   imgui-sfml
   URL "https://github.com/SFML/imgui-sfml/archive/v${IMGUI_SFML_VERSION}.zip"
+)
+
+FetchContent_Declare(
+  nlohmann_json
+  URL "https://github.com/nlohmann/json/archive/v${NLOHMANN_JSON_VERSION}.zip"
 )
 
 # Or by tag...
@@ -48,3 +54,6 @@ option(IMGUI_SFML_FIND_SFML "Use find_package to find SFML" OFF)
 option(IMGUI_SFML_IMGUI_DEMO "Build imgui_demo.cpp" OFF)
 
 FetchContent_MakeAvailable(imgui-sfml)
+
+# nlohmann/json
+FetchContent_MakeAvailable(nlohmann_json)

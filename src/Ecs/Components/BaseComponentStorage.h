@@ -4,9 +4,9 @@
 #include <span>
 
 class BaseComponentStorage {
-public:
+  public:
     virtual ~BaseComponentStorage() = default;
-    
+
     virtual bool Has(int entityIid) const = 0;
     virtual int Count() const = 0;
     virtual std::span<const int> Entities() const = 0;
@@ -15,4 +15,4 @@ public:
     virtual const char* TypeName() const = 0;
 };
 
-#endif //BASECOMPONENTSTORAGE_H
+#endif // BASECOMPONENTSTORAGE_H

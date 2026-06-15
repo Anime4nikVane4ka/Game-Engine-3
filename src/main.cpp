@@ -1,9 +1,9 @@
-#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
-#include "GameEngine/GameEngine.h"
 #include "Ecs/Systems/SystemsManager.h"
 #include "Ecs/World/World.h"
+#include "GameEngine/GameEngine.h"
 #include "GameEngine/Input/InputManager.h"
 
 #include "Sample/Systems/InitSystem.h"
@@ -14,7 +14,7 @@
 int main() {
     setlocale(LC_ALL, "");
 
-    GameEngine engine(GameEngineConfiguration {});
+    GameEngine engine(GameEngineConfiguration{});
     engine.Run();
 
     /* Old way of doing
