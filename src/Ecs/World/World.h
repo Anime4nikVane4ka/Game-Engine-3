@@ -46,15 +46,20 @@ class World final : public internal::IWorldInternal {
         // или создания хранилища, если его еще нет
         const auto typeHash = typeid(T).hash_code();
         const auto foundStorageIterator = _componentStoragesHash.find(typeHash);
-        if (foundStorageIterator != _componentStoragesHash.end())
+
+        if (foundStorageIterator != _componentStoragesHash.end()) {
             return std::static_pointer_cast<ComponentStorage<T>>(foundStorageIterator->second);
+        }
+
         int storagesCount = _componentStorages.size();
         auto storage = std::make_shared<ComponentStorage<T>>(*this, storagesCount);
         _componentStoragesHash.insert({typeHash, storage});
+
         if (storagesCount == _componentStorages.capacity()) {
             const int newSize = _storagesCount << 1;
             _componentStorages.reserve(newSize);
         }
+
         _componentStorages.push_back(storage);
         return storage;
     }

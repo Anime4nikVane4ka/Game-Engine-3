@@ -52,22 +52,11 @@ class PathfindingSystem final : public ISystem {
 
   public:
     PathfindingSystem(World& world)
-        : ISystem(world), _bricks(world.GetStorage<BrickTileComponent>()),
-          _goombas(world.GetStorage<GoombaComponent>()),
-          _movements(world.GetStorage<MovementComponent>()),
-          _pathfindings(world.GetStorage<PathfindingComponent>()),
-          _positions(world.GetStorage<PositionComponent>()), _tiles(world.GetStorage<TileComponent>()),
-          _pathfindingEntities(FilterBuilder(world)
-                                   .With<GoombaComponent>()
-                                   .With<MovementComponent>()
-                                   .With<PathfindingComponent>()
-                                   .With<PositionComponent>()
-                                   .Build()),
-          _playerEntities(
-              FilterBuilder(world).With<PlayerComponent>().With<PositionComponent>().Build()),
-          _solidEntities(
-              FilterBuilder(world).With<PositionComponent>().With<BoxColliderComponent>().Build()) {
-    }
+        : ISystem(world), _bricks(world.GetStorage<BrickTileComponent>()), _goombas(world.GetStorage<GoombaComponent>()), _movements(world.GetStorage<MovementComponent>()),
+          _pathfindings(world.GetStorage<PathfindingComponent>()), _positions(world.GetStorage<PositionComponent>()), _tiles(world.GetStorage<TileComponent>()),
+          _pathfindingEntities(FilterBuilder(world).With<GoombaComponent>().With<MovementComponent>().With<PathfindingComponent>().With<PositionComponent>().Build()),
+          _playerEntities(FilterBuilder(world).With<PlayerComponent>().With<PositionComponent>().Build()),
+          _solidEntities(FilterBuilder(world).With<PositionComponent>().With<BoxColliderComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

@@ -1,7 +1,5 @@
 #include "EnemyAISystem.h"
 
-const float WaitBeforePatrolMs = 5000.0f;
-
 void EnemyAISystem::OnInit() {}
 
 bool EnemyAISystem::IsSolid(const int entity) const {
@@ -33,9 +31,7 @@ bool EnemyAISystem::HasObstacleBetween(const sf::Vector2f& from, const sf::Vecto
     return false;
 }
 
-bool EnemyAISystem::LineIntersectsBox(const sf::Vector2f& from,
-    const sf::Vector2f& to,
-    const int boxEntity) const {
+bool EnemyAISystem::LineIntersectsBox(const sf::Vector2f& from, const sf::Vector2f& to, const int boxEntity) const {
     const auto& position = _positions.Get(boxEntity).Position;
     const auto& box = _boxColliders.Get(boxEntity);
 
@@ -110,7 +106,7 @@ void EnemyAISystem::OnUpdate() {
 
         if (wasChasing) {
             goomba.IsReturningToPatrol = false;
-            goomba.WaitBeforePatrolMs = WaitBeforePatrolMs;
+            goomba.WaitBeforePatrolMs = goomba.MaxWaitBeforePatrolMs;
         }
     }
 }

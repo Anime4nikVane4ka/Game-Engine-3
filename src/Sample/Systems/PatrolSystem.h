@@ -23,15 +23,8 @@ class PatrolSystem final : public ISystem {
 
   public:
     PatrolSystem(World& world)
-        : ISystem(world), _goombas(world.GetStorage<GoombaComponent>()),
-          _movements(world.GetStorage<MovementComponent>()),
-          _patrols(world.GetStorage<PatrolComponent>()),
-          _positions(world.GetStorage<PositionComponent>()),
-          _patrolEntities(FilterBuilder(world)
-                              .With<MovementComponent>()
-                              .With<PatrolComponent>()
-                              .With<PositionComponent>()
-                              .Build()) {}
+        : ISystem(world), _goombas(world.GetStorage<GoombaComponent>()), _movements(world.GetStorage<MovementComponent>()), _patrols(world.GetStorage<PatrolComponent>()),
+          _positions(world.GetStorage<PositionComponent>()), _patrolEntities(FilterBuilder(world).With<MovementComponent>().With<PatrolComponent>().With<PositionComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

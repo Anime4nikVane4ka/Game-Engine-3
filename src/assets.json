@@ -29,8 +29,12 @@
       "path": "Assets/Animations/explosion.png"
     },
     {
-      "name": "TexGoombaMove",
+      "name": "GoombaMove",
       "path": "Assets/Animations/GoombaMove.png"
+    },
+    {
+      "name": "TexCoin",
+      "path": "Assets/Animations/coinAnim.png"
     },
     {
       "name": "Bullet",
@@ -137,6 +141,12 @@
       "textureName": "TexGoombaMove",
       "frameCount": 3,
       "frameDuration": 15
+    },
+    {
+      "name": "CoinAnim",
+      "textureName": "TexCoin",
+      "frameCount": 4,
+      "frameDuration": 4
     }
   ],
   "Fonts": [

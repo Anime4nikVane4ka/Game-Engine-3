@@ -4,8 +4,7 @@
 
 #include "../GameEngine.h"
 
-InputManager::InputManager(sf::RenderWindow& window, GameEngine& gameEngine)
-    : _window(window), _gameEngine(gameEngine) {}
+InputManager::InputManager(sf::RenderWindow& window, GameEngine& gameEngine) : _window(window), _gameEngine(gameEngine) {}
 
 void InputManager::ResetEndedActions() {
     for (auto& [_, actionMap] : _actionKeyMaps) {
@@ -39,27 +38,19 @@ void InputManager::ResetTransientActions(const size_t scene) {
     }
 }
 
-void InputManager::RegisterInput(const size_t scene,
-    const sf::Keyboard::Key key,
-    std::shared_ptr<InputAction> action) {
+void InputManager::RegisterInput(const size_t scene, const sf::Keyboard::Key key, std::shared_ptr<InputAction> action) {
     _actionKeyMaps[scene][key] = action;
 }
 
-void InputManager::RegisterInput(const size_t scene,
-    const sf::Mouse::Button btn,
-    std::shared_ptr<InputAction> action) {
+void InputManager::RegisterInput(const size_t scene, const sf::Mouse::Button btn, std::shared_ptr<InputAction> action) {
     _actionMouseBtnMaps[scene][btn] = action;
 }
 
-void InputManager::RegisterInput(const size_t scene,
-    const sf::Mouse::Wheel wheel,
-    std::shared_ptr<InputAction> action) {
+void InputManager::RegisterInput(const size_t scene, const sf::Mouse::Wheel wheel, std::shared_ptr<InputAction> action) {
     _actionMouseWheelMaps[scene][wheel] = action;
 }
 
-void InputManager::RegisterInput(const size_t scene,
-    const MouseMove mv,
-    std::shared_ptr<InputAction> action) {
+void InputManager::RegisterInput(const size_t scene, const MouseMove mv, std::shared_ptr<InputAction> action) {
     _actionMouseMoveMaps[scene][mv] = action;
 }
 
@@ -77,8 +68,7 @@ bool InputManager::ProcessInput(const size_t scene) {
 
         if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             const auto actionIterator = _actionKeyMaps[scene].find(keyPressed->code);
-            const bool isStartAction =
-                actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr;
+            const bool isStartAction = actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr;
 
             if (isStartAction) {
                 actionIterator->second->Type() = Start;
@@ -89,8 +79,7 @@ bool InputManager::ProcessInput(const size_t scene) {
 
         if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
             const auto actionIterator = _actionKeyMaps[scene].find(keyReleased->code);
-            const bool isEndAction =
-                actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr;
+            const bool isEndAction = actionIterator != _actionKeyMaps[scene].end() && actionIterator->second != nullptr;
 
             if (isEndAction) {
                 actionIterator->second->Type() = End;
@@ -101,8 +90,7 @@ bool InputManager::ProcessInput(const size_t scene) {
 
         if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
             const auto actionIterator = _actionMouseBtnMaps[scene].find(mouseButtonPressed->button);
-            const bool isStartAction = actionIterator != _actionMouseBtnMaps[scene].end() &&
-                                       actionIterator->second != nullptr;
+            const bool isStartAction = actionIterator != _actionMouseBtnMaps[scene].end() && actionIterator->second != nullptr;
 
             if (isStartAction) {
                 actionIterator->second->Type() = Start;
@@ -113,10 +101,8 @@ bool InputManager::ProcessInput(const size_t scene) {
         }
 
         if (const auto* mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
-            const auto actionIterator =
-                _actionMouseBtnMaps[scene].find(mouseButtonReleased->button);
-            const bool isEndAction = actionIterator != _actionMouseBtnMaps[scene].end() &&
-                                     actionIterator->second != nullptr;
+            const auto actionIterator = _actionMouseBtnMaps[scene].find(mouseButtonReleased->button);
+            const bool isEndAction = actionIterator != _actionMouseBtnMaps[scene].end() && actionIterator->second != nullptr;
 
             if (isEndAction) {
                 actionIterator->second->Type() = End;
@@ -127,10 +113,8 @@ bool InputManager::ProcessInput(const size_t scene) {
         }
 
         if (const auto* mouseWheelScrolled = event->getIf<sf::Event::MouseWheelScrolled>()) {
-            const auto actionIterator =
-                _actionMouseWheelMaps[scene].find(mouseWheelScrolled->wheel);
-            const bool isStartAction = actionIterator != _actionMouseWheelMaps[scene].end() &&
-                                       actionIterator->second != nullptr;
+            const auto actionIterator = _actionMouseWheelMaps[scene].find(mouseWheelScrolled->wheel);
+            const bool isStartAction = actionIterator != _actionMouseWheelMaps[scene].end() && actionIterator->second != nullptr;
             if (isStartAction) {
                 actionIterator->second->Type() = Start;
                 actionIterator->second->Value() = static_cast<short>(mouseWheelScrolled->delta);
@@ -142,8 +126,7 @@ bool InputManager::ProcessInput(const size_t scene) {
 
         if (const auto* mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
             const auto actionIterator = _actionMouseMoveMaps[scene].find(Move);
-            const bool isEndAction = actionIterator != _actionMouseMoveMaps[scene].end() &&
-                                     actionIterator->second != nullptr;
+            const bool isEndAction = actionIterator != _actionMouseMoveMaps[scene].end() && actionIterator->second != nullptr;
 
             if (isEndAction) {
                 actionIterator->second->Type() = Start;

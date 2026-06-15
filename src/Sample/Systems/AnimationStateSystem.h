@@ -20,15 +20,9 @@ class AnimationStateSystem final : public ISystem {
 
   public:
     AnimationStateSystem(World& world)
-        : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()),
-          _animators(world.GetStorage<AnimatorComponent>()),
-          _movements(world.GetStorage<MovementComponent>()),
-          _shooters(world.GetStorage<ShooterComponent>()), _players(FilterBuilder(world)
-                                                                   .With<PlayerComponent>()
-                                                                   .With<AnimationStateComponent>()
-                                                                   .With<AnimatorComponent>()
-                                                                   .With<MovementComponent>()
-                                                                   .Build()) {}
+        : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()), _animators(world.GetStorage<AnimatorComponent>()), _movements(world.GetStorage<MovementComponent>()),
+          _shooters(world.GetStorage<ShooterComponent>()),
+          _players(FilterBuilder(world).With<PlayerComponent>().With<AnimationStateComponent>().With<AnimatorComponent>().With<MovementComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

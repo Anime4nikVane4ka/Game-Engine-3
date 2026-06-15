@@ -55,20 +55,16 @@ bool Filter::Iterator::operator!=(const Iterator& other) const {
     return _current != other._current;
 }
 
-Filter::Filter(World& world,
-    const std::vector<std::shared_ptr<BaseComponentStorage>>& componentStorages)
-    : _world(world), _componentStorages(componentStorages),
-      _minStorageIndex(FindMinComponentStorage()) {}
+Filter::Filter(World& world, const std::vector<std::shared_ptr<BaseComponentStorage>>& componentStorages)
+    : _world(world), _componentStorages(componentStorages), _minStorageIndex(FindMinComponentStorage()) {}
 
 Filter::Iterator::Iterator(World& world,
     const std::vector<std::shared_ptr<BaseComponentStorage>>& storages,
     const std::span<const int>& minStorageEntities,
     const size_t minStorageIndex,
     const size_t current)
-    : _world(world), _minStorageEntities(minStorageEntities), _storages(storages),
-      _minStorageIndex(minStorageIndex),
-      _currentEntity(current < minStorageEntities.size() ? minStorageEntities[current] : -1),
-      _current(current) {
+    : _world(world), _minStorageEntities(minStorageEntities), _storages(storages), _minStorageIndex(minStorageIndex),
+      _currentEntity(current < minStorageEntities.size() ? minStorageEntities[current] : -1), _current(current) {
     // ����� � begin ��������� �������� �� ������ ���������� ��������
     if (_current < _minStorageEntities.size() && !HasAllComponents())
         Increment();

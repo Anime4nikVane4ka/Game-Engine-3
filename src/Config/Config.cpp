@@ -49,6 +49,8 @@ void Config::LoadFromFile(const std::string& path) {
     Player.JumpForce = player.at("JumpForce").get<float>();
     Player.MaxVelocity = player.at("MaxVelocity").get<float>();
     Player.Gravity = player.at("Gravity").get<float>();
+    Player.Health = player.at("Health").get<int>();
+    Player.InvulnerabilityTimeMs = player.at("InvulnerabilityTimeMs").get<float>();
     Player.BasePose = player.at("BasePose").get<std::string>();
     Player.Animations = ReadStringArray(player.at("Animations"));
 
@@ -61,6 +63,7 @@ void Config::LoadFromFile(const std::string& path) {
     Goomba.MaxVelocity = goomba.at("MaxVelocity").get<float>();
     Goomba.Gravity = goomba.at("Gravity").get<float>();
     Goomba.ViewDistance = goomba.at("ViewDistance").get<float>();
+    Goomba.Health = goomba.at("Health").get<int>();
     Goomba.BasePose = goomba.at("BasePose").get<std::string>();
     Goomba.Animations = ReadStringArray(goomba.at("Animations"));
 
@@ -91,4 +94,5 @@ void Config::LoadFromFile(const std::string& path) {
     const auto& questionTile = json.at("QuestionTile");
     QuestionTile.BaseTexture = questionTile.at("BaseTexture").get<std::string>();
     QuestionTile.InactiveTexture = questionTile.at("InactiveTexture").get<std::string>();
+    QuestionTile.CoinAnimation = questionTile.at("CoinAnimation").get<std::string>();
 }

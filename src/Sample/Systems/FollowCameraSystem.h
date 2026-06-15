@@ -21,12 +21,9 @@ class FollowCameraSystem final : public ISystem {
 
   public:
     FollowCameraSystem(World& world, sf::RenderWindow& window)
-        : ISystem(world), _window(window), _cameras(world.GetStorage<CameraComponent>()),
-          _positions(world.GetStorage<PositionComponent>()),
-          _followCameras(
-              FilterBuilder(world).With<CameraComponent>().With<FollowXCameraComponent>().Build()),
-          _players(FilterBuilder(world).With<PlayerComponent>().With<PositionComponent>().Build()) {
-    }
+        : ISystem(world), _window(window), _cameras(world.GetStorage<CameraComponent>()), _positions(world.GetStorage<PositionComponent>()),
+          _followCameras(FilterBuilder(world).With<CameraComponent>().With<FollowXCameraComponent>().Build()),
+          _players(FilterBuilder(world).With<PlayerComponent>().With<PositionComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

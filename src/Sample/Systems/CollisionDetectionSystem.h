@@ -25,12 +25,8 @@ class CollisionDetectionSystem final : public ISystem {
 
   public:
     CollisionDetectionSystem(World& world)
-        : ISystem(world), _positions(world.GetStorage<PositionComponent>()),
-          _collisions(world.GetStorage<CollisionComponent>()),
-          _boxColliders(world.GetStorage<BoxColliderComponent>()),
-          _circleColliders(world.GetStorage<CircleColliderComponent>()),
-          _collidableEntities(
-              FilterBuilder(world).With<PositionComponent>().With<CollisionComponent>().Build()) {}
+        : ISystem(world), _positions(world.GetStorage<PositionComponent>()), _collisions(world.GetStorage<CollisionComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()),
+          _circleColliders(world.GetStorage<CircleColliderComponent>()), _collidableEntities(FilterBuilder(world).With<PositionComponent>().With<CollisionComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

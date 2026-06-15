@@ -9,16 +9,14 @@
 
 class DestroyOnAnimationEndSystem final : public ISystem {
     ComponentStorage<AnimatorComponent>& _animators;
+    ComponentStorage<DestroyOnAnimationEndComponent>& _destroyOnAnimationEnds;
 
     Filter _entities;
 
   public:
     DestroyOnAnimationEndSystem(World& world)
-        : ISystem(world), _animators(world.GetStorage<AnimatorComponent>()),
-          _entities(FilterBuilder(world)
-                  .With<AnimatorComponent>()
-                  .With<DestroyOnAnimationEndComponent>()
-                  .Build()) {}
+        : ISystem(world), _animators(world.GetStorage<AnimatorComponent>()), _destroyOnAnimationEnds(world.GetStorage<DestroyOnAnimationEndComponent>()),
+          _entities(FilterBuilder(world).With<AnimatorComponent>().With<DestroyOnAnimationEndComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

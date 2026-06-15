@@ -1,8 +1,8 @@
 ﻿#include "GUI.h"
 
-#include <string>
 #include <algorithm>
 #include <imgui.h>
+#include <string>
 
 #include "../Sample/Components/BrickTileComponent.h"
 #include "../Sample/Components/BulletComponent.h"
@@ -15,8 +15,8 @@
 #include "../Sample/Components/PositionComponent.h"
 #include "../Sample/Components/QuestionTileComponent.h"
 #include "../Sample/Components/TileComponent.h"
-#include <imgui-SFML.h>
 #include <SFML/System/Vector2.hpp>
+#include <imgui-SFML.h>
 
 namespace {
 sf::Vector2f FitImageSize(const sf::Vector2u& textureSize, const float maxSize) {
@@ -33,18 +33,11 @@ sf::Vector2f FitImageSize(const sf::Vector2u& textureSize, const float maxSize) 
 }
 
 sf::Vector2f FitImageSize(const sf::Vector2i& textureSize, const float maxSize) {
-    return FitImageSize(sf::Vector2u(
-        static_cast<unsigned int>(textureSize.x),
-        static_cast<unsigned int>(textureSize.y)
-    ), maxSize);
+    return FitImageSize(sf::Vector2u(static_cast<unsigned int>(textureSize.x), static_cast<unsigned int>(textureSize.y)), maxSize);
 }
-}
+} // namespace
 
-
-void GUI::Draw(World& world,
-    RenderMode& renderMode,
-    float levelTimeSeconds,
-    const AssetManager& assetManager) {
+void GUI::Draw(World& world, RenderMode& renderMode, float levelTimeSeconds, const AssetManager& assetManager) {
     DrawHud(world, levelTimeSeconds);
 
     ImGui::Begin("Game UI");
@@ -95,13 +88,7 @@ void GUI::DrawHud(World& world, float levelTimeSeconds) {
     ImGui::SetNextWindowPos(ImVec2(10, 10));
     ImGui::SetNextWindowBgAlpha(0.35f);
 
-    ImGui::Begin("HUD", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_AlwaysAutoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoCollapse
-    );
+    ImGui::Begin("HUD", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
     ImGui::Text("Time: %.2f", levelTimeSeconds);
 
@@ -149,16 +136,26 @@ void GUI::DrawEntities(World& world) {
             flags += name;
         };
 
-        if (players.Has(entityId)) addFlag("Player");
-        if (tiles.Has(entityId)) addFlag("Tile");
-        if (bricks.Has(entityId)) addFlag("Brick");
-        if (finishes.Has(entityId)) addFlag("Finish");
-        if (decorations.Has(entityId)) addFlag("Decor");
-        if (bullets.Has(entityId)) addFlag("Bullet");
-        if (cameras.Has(entityId)) addFlag("Camera");
-        if (followCameras.Has(entityId)) addFlag("FollowXCamera");
-        if (defaultCameras.Has(entityId)) addFlag("DefaultCamera");
-        if (questionTiles.Has(entityId)) addFlag("QuestionTile");
+        if (players.Has(entityId))
+            addFlag("Player");
+        if (tiles.Has(entityId))
+            addFlag("Tile");
+        if (bricks.Has(entityId))
+            addFlag("Brick");
+        if (finishes.Has(entityId))
+            addFlag("Finish");
+        if (decorations.Has(entityId))
+            addFlag("Decor");
+        if (bullets.Has(entityId))
+            addFlag("Bullet");
+        if (cameras.Has(entityId))
+            addFlag("Camera");
+        if (followCameras.Has(entityId))
+            addFlag("FollowXCamera");
+        if (defaultCameras.Has(entityId))
+            addFlag("DefaultCamera");
+        if (questionTiles.Has(entityId))
+            addFlag("QuestionTile");
 
         std::string title = "Entity " + std::to_string(entityId);
 
@@ -191,7 +188,6 @@ void GUI::DrawEntities(World& world) {
 
         ImGui::PopID();
     }
-
 }
 void GUI::DrawAssets(const AssetManager& assetManager) {
     if (ImGui::BeginTabBar("AssetsTabs")) {
@@ -215,10 +211,8 @@ void GUI::DrawAssets(const AssetManager& assetManager) {
             for (const auto& [name, animation] : assetManager.GetAnimations()) {
                 ImGui::PushID(name.c_str());
 
-                if (ImGui::ImageButton(name.c_str(),
-                    animation.GetTexture(),
-                    FitImageSize(animation.Size(), 64.0f))) {
-                    }
+                if (ImGui::ImageButton(name.c_str(), animation.GetTexture(), FitImageSize(animation.Size(), 64.0f))) {
+                }
 
                 ImGui::SameLine();
                 ImGui::Text("%s", name.c_str());
@@ -241,5 +235,4 @@ void GUI::DrawAssets(const AssetManager& assetManager) {
         }
         ImGui::EndTabBar();
     }
-
 }

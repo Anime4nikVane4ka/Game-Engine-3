@@ -22,23 +22,26 @@ void AnimationStateSystem::OnUpdate() {
         const auto& movement = _movements.Get(entity);
         const bool shoot = _shooters.Has(entity) && _shooters.Get(entity).Shoot;
 
-        if (IsShootState(animationState.CurrentState) && !animator.AnimationFinished)
+        if (IsShootState(animationState.CurrentState) && !animator.AnimationFinished) {
             continue;
+        }
 
         const char* newState = IdleState;
-        if (shoot && movement.Direction.y != 0.0f)
+        if (shoot && movement.Direction.y != 0.0f) {
             newState = ShootJumpState;
-        else if (shoot && movement.Direction.x != 0.0f)
+        } else if (shoot && movement.Direction.x != 0.0f) {
             newState = ShootRunState;
-        else if (shoot)
+        } else if (shoot) {
             newState = ShootIdleState;
-        else if (movement.Direction.y != 0.0f)
+        } else if (movement.Direction.y != 0.0f) {
             newState = JumpState;
-        else if (movement.Direction.x != 0.0f)
+        } else if (movement.Direction.x != 0.0f) {
             newState = RunState;
+        }
 
-        if (animationState.CurrentState == newState)
+        if (animationState.CurrentState == newState) {
             continue;
+        }
 
         animationState.NewState = newState;
         animationState.NeedChange = true;

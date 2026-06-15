@@ -20,8 +20,7 @@ class Filter {
 
   public:
     // ToDo:
-    Filter(World& world,
-        const std::vector<std::shared_ptr<BaseComponentStorage>>& componentStorages);
+    Filter(World& world, const std::vector<std::shared_ptr<BaseComponentStorage>>& componentStorages);
 
     class Iterator {
         World& _world;
@@ -42,11 +41,7 @@ class Filter {
         using difference_type = std::ptrdiff_t;
 
         // ToDo: Логика поиска первой подходящей сущности для итератоора
-        Iterator(World& world,
-            const std::vector<std::shared_ptr<BaseComponentStorage>>& storages,
-            const std::span<const int>& minStorageEntities,
-            const size_t minStorageIndex,
-            const size_t current);
+        Iterator(World& world, const std::vector<std::shared_ptr<BaseComponentStorage>>& storages, const std::span<const int>& minStorageEntities, const size_t minStorageIndex, const size_t current);
 
         value_type operator*() const;
 

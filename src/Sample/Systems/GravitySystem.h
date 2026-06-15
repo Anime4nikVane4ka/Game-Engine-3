@@ -15,10 +15,8 @@ class GravitySystem final : public ISystem {
 
   public:
     GravitySystem(World& world)
-        : ISystem(world), _gravityComponents(world.GetStorage<GravityComponent>()),
-          _movementComponents(world.GetStorage<MovementComponent>()),
-          _entities(
-              FilterBuilder(world).With<GravityComponent>().With<MovementComponent>().Build()) {}
+        : ISystem(world), _gravityComponents(world.GetStorage<GravityComponent>()), _movementComponents(world.GetStorage<MovementComponent>()),
+          _entities(FilterBuilder(world).With<GravityComponent>().With<MovementComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

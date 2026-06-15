@@ -34,8 +34,7 @@ void PatrolSystem::OnUpdate() {
                 const float firstDistance = std::abs(patrol.FirstPoint.x - position.Position.x);
                 const float secondDistance = std::abs(patrol.SecondPoint.x - position.Position.x);
                 const bool firstPointIsCloser = firstDistance <= secondDistance;
-                const float targetX =
-                    firstPointIsCloser ? patrol.FirstPoint.x : patrol.SecondPoint.x;
+                const float targetX = firstPointIsCloser ? patrol.FirstPoint.x : patrol.SecondPoint.x;
                 const float distance = targetX - position.Position.x;
 
                 if (std::abs(distance) <= movement.Speed) {

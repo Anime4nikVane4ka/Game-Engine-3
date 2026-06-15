@@ -1,13 +1,16 @@
 #include "MenuScene.h"
-#include <imgui.h>
-#include <SFML/Graphics/Color.hpp>
 #include "../BestTimeStorage.h"
+#include <SFML/Graphics/Color.hpp>
+#include <imgui.h>
 
 #include "../../GameEngine/GameEngine.h"
-#include "GameScene.h"
 #include "../Components/CameraComponent.h"
 #include "../Components/DefaultCameraComponent.h"
 #include "../Systems/DefaultCameraSystem.h"
+#include "GameScene.h"
+#ifdef ENABLE_LEVEL_EDITOR
+#include "EditorScene.h"
+#endif
 
 MenuScene::MenuScene(GameEngine& gameEngine) : Scene(gameEngine) {}
 
@@ -28,17 +31,9 @@ void MenuScene::Update(float delta) {
     systemsManager.Update();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
 
-    ImGui::SetNextWindowSize(ImVec2(
-       static_cast<float>(GameEngineConfiguration::Width),
-       static_cast<float>(GameEngineConfiguration::Height)
-   ));
+    ImGui::SetNextWindowSize(ImVec2(static_cast<float>(GameEngineConfiguration::Width), static_cast<float>(GameEngineConfiguration::Height)));
 
-    ImGui::Begin("Menu", nullptr,
-       ImGuiWindowFlags_NoTitleBar |
-       ImGuiWindowFlags_NoResize |
-       ImGuiWindowFlags_NoMove |
-       ImGuiWindowFlags_NoCollapse
-   );
+    ImGui::Begin("Menu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
     ImGui::SetCursorPos(ImVec2(540, 280));
 
     const float bestTime = BestTimeStorage::Load();
@@ -57,8 +52,16 @@ void MenuScene::Update(float delta) {
         gameEngine.LoadScene<GameScene>(gameEngine);
     }
 
+#ifdef ENABLE_LEVEL_EDITOR
+    ImGui::SetCursorPos(ImVec2(540, 370));
+
+    if (ImGui::Button("Editor", ImVec2(200, 80))) {
+        gameEngine.LoadScene<EditorScene>(gameEngine);
+    }
+#endif
+
     // Ставим курсор ниже, где будет кнопка Exit.
-    ImGui::SetCursorPos(ImVec2(540, 380));
+    ImGui::SetCursorPos(ImVec2(540, 460));
 
     // Рисуем кнопку Exit.
     // Если пользователь нажал кнопку, закрываем игру.

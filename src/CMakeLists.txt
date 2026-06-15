@@ -24,6 +24,8 @@ set(SOURCES main.cpp
         Sample/Systems/FollowCameraSystem.h
         Sample/Systems/GravitySystem.cpp
         Sample/Systems/GravitySystem.h
+        Sample/Systems/HealthSystem.cpp
+        Sample/Systems/HealthSystem.h
         Sample/Systems/PathfindingSystem.cpp
         Sample/Systems/PathfindingSystem.h
         Sample/Systems/PatrolSystem.cpp
@@ -44,12 +46,14 @@ set(SOURCES main.cpp
         Sample/Components/CameraComponent.h
         Sample/Components/CircleColliderComponent.h
         Sample/Components/CollisionComponent.h
+        Sample/Components/DamageEventComponent.h
         Sample/Components/DecorComponent.h
         Sample/Components/DefaultCameraComponent.h
         Sample/Components/DestroyOnAnimationEndComponent.h
         Sample/Components/FinishComponent.h
         Sample/Components/FollowXCameraComponent.h
         Sample/Components/GravityComponent.h
+        Sample/Components/HealthComponent.h
         Sample/Components/GoombaComponent.h
         Sample/Components/PathfindingComponent.h
         Sample/Components/PatrolComponent.h
@@ -91,6 +95,7 @@ set(SOURCES main.cpp
         GUI/GUI.h
         Sample/BestTimeStorage.h
         Sample/BestTimeStorage.cpp
+
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Assets
@@ -107,9 +112,22 @@ add_subdirectory(Ecs)
 add_executable(${TARGET_NAME}
         ${SOURCES})
 
+option(ENABLE_LEVEL_EDITOR "Build level editor" ON)
+
+if (ENABLE_LEVEL_EDITOR)
+    target_compile_definitions(${TARGET_NAME} PRIVATE ENABLE_LEVEL_EDITOR)
+
+    target_sources(${TARGET_NAME} PRIVATE
+            Sample/Scenes/EditorScene.cpp
+            Sample/Scenes/EditorScene.h
+    )
+endif ()
+
 #target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 target_compile_features(${TARGET_NAME} PRIVATE cxx_std_20)
 
 target_link_libraries(${TARGET_NAME} PUBLIC ${ECS_LIB_NAME})
 target_link_libraries(${TARGET_NAME} PUBLIC ImGui-SFML::ImGui-SFML)
 target_link_libraries(${TARGET_NAME} PRIVATE nlohmann_json::nlohmann_json)
+target_compile_definitions(${TARGET_NAME} PRIVATE ENABLE_LEVEL_EDITOR)
+

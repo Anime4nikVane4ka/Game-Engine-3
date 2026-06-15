@@ -17,10 +17,7 @@ class DefaultCameraSystem final : public ISystem {
 
   public:
     DefaultCameraSystem(World& world, sf::RenderWindow& window)
-        : ISystem(world), _window(window), _cameras(world.GetStorage<CameraComponent>()),
-          _defaultCameras(
-              FilterBuilder(world).With<CameraComponent>().With<DefaultCameraComponent>().Build()) {
-    }
+        : ISystem(world), _window(window), _cameras(world.GetStorage<CameraComponent>()), _defaultCameras(FilterBuilder(world).With<CameraComponent>().With<DefaultCameraComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;

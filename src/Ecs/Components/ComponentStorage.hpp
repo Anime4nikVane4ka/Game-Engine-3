@@ -51,8 +51,7 @@ template <typename T> class ComponentStorage final : public BaseComponentStorage
 
     T& Add(const int entityIid, const T& value) {
         // ToDo: Проверка необходимости ресайза
-        Resize((entityIid / 64 + 1) * 64,
-            _count >= _data.size() ? _data.size() + 64 : _data.size());
+        Resize((entityIid / 64 + 1) * 64, _count >= _data.size() ? _data.size() + 64 : _data.size());
         // ToDo: Добавление компонента на сущность
         _data.push_back(value);
         _dense.push_back(entityIid);

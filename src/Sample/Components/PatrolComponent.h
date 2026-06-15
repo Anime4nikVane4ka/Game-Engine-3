@@ -9,8 +9,7 @@ struct PatrolComponent {
     bool MovingToSecondPoint = true;
 
     PatrolComponent() = default;
-    PatrolComponent(const sf::Vector2f& firstPoint, const sf::Vector2f& secondPoint)
-        : FirstPoint(firstPoint), SecondPoint(secondPoint) {}
+    PatrolComponent(const sf::Vector2f& firstPoint, const sf::Vector2f& secondPoint) : FirstPoint(firstPoint), SecondPoint(secondPoint) {}
 };
 
 #endif // PATROLCOMPONENT_H
