@@ -149,8 +149,7 @@ void GameScene::Init() {
 
             movements.Add(player, MovementComponent(config.Player.MoveSpeed, {0.0f, 0.0f}, config.Player.MaxVelocity, config.Player.JumpForce));
             gravity.Add(player, GravityComponent(config.Player.Gravity));
-            healths.Add(player,
-                HealthComponent(config.Player.Health, config.Player.InvulnerabilityTimeMs));
+            healths.Add(player, HealthComponent(config.Player.Health, config.Player.InvulnerabilityTimeMs));
             players.Add(player, PlayerComponent());
             shooters.Add(player, ShooterComponent(500.0f, config.Bullet.Speed));
             sprites.Add(player, SpriteComponent(baseAnimation.GetTexture()));

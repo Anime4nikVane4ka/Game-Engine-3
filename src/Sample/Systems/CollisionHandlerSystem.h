@@ -63,11 +63,11 @@ class CollisionHandlerSystem final : public ISystem {
   public:
     CollisionHandlerSystem(World& world, const Animation& explosionAnimation, const Animation& coinAnimation, const sf::Texture& inactiveQuestionTexture)
         : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()), _animators(world.GetStorage<AnimatorComponent>()), _collisions(world.GetStorage<CollisionComponent>()),
-          _damageEvents(world.GetStorage<DamageEventComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()), _bricks(world.GetStorage<BrickTileComponent>()), _bullets(world.GetStorage<BulletComponent>()),
-          _destroyOnAnimationEnds(world.GetStorage<DestroyOnAnimationEndComponent>()), _finishes(world.GetStorage<FinishComponent>()), _goombas(world.GetStorage<GoombaComponent>()),
-          _movements(world.GetStorage<MovementComponent>()), _players(world.GetStorage<PlayerComponent>()), _positions(world.GetStorage<PositionComponent>()),
-          _questionTiles(world.GetStorage<QuestionTileComponent>()), _sprites(world.GetStorage<SpriteComponent>()), _tiles(world.GetStorage<TileComponent>()),
-          _collidableEntities(FilterBuilder(world).With<CollisionComponent>().Build()), _coinAnimation(coinAnimation),
+          _damageEvents(world.GetStorage<DamageEventComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()), _bricks(world.GetStorage<BrickTileComponent>()),
+          _bullets(world.GetStorage<BulletComponent>()), _destroyOnAnimationEnds(world.GetStorage<DestroyOnAnimationEndComponent>()), _finishes(world.GetStorage<FinishComponent>()),
+          _goombas(world.GetStorage<GoombaComponent>()), _movements(world.GetStorage<MovementComponent>()), _players(world.GetStorage<PlayerComponent>()),
+          _positions(world.GetStorage<PositionComponent>()), _questionTiles(world.GetStorage<QuestionTileComponent>()), _sprites(world.GetStorage<SpriteComponent>()),
+          _tiles(world.GetStorage<TileComponent>()), _collidableEntities(FilterBuilder(world).With<CollisionComponent>().Build()), _coinAnimation(coinAnimation),
           _explosionAnimation(explosionAnimation), _inactiveQuestionTexture(inactiveQuestionTexture) {}
 
     void OnInit() override;

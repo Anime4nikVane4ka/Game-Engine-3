@@ -35,14 +35,9 @@ class HealthSystem final : public ISystem {
 
   public:
     HealthSystem(World& world)
-        : ISystem(world), _bullets(world.GetStorage<BulletComponent>()),
-          _damageEvents(world.GetStorage<DamageEventComponent>()),
-          _goombas(world.GetStorage<GoombaComponent>()),
-          _healths(world.GetStorage<HealthComponent>()),
-          _players(world.GetStorage<PlayerComponent>()),
-          _respawns(world.GetStorage<RespawnComponent>()),
-          _healthEntities(FilterBuilder(world).With<HealthComponent>().Build()),
-          _damageEventEntities(FilterBuilder(world).With<DamageEventComponent>().Build()) {}
+        : ISystem(world), _bullets(world.GetStorage<BulletComponent>()), _damageEvents(world.GetStorage<DamageEventComponent>()), _goombas(world.GetStorage<GoombaComponent>()),
+          _healths(world.GetStorage<HealthComponent>()), _players(world.GetStorage<PlayerComponent>()), _respawns(world.GetStorage<RespawnComponent>()),
+          _healthEntities(FilterBuilder(world).With<HealthComponent>().Build()), _damageEventEntities(FilterBuilder(world).With<DamageEventComponent>().Build()) {}
 
     void OnInit() override;
     void OnUpdate() override;
