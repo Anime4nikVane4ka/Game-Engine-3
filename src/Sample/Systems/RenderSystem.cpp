@@ -1,5 +1,6 @@
 #include "RenderSystem.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <SFML/Graphics/CircleShape.hpp>
@@ -27,6 +28,8 @@ void RenderSystem::OnInit() {
             DrawSprite(entity);
         }
     }
+
+    DrawHealthBars();
 }
 
 void RenderSystem::DrawColliders() {
@@ -138,6 +141,49 @@ void RenderSystem::DrawSprite(const int entity) {
     _window.draw(sprite);
 }
 
+void RenderSystem::DrawHealthBars() {
+    constexpr float healthBarHeight = 10.0f;
+    constexpr float healthBarOffsetY = 20.0f;
+
+    for (const int entity : _positionEntities) {
+        if (!_healths.Has(entity))
+            continue;
+
+        const auto& health = _healths.Get(entity);
+        if (health.MaxHealth <= 0)
+            continue;
+
+        const auto& position = _positions.Get(entity).Position;
+
+        float width = 50.0f;
+        float topOffset = 30.0f;
+
+        if (_boxColliders.Has(entity)) {
+            const auto& box = _boxColliders.Get(entity);
+            //width = box.Size.x;
+            topOffset = box.Extents.y;
+        } else if (_circleColliders.Has(entity)) {
+            const auto& circle = _circleColliders.Get(entity);
+            width = circle.Radius * 2.0f;
+            topOffset = circle.Radius;
+        }
+
+        const float healthPercent = std::clamp(health.Health * 1.0f / health.MaxHealth, 0.0f, 1.0f);
+        const sf::Vector2f barPosition(position.x - width / 2.0f, position.y - topOffset - healthBarOffsetY);
+
+        sf::RectangleShape background({width, healthBarHeight});
+        background.setPosition(barPosition);
+        background.setFillColor(sf::Color(60, 0, 0));
+
+        sf::RectangleShape fill({width * healthPercent, healthBarHeight});
+        fill.setPosition(barPosition);
+        fill.setFillColor(sf::Color::Red);
+
+        _window.draw(background);
+        _window.draw(fill);
+    }
+}
+
 void RenderSystem::OnUpdate() {
     if (_renderMode == RenderMode::Textures) {
         for (const int entity : _renderEntities) {
@@ -152,6 +198,7 @@ void RenderSystem::OnUpdate() {
             }
         }
 
+        DrawHealthBars();
         return;
     }
 
@@ -164,6 +211,7 @@ void RenderSystem::OnUpdate() {
         for (const int entity : _renderEntities)
             DrawSprite(entity);
 
+        DrawHealthBars();
         DrawGrid();
     }
 }

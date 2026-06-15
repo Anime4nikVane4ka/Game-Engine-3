@@ -11,6 +11,8 @@ struct PlayerConfig {
     float JumpForce = 0.0f;
     float MaxVelocity = 0.0f;
     float Gravity = 0.0f;
+    int Health = 0;
+    float InvulnerabilityTimeMs = 0.0f;
     std::string BasePose;
     std::vector<std::string> Animations;
 };
@@ -23,6 +25,7 @@ struct GoombaConfig {
     float MaxVelocity = 0.0f;
     float Gravity = 0.0f;
     float ViewDistance = 0.0f;
+    int Health = 0;
     std::string BasePose;
     std::vector<std::string> Animations;
 };

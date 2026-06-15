@@ -66,6 +66,11 @@ void CollisionHandlerSystem::CreateCoin(const int questionTileEntity) {
     _destroyOnAnimationEnds.Add(coinEntity, DestroyOnAnimationEndComponent(CoinLifetimeFrames));
 }
 
+void CollisionHandlerSystem::CreateDamageEvent(const int firstEntity, const int secondEntity) {
+    const int eventEntity = world.CreateEntity();
+    _damageEvents.Add(eventEntity, DamageEventComponent(firstEntity, secondEntity));
+}
+
 void CollisionHandlerSystem::ActivateQuestionTile(const int playerEntity, const int questionTileEntity) {
     if (!_questionTiles.Has(questionTileEntity))
         return;
@@ -90,13 +95,6 @@ void CollisionHandlerSystem::DestroyBrick(const int brickEntity, std::vector<int
 
     CreateExplosion(brickEntity);
     entitiesToRemove.push_back(brickEntity);
-}
-
-void CollisionHandlerSystem::RequestPlayerRespawn(const int playerEntity) {
-    if (!_respawns.Has(playerEntity))
-        return;
-
-    _respawns.Get(playerEntity).NeedRespawn = true;
 }
 
 void CollisionHandlerSystem::HandleSolidCollision(const int entity, const int collidedEntity, std::vector<int>& entitiesToRemove, const bool destroyBrickFromBelow) {
@@ -156,7 +154,7 @@ void CollisionHandlerSystem::HandlePlayerCollision(const int playerEntity, const
     }
 
     if (_goombas.Has(collidedEntity)) {
-        RequestPlayerRespawn(playerEntity);
+        CreateDamageEvent(playerEntity, collidedEntity);
         return;
     }
 
@@ -168,17 +166,16 @@ void CollisionHandlerSystem::HandleGoombaCollision(const int goombaEntity, const
 }
 
 void CollisionHandlerSystem::HandleBulletCollision(const int bulletEntity, const int collidedEntity, std::vector<int>& entitiesToRemove) {
-    if (!_bricks.Has(collidedEntity) && !_goombas.Has(collidedEntity))
+    if (_goombas.Has(collidedEntity)) {
+        CreateDamageEvent(bulletEntity, collidedEntity);
+        return;
+    }
+
+    if (!_bricks.Has(collidedEntity))
         return;
 
     if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), bulletEntity) == entitiesToRemove.end())
         entitiesToRemove.push_back(bulletEntity);
-
-    if (_goombas.Has(collidedEntity)) {
-        if (std::find(entitiesToRemove.begin(), entitiesToRemove.end(), collidedEntity) == entitiesToRemove.end())
-            entitiesToRemove.push_back(collidedEntity);
-        return;
-    }
 
     DestroyBrick(collidedEntity, entitiesToRemove);
 }

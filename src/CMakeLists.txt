@@ -24,6 +24,8 @@ set(SOURCES main.cpp
         Sample/Systems/FollowCameraSystem.h
         Sample/Systems/GravitySystem.cpp
         Sample/Systems/GravitySystem.h
+        Sample/Systems/HealthSystem.cpp
+        Sample/Systems/HealthSystem.h
         Sample/Systems/PathfindingSystem.cpp
         Sample/Systems/PathfindingSystem.h
         Sample/Systems/PatrolSystem.cpp
@@ -44,12 +46,14 @@ set(SOURCES main.cpp
         Sample/Components/CameraComponent.h
         Sample/Components/CircleColliderComponent.h
         Sample/Components/CollisionComponent.h
+        Sample/Components/DamageEventComponent.h
         Sample/Components/DecorComponent.h
         Sample/Components/DefaultCameraComponent.h
         Sample/Components/DestroyOnAnimationEndComponent.h
         Sample/Components/FinishComponent.h
         Sample/Components/FollowXCameraComponent.h
         Sample/Components/GravityComponent.h
+        Sample/Components/HealthComponent.h
         Sample/Components/GoombaComponent.h
         Sample/Components/PathfindingComponent.h
         Sample/Components/PatrolComponent.h

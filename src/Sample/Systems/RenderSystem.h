@@ -8,6 +8,7 @@
 #include "../../Ecs/Systems/ISystem.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/CircleColliderComponent.h"
+#include "../Components/HealthComponent.h"
 #include "../Components/MovementComponent.h"
 #include "../Components/PlayerComponent.h"
 #include "../Components/PositionComponent.h"
@@ -21,6 +22,7 @@ class RenderSystem final : public ISystem {
     ComponentStorage<PlayerComponent>& _players;
     ComponentStorage<PositionComponent>& _positions;
     ComponentStorage<SpriteComponent>& _sprites;
+    ComponentStorage<HealthComponent>& _healths;
     ComponentStorage<BoxColliderComponent>& _boxColliders;
     ComponentStorage<CircleColliderComponent>& _circleColliders;
 
@@ -33,11 +35,12 @@ class RenderSystem final : public ISystem {
     int _levelHeight;
 
     void DrawSprite(int entity);
+    void DrawHealthBars();
 
   public:
     RenderSystem(World& world, sf::RenderWindow& window, RenderMode& renderMode, int levelHeight)
         : ISystem(world), _window(window), _movements(world.GetStorage<MovementComponent>()), _players(world.GetStorage<PlayerComponent>()), _positions(world.GetStorage<PositionComponent>()),
-          _sprites(world.GetStorage<SpriteComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()), _circleColliders(world.GetStorage<CircleColliderComponent>()),
+          _sprites(world.GetStorage<SpriteComponent>()), _healths(world.GetStorage<HealthComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()), _circleColliders(world.GetStorage<CircleColliderComponent>()),
           _renderMode(renderMode), _levelHeight(levelHeight), _renderEntities(FilterBuilder(world).With<PositionComponent>().With<SpriteComponent>().Build()),
           _positionEntities(FilterBuilder(world).With<PositionComponent>().Build()) {}
     void DrawColliders();

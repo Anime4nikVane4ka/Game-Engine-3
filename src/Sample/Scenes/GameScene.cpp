@@ -26,6 +26,7 @@
 #include "../Components/FollowXCameraComponent.h"
 #include "../Components/GoombaComponent.h"
 #include "../Components/GravityComponent.h"
+#include "../Components/HealthComponent.h"
 #include "../Components/MovementComponent.h"
 #include "../Components/PathfindingComponent.h"
 #include "../Components/PatrolComponent.h"
@@ -44,6 +45,7 @@
 #include "../Systems/EnemyAISystem.h"
 #include "../Systems/FollowCameraSystem.h"
 #include "../Systems/GravitySystem.h"
+#include "../Systems/HealthSystem.h"
 #include "../Systems/InputSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/PathfindingSystem.h"
@@ -104,6 +106,7 @@ void GameScene::Init() {
     systemsManager.AddSystem(std::make_shared<MovementSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionDetectionSystem>(world));
     systemsManager.AddSystem(std::make_shared<CollisionHandlerSystem>(world, explosionAnimation, coinAnimation, gameEngine.Assets().GetTexture(config.QuestionTile.InactiveTexture)));
+    systemsManager.AddSystem(std::make_shared<HealthSystem>(world));
     systemsManager.AddSystem(std::make_shared<RespawnSystem>(world, static_cast<float>(GameEngineConfiguration::Height + LevelConfig::CellSize)));
     systemsManager.AddSystem(std::make_shared<ShootSystem>(world, gameEngine.Assets().GetTexture(config.Bullet.BaseTexture), config.Bullet.Radius));
     systemsManager.AddSystem(std::make_shared<FollowCameraSystem>(world, gameEngine.Window()));
@@ -122,6 +125,7 @@ void GameScene::Init() {
     auto& followCameras = world.GetStorage<FollowXCameraComponent>();
     auto& goombas = world.GetStorage<GoombaComponent>();
     auto& gravity = world.GetStorage<GravityComponent>();
+    auto& healths = world.GetStorage<HealthComponent>();
     auto& movements = world.GetStorage<MovementComponent>();
     auto& pathfindings = world.GetStorage<PathfindingComponent>();
     auto& patrols = world.GetStorage<PatrolComponent>();
@@ -145,6 +149,8 @@ void GameScene::Init() {
 
             movements.Add(player, MovementComponent(config.Player.MoveSpeed, {0.0f, 0.0f}, config.Player.MaxVelocity, config.Player.JumpForce));
             gravity.Add(player, GravityComponent(config.Player.Gravity));
+            healths.Add(player,
+                HealthComponent(config.Player.Health, config.Player.InvulnerabilityTimeMs));
             players.Add(player, PlayerComponent());
             shooters.Add(player, ShooterComponent(500.0f, config.Bullet.Speed));
             sprites.Add(player, SpriteComponent(baseAnimation.GetTexture()));
@@ -174,6 +180,7 @@ void GameScene::Init() {
             movements.Add(goomba, MovementComponent(config.Goomba.MoveSpeed, {0.0f, 0.0f}, config.Goomba.MaxVelocity, config.Goomba.JumpForce));
             gravity.Add(goomba, GravityComponent(config.Goomba.Gravity));
             goombas.Add(goomba, GoombaComponent(false, config.Goomba.ViewDistance));
+            healths.Add(goomba, HealthComponent(config.Goomba.Health));
             pathfindings.Add(goomba, PathfindingComponent());
             sprites.Add(goomba, SpriteComponent(baseAnimation.GetTexture()));
             animationStates.Add(goomba, AnimationStateComponent(GoombaMoveState));

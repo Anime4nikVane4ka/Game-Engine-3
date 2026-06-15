@@ -13,6 +13,7 @@
 #include "../Components/BrickTileComponent.h"
 #include "../Components/BulletComponent.h"
 #include "../Components/CollisionComponent.h"
+#include "../Components/DamageEventComponent.h"
 #include "../Components/DestroyOnAnimationEndComponent.h"
 #include "../Components/FinishComponent.h"
 #include "../Components/GoombaComponent.h"
@@ -20,7 +21,6 @@
 #include "../Components/PlayerComponent.h"
 #include "../Components/PositionComponent.h"
 #include "../Components/QuestionTileComponent.h"
-#include "../Components/RespawnComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TileComponent.h"
 
@@ -28,6 +28,7 @@ class CollisionHandlerSystem final : public ISystem {
     ComponentStorage<AnimationStateComponent>& _animationStates;
     ComponentStorage<AnimatorComponent>& _animators;
     ComponentStorage<CollisionComponent>& _collisions;
+    ComponentStorage<DamageEventComponent>& _damageEvents;
     ComponentStorage<BoxColliderComponent>& _boxColliders;
     ComponentStorage<BrickTileComponent>& _bricks;
     ComponentStorage<BulletComponent>& _bullets;
@@ -38,7 +39,6 @@ class CollisionHandlerSystem final : public ISystem {
     ComponentStorage<PlayerComponent>& _players;
     ComponentStorage<PositionComponent>& _positions;
     ComponentStorage<QuestionTileComponent>& _questionTiles;
-    ComponentStorage<RespawnComponent>& _respawns;
     ComponentStorage<SpriteComponent>& _sprites;
     ComponentStorage<TileComponent>& _tiles;
 
@@ -52,9 +52,9 @@ class CollisionHandlerSystem final : public ISystem {
     bool IsAbove(int firstEntity, int secondEntity) const;
     void CreateExplosion(int brickEntity);
     void CreateCoin(int questionTileEntity);
+    void CreateDamageEvent(int firstEntity, int secondEntity);
     void ActivateQuestionTile(int playerEntity, int questionTileEntity);
     void DestroyBrick(int brickEntity, std::vector<int>& entitiesToRemove);
-    void RequestPlayerRespawn(int playerEntity);
     void HandleSolidCollision(int entity, int collidedEntity, std::vector<int>& entitiesToRemove, bool destroyBrickFromBelow);
     void HandlePlayerCollision(int playerEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
     void HandleGoombaCollision(int goombaEntity, int collidedEntity, std::vector<int>& entitiesToRemove);
@@ -63,11 +63,11 @@ class CollisionHandlerSystem final : public ISystem {
   public:
     CollisionHandlerSystem(World& world, const Animation& explosionAnimation, const Animation& coinAnimation, const sf::Texture& inactiveQuestionTexture)
         : ISystem(world), _animationStates(world.GetStorage<AnimationStateComponent>()), _animators(world.GetStorage<AnimatorComponent>()), _collisions(world.GetStorage<CollisionComponent>()),
-          _boxColliders(world.GetStorage<BoxColliderComponent>()), _bricks(world.GetStorage<BrickTileComponent>()), _bullets(world.GetStorage<BulletComponent>()),
+          _damageEvents(world.GetStorage<DamageEventComponent>()), _boxColliders(world.GetStorage<BoxColliderComponent>()), _bricks(world.GetStorage<BrickTileComponent>()), _bullets(world.GetStorage<BulletComponent>()),
           _destroyOnAnimationEnds(world.GetStorage<DestroyOnAnimationEndComponent>()), _finishes(world.GetStorage<FinishComponent>()), _goombas(world.GetStorage<GoombaComponent>()),
           _movements(world.GetStorage<MovementComponent>()), _players(world.GetStorage<PlayerComponent>()), _positions(world.GetStorage<PositionComponent>()),
-          _questionTiles(world.GetStorage<QuestionTileComponent>()), _respawns(world.GetStorage<RespawnComponent>()), _sprites(world.GetStorage<SpriteComponent>()),
-          _tiles(world.GetStorage<TileComponent>()), _collidableEntities(FilterBuilder(world).With<CollisionComponent>().Build()), _coinAnimation(coinAnimation),
+          _questionTiles(world.GetStorage<QuestionTileComponent>()), _sprites(world.GetStorage<SpriteComponent>()), _tiles(world.GetStorage<TileComponent>()),
+          _collidableEntities(FilterBuilder(world).With<CollisionComponent>().Build()), _coinAnimation(coinAnimation),
           _explosionAnimation(explosionAnimation), _inactiveQuestionTexture(inactiveQuestionTexture) {}
 
     void OnInit() override;

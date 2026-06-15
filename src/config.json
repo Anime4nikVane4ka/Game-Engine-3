@@ -8,6 +8,8 @@
     "JumpForce": 4,
     "MaxVelocity": 6,
     "Gravity": 0.1,
+    "Health": 3,
+    "InvulnerabilityTimeMs": 1000,
     "BasePose": "IdleAnim",
     "Animations": [
       "IdleAnim",
@@ -21,13 +23,14 @@
   "Goomba": {
     "Bbox": [
       76,
-      96
+      80
     ],
     "MoveSpeed": 2,
     "JumpForce": 4,
     "MaxVelocity": 4,
     "Gravity": 0.1,
     "ViewDistance": 512,
+    "Health": 3,
     "BasePose": "GoombaMoveAnim",
     "Animations": [
       "GoombaMoveAnim"
