@@ -54,20 +54,20 @@
 #include "../Systems/RespawnSystem.h"
 #include "../Systems/ShootSystem.h"
 
-const char* PlayerObject = "Player";
-const char* TileObject = "Tile";
-const char* BrickObject = "Brick";
-const char* QuestionObject = "Question";
-const char* FinishObject = "Finish";
-const char* GoombaObject = "Goomba";
+const std::string PlayerObject = "Player";
+const std::string TileObject = "Tile";
+const std::string BrickObject = "Brick";
+const std::string QuestionObject = "Question";
+const std::string FinishObject = "Finish";
+const std::string GoombaObject = "Goomba";
 
-const char* IdleState = "Idle";
-const char* RunState = "Run";
-const char* JumpState = "Jump";
-const char* ShootIdleState = "ShootIdle";
-const char* ShootRunState = "ShootRun";
-const char* ShootJumpState = "ShootJump";
-const char* GoombaMoveState = "Move";
+const std::string IdleState = "Idle";
+const std::string RunState = "Run";
+const std::string JumpState = "Jump";
+const std::string ShootIdleState = "ShootIdle";
+const std::string ShootRunState = "ShootRun";
+const std::string ShootJumpState = "ShootJump";
+const std::string GoombaMoveState = "Move";
 
 const DecorationConfig* FindDecoration(const std::vector<DecorationConfig>& decorations, const std::string& name) {
     for (const auto& decoration : decorations) {
@@ -97,9 +97,10 @@ void GameScene::Init() {
 
     const auto& explosionAnimation = gameEngine.Assets().GetAnimation(config.BrickTile.DestroyAnimation);
     const auto& coinAnimation = gameEngine.Assets().GetAnimation(config.QuestionTile.CoinAnimation);
+    const PlayerAnimationStates playerAnimationStates{IdleState, RunState, JumpState, ShootIdleState, ShootRunState, ShootJumpState};
 
     systemsManager.AddSystem(std::make_shared<InputSystem>(world, actionMap["MoveLeft"], actionMap["MoveRight"], actionMap["Jump"], actionMap["Shoot"]));
-    systemsManager.AddSystem(std::make_shared<AnimationStateSystem>(world));
+    systemsManager.AddSystem(std::make_shared<AnimationStateSystem>(world, playerAnimationStates));
     systemsManager.AddSystem(std::make_shared<EnemyAISystem>(world));
     systemsManager.AddSystem(std::make_shared<PatrolSystem>(world));
     systemsManager.AddSystem(std::make_shared<PathfindingSystem>(world));

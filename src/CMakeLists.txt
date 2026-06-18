@@ -106,6 +106,8 @@ file(COPY config.json
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY level.json
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY level_editor.json
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory(Ecs)
 

@@ -2,15 +2,8 @@
 
 #include <string>
 
-constexpr const char* IdleState = "Idle";
-constexpr const char* RunState = "Run";
-constexpr const char* JumpState = "Jump";
-constexpr const char* ShootIdleState = "ShootIdle";
-constexpr const char* ShootRunState = "ShootRun";
-constexpr const char* ShootJumpState = "ShootJump";
-
-bool IsShootState(const std::string& state) {
-    return state == ShootIdleState || state == ShootRunState || state == ShootJumpState;
+bool IsShootState(const std::string& state, const PlayerAnimationStates& states) {
+    return state == states.ShootIdle || state == states.ShootRun || state == states.ShootJump;
 }
 
 void AnimationStateSystem::OnInit() {}
@@ -22,21 +15,21 @@ void AnimationStateSystem::OnUpdate() {
         const auto& movement = _movements.Get(entity);
         const bool shoot = _shooters.Has(entity) && _shooters.Get(entity).Shoot;
 
-        if (IsShootState(animationState.CurrentState) && !animator.AnimationFinished) {
+        if (IsShootState(animationState.CurrentState, _states) && !animator.AnimationFinished) {
             continue;
         }
 
-        const char* newState = IdleState;
+        std::string newState = _states.Idle;
         if (shoot && movement.Direction.y != 0.0f) {
-            newState = ShootJumpState;
+            newState = _states.ShootJump;
         } else if (shoot && movement.Direction.x != 0.0f) {
-            newState = ShootRunState;
+            newState = _states.ShootRun;
         } else if (shoot) {
-            newState = ShootIdleState;
+            newState = _states.ShootIdle;
         } else if (movement.Direction.y != 0.0f) {
-            newState = JumpState;
+            newState = _states.Jump;
         } else if (movement.Direction.x != 0.0f) {
-            newState = RunState;
+            newState = _states.Run;
         }
 
         if (animationState.CurrentState == newState) {

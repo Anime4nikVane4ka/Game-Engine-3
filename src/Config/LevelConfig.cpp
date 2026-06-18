@@ -6,17 +6,26 @@
 #include <nlohmann/json.hpp>
 
 std::ifstream OpenLevelFile(const std::string& path) {
+    const char* prefixes[] = {
+        "",
+        "../",
+        "../../",
+        "../../../",
+        "../../../../",
+        "src/",
+        "../src/",
+        "../../src/",
+        "../../../src/",
+        "../../../../src/",
+    };
+
+    for (const char* prefix : prefixes) {
+        std::ifstream file(std::string(prefix) + path);
+        if (file.is_open())
+            return file;
+    }
+
     std::ifstream file(path);
-    if (file.is_open())
-        return file;
-
-    file.clear();
-    file.open("../" + path);
-    if (file.is_open())
-        return file;
-
-    file.clear();
-    file.open("../../" + path);
     return file;
 }
 
